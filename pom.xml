@@ -8,6 +8,31 @@
     <artifactId>arfind</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <developers>
+        <developer>
+            <id>aarexer</id>
+            <name>Aleksandr Kuchuk</name>
+            <roles>
+                <role>team leader</role>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>timuranosov</id>
+            <name>Timur Anosov</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>NikitaMolodec</id>
+            <name>Nikita Volkov</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <properties>
         <junit.version>4.12</junit.version>
         <guava.version>21.0</guava.version>
