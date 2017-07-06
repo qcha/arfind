@@ -1,6 +1,5 @@
 package qcha.arfind.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,10 +15,10 @@ public class RootController {
     @FXML
     private MenuBar menubar;
 
-    public void configurationButtonAction() {
+    public void configurationButtonAction() throws Exception {
         try {
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/configLayout.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/application-configuration-window.fxml"));
             stage.setTitle("Добавление строк");
             stage.setMinHeight(150);
             stage.setMinWidth(300);
@@ -29,7 +28,7 @@ public class RootController {
             stage.initOwner(menubar.getScene().getWindow());
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

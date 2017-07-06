@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.RootController">
+   <top>
+      <MenuBar fx:id="menubar" BorderPane.alignment="CENTER">
+         <menus>
+            <Menu mnemonicParsing="false" text="Файл">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Добавить" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Настройки">
+               <items>
+                  <MenuItem fx:id="configuration" mnemonicParsing="false" onAction="#configurationButtonAction" text="Конфигурации" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Помощь">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="О программе" />
+               </items>
+            </Menu>
+         </menus>
+      </MenuBar>
+   </top>
+   <left>
+      <SplitPane BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="373.0" prefWidth="300.0" />
+        </items>
+      </SplitPane>
+   </left>
+   <center>
+      <Button mnemonicParsing="false" text="Поиск" BorderPane.alignment="BOTTOM_RIGHT" />
+   </center>
+</BorderPane>
