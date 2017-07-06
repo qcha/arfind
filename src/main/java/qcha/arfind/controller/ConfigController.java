@@ -23,10 +23,17 @@ public class ConfigController {
     @FXML
     private Button saveButton;
 
-    public void addButtonAction() {
-            buttonCounts++;
-            data.add(new TextField());
-            gridPane.add(data.get(buttonCounts - 1), 0, buttonCounts - 1);
+    public void addButtonAction() throws Exception {
+        try {
+            if (buttonCounts < 11) {
+                buttonCounts++;
+                data.add(new TextField());
+                gridPane.add(data.get(buttonCounts - 1), 0, buttonCounts - 1);
+            }
+        }
+        catch (IllegalStateException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void saveButtonAction() throws Exception {
