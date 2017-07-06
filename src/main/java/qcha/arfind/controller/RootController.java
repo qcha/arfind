@@ -15,7 +15,7 @@ public class RootController {
     @FXML
     private MenuBar menubar;
 
-    public void configurationButtonAction() throws Exception {
+    public void configurationButtonAction() {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/application-configuration-window.fxml"));

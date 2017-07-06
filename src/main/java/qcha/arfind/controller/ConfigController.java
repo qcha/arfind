@@ -16,14 +16,14 @@ import java.util.List;
 
 public class ConfigController {
     private List<TextField> data = new ArrayList<>();
-    private static final String lineSeparator = "\n";
-    private int buttonCounts = 0;
+    private static final String lineSeparator = System.lineSeparator();
+    private int buttonCounts;
     @FXML
     private GridPane gridPane;
     @FXML
     private Button saveButton;
 
-    public void addButtonAction() throws Exception {
+    public void addButtonAction() {
         try {
             if (buttonCounts < 11) {
                 buttonCounts++;
@@ -31,12 +31,12 @@ public class ConfigController {
                 gridPane.add(data.get(buttonCounts - 1), 0, buttonCounts - 1);
             }
         }
-        catch (IllegalStateException e) {
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void saveButtonAction() throws Exception {
+    public void saveButtonAction() {
         try {
             Stage stage = (Stage) saveButton.getScene().getWindow();
             stage.close();
@@ -58,7 +58,7 @@ public class ConfigController {
                     writer.write(data.get(i).getText() + lineSeparator);
                 }
         } catch (IOException e) {
-            throw new IllegalStateException("Can't write to this file");
+            throw new RuntimeException(e);
         }
     }
 
