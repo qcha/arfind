@@ -6,7 +6,7 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.RootController">
    <top>
-      <MenuBar BorderPane.alignment="CENTER" fx:id="menubar">
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="Файл">
             <items>
@@ -15,7 +15,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Настройки">
             <items>
-              <MenuItem fx:id="configuration" mnemonicParsing="false" onAction="#configurationButtonAction" text="Конфигурации"/>
+              <MenuItem mnemonicParsing="false" onAction="#loadConfigurations" text="Конфигурации"/>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Помощь">

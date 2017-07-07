@@ -5,7 +5,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.RootController">
    <top>
-      <MenuBar fx:id="menubar" BorderPane.alignment="CENTER">
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
          <menus>
             <Menu mnemonicParsing="false" text="Файл">
                <items>
@@ -14,7 +14,7 @@
             </Menu>
             <Menu mnemonicParsing="false" text="Настройки">
                <items>
-                  <MenuItem fx:id="configuration" mnemonicParsing="false" onAction="#configurationButtonAction" text="Конфигурации" />
+                  <MenuItem mnemonicParsing="false" onAction="#loadConfigurations" text="Конфигурации" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Помощь">
@@ -26,13 +26,19 @@
       </MenuBar>
    </top>
    <left>
-      <SplitPane BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="373.0" prefWidth="300.0" />
-        </items>
-      </SplitPane>
+      <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="375.0" prefWidth="600.0">
+         <children>
+            <SplitPane prefHeight="375.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <items>
+                  <TableView minWidth="-Infinity" prefHeight="375.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                    <columns>
+                      <TableColumn prefWidth="196.0" text="Источник" />
+                      <TableColumn prefWidth="404.0" text="Путь к файлу" />
+                    </columns>
+                  </TableView>
+               </items>
+            </SplitPane>
+         </children>
+      </AnchorPane>
    </left>
-   <center>
-      <Button mnemonicParsing="false" text="Поиск" BorderPane.alignment="BOTTOM_RIGHT" />
-   </center>
 </BorderPane>

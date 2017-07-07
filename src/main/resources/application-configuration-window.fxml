@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.ConfigController">
+
+<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.ConfigController">
    <children>
-      <GridPane fx:id="gridPane" layoutX="8.0" layoutY="17.0" prefHeight="295.0" prefWidth="592.0" AnchorPane.bottomAnchor="88.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="17.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="54.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="95.0" minHeight="2.0" prefHeight="50.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-            <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="50.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-      </GridPane>
-      <Button fx:id="saveButton" layoutX="486.0" layoutY="356.0" mnemonicParsing="false" onAction="#saveButtonAction" prefHeight="30.0" prefWidth="100.0" text="Сохранить" />
-      <Button layoutX="373.0" layoutY="356.0" mnemonicParsing="false" onAction="#addButtonAction" prefHeight="30.0" prefWidth="100.0" text="Добавить" />
+      <Label alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="600.0" text="Настройка конфигурации" textAlignment="CENTER">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <AnchorPane>
+         <children>
+            <TextField fx:id="textField" focusTraversable="false" layoutX="72.0" maxWidth="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT"
+                       prefHeight="25.0" prefWidth="570.0" promptText="Введите имя..." AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" />
+         </children>
+      </AnchorPane>
+      <ListView fx:id="listView" focusTraversable="false" prefHeight="375.0" prefWidth="600.0" />
+      <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="75.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" onAction="#saveConfiguration" prefHeight="50.0" prefWidth="100.0" text="Сохранить">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextFields" prefHeight="50.0" prefWidth="100.0" text="Добавить">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
    </children>
-</AnchorPane>
+</VBox>

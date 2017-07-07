@@ -13,9 +13,9 @@ import java.io.IOException;
 public class RootController {
 
     @FXML
-    private MenuBar menubar;
+    private MenuBar menuBar;
 
-    public void configurationButtonAction() {
+    public void loadConfigurations() {
         try {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/application-configuration-window.fxml"));
@@ -25,10 +25,10 @@ public class RootController {
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(menubar.getScene().getWindow());
+            stage.initOwner(menuBar.getScene().getWindow());
             stage.show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Cannot load your configurations", e);
         }
     }
 }

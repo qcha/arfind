@@ -1,61 +1,56 @@
 package qcha.arfind.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import qcha.arfind.view.Main;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class ConfigController {
-    private List<TextField> data = new ArrayList<>();
-    private static final String lineSeparator = System.lineSeparator();
-    private int buttonCounts;
-    @FXML
-    private GridPane gridPane;
+    private static final String LINE_SEPARATOR = System.lineSeparator();
+    private ObservableList<TextField> textFields = FXCollections.observableArrayList();
+
     @FXML
     private Button saveButton;
+    @FXML
+    private ListView<TextField> listView;
+    @FXML
+    private TextField textField;
 
-    public void addButtonAction() {
+    public void addTextFields() {
         try {
-            if (buttonCounts < 11) {
-                buttonCounts++;
-                data.add(new TextField());
-                gridPane.add(data.get(buttonCounts - 1), 0, buttonCounts - 1);
-            }
+            listView.setItems(textFields);
+            textFields.add(new TextField());
         }
         catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Cannot add new fields", e);
         }
     }
-
-    public void saveButtonAction() {
+    public void saveConfiguration() {
         try {
             Stage stage = (Stage) saveButton.getScene().getWindow();
             stage.close();
             Parent root = FXMLLoader.load(getClass().getResource("/application-stringList-window.fxml"));
-            stage.setTitle("JavaFX App");
-            stage.setScene(new Scene(root, 800, 600));
-            for (TextField textField : data) {
-                writeToFile("log.csv");
-            }
-            stage.show();
+            Stage secondStage = Main.getPrimaryStage();
+            secondStage.setScene(new Scene(root, 600, 400));
+            writeToFile("log.csv");
+            secondStage.setResizable(true);
+            secondStage.show();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Cannot save current configuration", e);
         }
     }
-
     private void writeToFile(String fileName) {
         try (FileWriter writer = new FileWriter(fileName)) {
-                for (int i = 0 ; i < data.size(); i++) {
-                    writer.write(data.get(i).getText() + lineSeparator);
+            writer.write(textField.getText() + LINE_SEPARATOR);
+            for (int i = 0 ; i < textFields.size(); i++) {
+                    writer.write(textFields.get(i).getText() + LINE_SEPARATOR);
                 }
         } catch (IOException e) {
             throw new RuntimeException(e);
