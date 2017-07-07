@@ -20,15 +20,13 @@ public class RootController {
             Stage stage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("/application-configuration-window.fxml"));
             stage.setTitle("Добавление строк");
-            stage.setMinHeight(150);
-            stage.setMinWidth(300);
             stage.setResizable(false);
             stage.setScene(new Scene(root));
             stage.initModality(Modality.WINDOW_MODAL);
             stage.initOwner(menuBar.getScene().getWindow());
             stage.show();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot load your configurations", e);
+            throw new RuntimeException("Cannot find fxml for this window", e);
         }
     }
 }

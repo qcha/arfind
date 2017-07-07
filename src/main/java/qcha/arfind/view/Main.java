@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import qcha.arfind.Constants;
 
 public class Main extends Application {
     private static Stage primaryStage;
@@ -13,8 +14,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         setPrimaryStage(primaryStage);
         Parent root = FXMLLoader.load(getClass().getResource("/main-window.fxml"));
-        primaryStage.setTitle("JavaFX App");
-        primaryStage.setScene(new Scene(root, 500, 300));
+        primaryStage.setTitle(Constants.MainWindow.TITLE);
+        primaryStage.setScene(new Scene(root, Constants.MainWindow.WIDTH, Constants.MainWindow.HEIGHT));
         primaryStage.show();
     }
 
@@ -23,6 +24,6 @@ public class Main extends Application {
     }
 
     private void setPrimaryStage(Stage primaryStage) {
-        Main.primaryStage= primaryStage;
+        Main.primaryStage = primaryStage;
     }
 }

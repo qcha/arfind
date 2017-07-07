@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.ConfigController">
    <children>
       <Label alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="600.0" text="Настройка конфигурации" textAlignment="CENTER">
@@ -14,19 +13,28 @@
       </Label>
       <AnchorPane>
          <children>
-            <TextField fx:id="textField" focusTraversable="false" layoutX="72.0" maxWidth="-Infinity" minWidth="-Infinity" nodeOrientation="LEFT_TO_RIGHT"
-                       prefHeight="25.0" prefWidth="570.0" promptText="Введите имя..." AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" />
+            <TextField fx:id="textField" focusTraversable="false" layoutX="72.0" maxWidth="-Infinity" minWidth="-Infinity"
+                       nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="570.0" promptText="Введите имя..." AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" />
          </children>
       </AnchorPane>
       <ListView fx:id="listView" focusTraversable="false" prefHeight="375.0" prefWidth="600.0" />
-      <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="75.0" prefWidth="600.0">
+      <HBox spacing="10.0">
          <children>
-            <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" onAction="#saveConfiguration" prefHeight="50.0" prefWidth="100.0" text="Сохранить">
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextFields" prefHeight="50.0" prefWidth="100.0" text="Добавить">
                <font>
                   <Font size="15.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextFields" prefHeight="50.0" prefWidth="100.0" text="Добавить">
+            <Button alignment="CENTER" lineSpacing="10.0" mnemonicParsing="false" onAction="#removeTextFields" prefHeight="50.0" prefWidth="100.0" text="Удалить">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="75.0" prefWidth="600.0">
+         <children>
+            <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" onAction="#saveConfiguration" prefHeight="50.0" prefWidth="100.0" text="Сохранить">
                <font>
                   <Font size="15.0" />
                </font>
