@@ -26,7 +26,7 @@ public class RootController {
             stage.initOwner(menuBar.getScene().getWindow());
             stage.show();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find fxml for this window", e);
+            throw new RuntimeException("Cannot find fxml for configuration window", e);
         }
     }
 }

@@ -17,7 +17,7 @@ import qcha.arfind.view.Main;
 import java.io.IOException;
 
 public class ConfigController {
-    private ObservableList<TextField> textFields = FXCollections.observableArrayList();
+    private ObservableList<TextField> textFields;
 
     @FXML
     private Button saveButton;
@@ -27,17 +27,21 @@ public class ConfigController {
     private TextField textField;
 
     @FXML
-    private void addTextFields() {
+    public void initialize() {
+        textFields = FXCollections.observableArrayList();
         listView.setItems(textFields);
+    }
+
+    @FXML
+    private void addTextField() {
         TextField newTextField = new TextField();
         newTextField.setPromptText("Введите имя...");
         textFields.add(newTextField);
     }
 
     @FXML
-    private void removeTextFields() {
-        listView.setItems(textFields);
-        if (textFields.size() >= 1) {
+    private void removeTextField() {
+        if (textFields.size() > 0) {
             textFields.remove(textFields.size() - 1);
         }
     }
@@ -58,7 +62,7 @@ public class ConfigController {
             }
             secondStage.show();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find fxml for this window", e);
+            throw new RuntimeException("Cannot find fxml for save configuration window", e);
         }
     }
 

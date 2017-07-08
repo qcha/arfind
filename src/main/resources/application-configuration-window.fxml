@@ -20,12 +20,12 @@
       <ListView fx:id="listView" focusTraversable="false" prefHeight="375.0" prefWidth="600.0" />
       <HBox spacing="10.0">
          <children>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextFields" prefHeight="50.0" prefWidth="100.0" text="Добавить">
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextField" prefHeight="50.0" prefWidth="100.0" text="Добавить">
                <font>
                   <Font size="15.0" />
                </font>
             </Button>
-            <Button alignment="CENTER" lineSpacing="10.0" mnemonicParsing="false" onAction="#removeTextFields" prefHeight="50.0" prefWidth="100.0" text="Удалить">
+            <Button alignment="CENTER" lineSpacing="10.0" mnemonicParsing="false" onAction="#removeTextField" prefHeight="50.0" prefWidth="100.0" text="Удалить">
                <font>
                   <Font size="15.0" />
                </font>
