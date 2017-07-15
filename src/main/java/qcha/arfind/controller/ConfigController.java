@@ -51,7 +51,7 @@ public class ConfigController {
         try {
             Stage stage = (Stage) saveButton.getScene().getWindow();
             stage.close();
-            Parent root = FXMLLoader.load(getClass().getResource("/application-stringList-window.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("../view/application-stringList-window.fxml"));
             Stage secondStage = Main.getPrimaryStage();
             secondStage.setScene(new Scene(root, 600, 400));
             FileUtils.writeStringToFile(Constants.FileWriterConstants.FILENAME, textField.getText() +

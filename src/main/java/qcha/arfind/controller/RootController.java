@@ -18,7 +18,7 @@ public class RootController {
     public void loadConfigurations() {
         try {
             Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("/application-configuration-window.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("../view/application-configuration-window.fxml"));
             stage.setTitle("Добавление строк");
             stage.setResizable(false);
             stage.setScene(new Scene(root));
