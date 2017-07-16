@@ -2,15 +2,13 @@ package qcha.arfind;
 
 
 public final class Constants {
-    private static final String DEFAULT_ERROR_MESSAGE = "Can't create instance of constant class";
-
     private Constants() {
-        throw new AssertionError(DEFAULT_ERROR_MESSAGE);
+        throw new AssertionError("Can't create instance of constant class");
     }
 
     public static final class MainWindow {
         private MainWindow() {
-            throw new AssertionError(DEFAULT_ERROR_MESSAGE);
+            throw new AssertionError("Can't create instance of constant class");
         }
 
         public static final String TITLE = "JavaFx App";
@@ -20,7 +18,7 @@ public final class Constants {
 
     public static final class ConfigurationWindow {
         private ConfigurationWindow() {
-            throw new AssertionError(DEFAULT_ERROR_MESSAGE);
+            throw new AssertionError("Can't create instance of constant class");
         }
 
         public static final int DEFAULT_WIDTH = 600;
@@ -29,7 +27,7 @@ public final class Constants {
 
     public static final class FileWriterConstants {
         private FileWriterConstants() {
-            throw new AssertionError(DEFAULT_ERROR_MESSAGE);
+            throw new AssertionError("Can't create instance of constant class");
 
         }
 
