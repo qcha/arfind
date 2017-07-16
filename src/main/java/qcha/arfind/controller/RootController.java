@@ -10,21 +10,21 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class RootController {
+public final class RootController {
 
     @FXML
     private MenuBar menuBar;
 
     public void loadConfigurations() {
         try {
-            Stage stage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../view/application-configuration-window.fxml"));
-            stage.setTitle("Добавление строк");
-            stage.setResizable(false);
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.initOwner(menuBar.getScene().getWindow());
-            stage.show();
+            Stage mainWindowStage = new Stage();
+            Parent mainWindowInterface = FXMLLoader.load(getClass().getResource("../view/application-configuration-window.fxml"));
+            mainWindowStage.setTitle("Добавление строк");
+            mainWindowStage.setResizable(false);
+            mainWindowStage.setScene(new Scene(mainWindowInterface));
+            mainWindowStage.initModality(Modality.WINDOW_MODAL);
+            mainWindowStage.initOwner(menuBar.getScene().getWindow());
+            mainWindowStage.show();
         } catch (IOException e) {
             throw new RuntimeException("Cannot find fxml for configuration window", e);
         }

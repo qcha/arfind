@@ -12,11 +12,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 import qcha.arfind.Constants;
+import qcha.arfind.utils.TextFieldConfiguration;
 import qcha.arfind.view.Main;
 
+import java.io.File;
 import java.io.IOException;
 
-public class ConfigController {
+public final class ConfigController {
     private ObservableList<TextField> textFields;
 
     @FXML
@@ -34,9 +36,8 @@ public class ConfigController {
 
     @FXML
     private void addTextField() {
-        TextField newTextField = new TextField();
-        newTextField.setPromptText("Введите имя...");
-        textFields.add(newTextField);
+        TextFieldConfiguration textFieldConfiguration = new TextFieldConfiguration();
+        textFields.add(textFieldConfiguration.textField);
     }
 
     @FXML
@@ -49,18 +50,19 @@ public class ConfigController {
     @FXML
     private void saveConfiguration() {
         try {
-            Stage stage = (Stage) saveButton.getScene().getWindow();
-            stage.close();
-            Parent root = FXMLLoader.load(getClass().getResource("../view/application-stringList-window.fxml"));
-            Stage secondStage = Main.getPrimaryStage();
-            secondStage.setScene(new Scene(root, 600, 400));
-            FileUtils.writeStringToFile(Constants.FileWriterConstants.FILENAME, textField.getText() +
-                    Constants.FileWriterConstants.LINE_SEPARATOR, "UTF-8");
+            Stage mainWindowStage = (Stage) saveButton.getScene().getWindow();
+            mainWindowStage.close();
+            Parent configurationWindowInterface = FXMLLoader.load(getClass().getResource("../view/application-stringList-window.fxml"));
+            Stage configurationWindowStage = Main.getPrimaryStage();
+            configurationWindowStage.setScene(new Scene(configurationWindowInterface, Constants.ConfigurationWindow.DEFAULT_WIDTH,
+                    Constants.ConfigurationWindow.DEFAULT_HEIGHT));
+            FileUtils.writeStringToFile(new File(Constants.FileWriterConstants.FILENAME), textField.getText() +
+                    Constants.FileWriterConstants.LINE_SEPARATOR, Constants.FileWriterConstants.DEFAULT_CHARSET);
             for (TextField allTextFields : textFields) {
-                FileUtils.writeStringToFile(Constants.FileWriterConstants.FILENAME, allTextFields.getText() +
-                        Constants.FileWriterConstants.LINE_SEPARATOR, "UTF-8", true);
+                FileUtils.writeStringToFile(new File(Constants.FileWriterConstants.FILENAME), allTextFields.getText() +
+                        Constants.FileWriterConstants.LINE_SEPARATOR, Constants.FileWriterConstants.DEFAULT_CHARSET, true);
             }
-            secondStage.show();
+            configurationWindowStage.show();
         } catch (IOException e) {
             throw new RuntimeException("Cannot find fxml for save configuration window", e);
         }
