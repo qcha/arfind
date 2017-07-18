@@ -1,45 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.ConfigController">
-   <children>
-      <Label alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="600.0" text="Настройка конфигурации" textAlignment="CENTER">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <AnchorPane>
-         <children>
-            <TextField fx:id="textField" focusTraversable="false" layoutX="72.0" maxWidth="-Infinity" minWidth="-Infinity"
-                       nodeOrientation="LEFT_TO_RIGHT" prefHeight="25.0" prefWidth="570.0" promptText="Введите имя..." AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0" />
-         </children>
-      </AnchorPane>
-      <ListView fx:id="listView" focusTraversable="false" prefHeight="375.0" prefWidth="600.0" />
-      <HBox spacing="10.0">
-         <children>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#addTextField" prefHeight="50.0" prefWidth="100.0" text="Добавить">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-            <Button alignment="CENTER" lineSpacing="10.0" mnemonicParsing="false" onAction="#removeTextField" prefHeight="50.0" prefWidth="100.0" text="Удалить">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-         </children>
-      </HBox>
-      <HBox nodeOrientation="RIGHT_TO_LEFT" prefHeight="75.0" prefWidth="600.0">
-         <children>
-            <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" onAction="#saveConfiguration" prefHeight="50.0" prefWidth="100.0" text="Сохранить">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
-         </children>
-      </HBox>
-   </children>
+<?import javafx.scene.text.Font?>
+<VBox fx:id="configurationInterface" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308"
+      xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="qcha.arfind.controller.ConfigController">
+    <children>
+        <Label alignment="CENTER" minHeight="-Infinity" prefHeight="30.0" prefWidth="600.0"
+               text="Настройка конфигурации" textAlignment="CENTER">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+        <TableView fx:id="configurationCompanyTableView" focusTraversable="false" prefHeight="350.0" prefWidth="200.0">
+            <columns>
+                <TableColumn fx:id="companyNameColumn" prefWidth="212.0" text="Название"/>
+                <TableColumn fx:id="filePathColumn" prefWidth="386.0" text="Путь к файлу"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
+        <AnchorPane/>
+        <AnchorPane>
+            <children>
+                <HBox spacing="10.0" AnchorPane.leftAnchor="10.0">
+                    <children>
+                        <Button alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0"
+                                text="Добавить"/>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#removeCompany" prefHeight="25.0"
+                                prefWidth="75.0" text="Удалить"/>
+                        <Button alignment="CENTER" mnemonicParsing="false" onAction="#removeAll" prefHeight="25.0"
+                                prefWidth="90.0" text="Удалить всё"/>
+                        <Button alignment="CENTER" mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0"
+                                text="Изменить"/>
+                    </children>
+                    <opaqueInsets>
+                        <Insets/>
+                    </opaqueInsets>
+                </HBox>
+            </children>
+        </AnchorPane>
+        <AnchorPane prefHeight="0.0" prefWidth="610.0">
+            <children>
+                <AnchorPane>
+                    <children>
+                        <HBox layoutX="600.0" nodeOrientation="RIGHT_TO_LEFT" prefHeight="25.0" prefWidth="610.0"
+                              AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="10.0"
+                              AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="saveButton" alignment="CENTER" mnemonicParsing="false" prefHeight="25.0"
+                                        prefWidth="100.0" text="Сохранить">
+                                    <font>
+                                        <Font size="15.0"/>
+                                    </font>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </children>
+        </AnchorPane>
+    </children>
 </VBox>

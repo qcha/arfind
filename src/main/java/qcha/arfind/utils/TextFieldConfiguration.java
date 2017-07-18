@@ -4,10 +4,9 @@ import javafx.scene.control.TextField;
 
 public class TextFieldConfiguration extends TextField {
 
-    public TextField textField;
-
     public TextFieldConfiguration() {
-        this.textField = new TextField();
-        textField.setPromptText("Введите имя...");
+        TextField textField = new TextField();
+        textField.setPromptText("Введите имя файла...");
+        textField.setFocusTraversable(false);
     }
 }

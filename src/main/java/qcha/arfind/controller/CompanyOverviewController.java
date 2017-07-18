@@ -7,40 +7,26 @@ import javafx.scene.layout.HBox;
 import qcha.arfind.model.Company;
 import qcha.arfind.view.Main;
 
-public final class ConfigController {
+public final class CompanyOverviewController {
+
     private Main main;
 
     @FXML
-    private TableView<Company> configurationCompanyTableView;
+    private TableView<Company> companyTableView;
     @FXML
     private TableColumn<Company, String> companyNameColumn;
     @FXML
     private TableColumn<Company, HBox> filePathColumn;
 
-
     @FXML
-    public void initialize() {
+    private void initialize() {
         companyNameColumn.setCellValueFactory(cellData -> cellData.getValue().sourceColumnProperty());
         filePathColumn.setCellValueFactory(cellData -> cellData.getValue().filePathProperty());
     }
 
+
     public void setMain(Main main) {
         this.main = main;
-        configurationCompanyTableView.setItems(main.getCompanyData());
+        companyTableView.setItems(main.getCompanyData());
     }
-
-    @FXML
-    private void removeCompany() {
-        int selectedIndex = configurationCompanyTableView.getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            configurationCompanyTableView.getItems().remove(selectedIndex);
-        }
-    }
-
-    @FXML
-    private void removeAll() {
-        configurationCompanyTableView.getItems().clear();
-    }
-
 }
-
