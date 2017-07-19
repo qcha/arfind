@@ -15,6 +15,7 @@ public class RootLayoutController {
 
     @FXML
     private VBox configurationInterface;
+    private static Stage configurationWindow;
 
     @FXML
     private MenuBar menuBar;
@@ -22,7 +23,7 @@ public class RootLayoutController {
 
     public void loadConfigurations() {
         try {
-            Stage configurationWindow = new Stage();
+            configurationWindow = new Stage();
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("../view/application-configuration-window.fxml"));
             configurationInterface = loader.load();
@@ -38,6 +39,10 @@ public class RootLayoutController {
         } catch (IOException e) {
             throw new RuntimeException("Cannot find fxml for configuration window", e);
         }
+    }
+
+    public static Stage getConfigurationWindow() {
+        return configurationWindow;
     }
 
 }
