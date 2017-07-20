@@ -79,7 +79,7 @@ public final class ConfigController {
     private void saveConfigurations() {
         try {
             convertTableDataToString();
-            FileUtils.writeLines(new File(Constants.ConfigFileUtils.CONFIG_FILENAME), Constants.ConfigFileUtils.DEFAULT_CHARSET, tableStringData);
+            FileUtils.writeLines(new File(Constants.ConfigFileConstants.CONFIG_FILENAME), Constants.ConfigFileConstants.DEFAULT_CHARSET, tableStringData);
             RootLayoutController.getConfigurationWindow().close();
         } catch (IOException e) {
             throw new RuntimeException("Cannot find such file", e);

@@ -14,7 +14,6 @@ public class Main extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
 
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -32,7 +31,7 @@ public class Main extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find fxml for loading root");
+            throw new RuntimeException("Cannot find fxml for loading root", e);
         }
     }
 
@@ -43,7 +42,7 @@ public class Main extends Application {
             AnchorPane mainWindow = loader.load();
             rootLayout.setCenter(mainWindow);
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find fxml for loading main window");
+            throw new RuntimeException("Cannot find fxml for loading main window", e);
         }
     }
 }

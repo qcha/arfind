@@ -9,27 +9,22 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 
 import java.io.File;
+import java.util.Objects;
 
 public class CompanyEditDialogController {
 
     private Stage dialogStage;
     private Company company;
-    private boolean okClicked = false;
+    private boolean okClicked;
 
     @FXML
     private TextField companyNameField;
     @FXML
     private TextField filePathField;
     @FXML
-    private Label companyNameLabel;
+    private Label companyNameInfo;
     @FXML
-    private Label filePathLabel;
-
-    @FXML
-    public void initialize() {
-        companyNameField.setText("");
-        filePathField.setText("");
-    }
+    private Label filePathInfo;
 
 
     public void setDialogStage(Stage dialogStage) {
@@ -48,13 +43,13 @@ public class CompanyEditDialogController {
 
     @FXML
     private void handleOk() {
-        if (companyNameField.getText() == null && filePathField.getText() == null) {
-            companyNameLabel.setText("Введите название фирмы");
-            companyNameLabel.setTextFill(Color.rgb(210, 39, 30));
-            filePathLabel.setText("Выберите путь к файлу");
-            filePathLabel.setTextFill(Color.rgb(210, 39, 30));
+        if (Objects.isNull(companyNameField.getText()) && Objects.isNull(filePathField.getText())) {
+            companyNameInfo.setText("Введите название фирмы");
+            companyNameInfo.setTextFill(Color.rgb(210, 39, 30));
+            filePathInfo.setText("Выберите путь к файлу");
+            filePathInfo.setTextFill(Color.rgb(210, 39, 30));
         }
-        if (companyNameLabel.getText() != null && filePathField.getText() != null && new File(filePathField.getText()).exists()) {
+        if (Objects.nonNull(companyNameInfo.getText()) && Objects.nonNull(filePathField.getText()) && new File(filePathField.getText()).exists()) {
             company.setCompanyName(companyNameField.getText());
             company.setFilePath(filePathField.getText());
             dialogStage.close();

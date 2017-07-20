@@ -3,14 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="300.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="qcha.arfind.controller.CompanyOverviewController">
    <children>
       <HBox prefHeight="35.0" prefWidth="600.0">
          <children>
             <TextField alignment="CENTER" focusTraversable="false" prefHeight="65.0" prefWidth="604.0" promptText="Поиск" />
          </children>
       </HBox>
-      <TableView focusTraversable="false" layoutY="33.0" maxWidth="-Infinity" prefHeight="265.0" prefWidth="185.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="415.0" AnchorPane.topAnchor="35.0">
+      <TableView fx:id="companyDataTable" focusTraversable="false" layoutY="33.0" maxWidth="-Infinity" prefHeight="265.0" prefWidth="185.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="415.0" AnchorPane.topAnchor="35.0">
         <columns>
             <TableColumn prefWidth="75.0" text="Параметры поиска">
                <columns>
@@ -19,7 +19,7 @@
                         <CheckBox focusTraversable="false" mnemonicParsing="false" />
                      </graphic>
                   </TableColumn>
-                <TableColumn prefWidth="154.0" text="Название фирмы" />
+                <TableColumn fx:id="companyDataNameColumn" prefWidth="154.0" text="Название фирмы" />
                </columns>
             </TableColumn>
         </columns>
@@ -27,7 +27,7 @@
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
          </columnResizePolicy>
       </TableView>
-      <TableView focusTraversable="false" layoutX="185.0" layoutY="35.0" prefHeight="265.0" prefWidth="415.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="185.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+      <TableView fx:id="fullDataTable" focusTraversable="false" layoutX="185.0" layoutY="35.0" prefHeight="265.0" prefWidth="415.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="185.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
          <columns>
             <TableColumn prefWidth="115.0" text="Название фирмы" />
             <TableColumn prefWidth="222.0" text="Полное имя поиска" />

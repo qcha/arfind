@@ -14,11 +14,11 @@ public final class Constants {
         public static final String TITLE = "JavaFx App";
 
     }
-    public static final class ConfigFileUtils {
-        private ConfigFileUtils() {
+    public static final class ConfigFileConstants {
+        private ConfigFileConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
-        public static final String CONFIG_FILENAME = "config.csv";
+        public static final String CONFIG_FILENAME = "config.xml";
         public static final String DEFAULT_CHARSET = "UTF-8";
     }
 }
