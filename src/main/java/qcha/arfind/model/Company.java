@@ -12,7 +12,6 @@ public class Company {
     public Company() {
         this(null, null);
     }
-
     public Company(String sourceColumn, String filePath) {
         this.companyName = new SimpleStringProperty(sourceColumn);
         this.filePath = new SimpleStringProperty(filePath);

@@ -18,7 +18,7 @@ public final class Constants {
         private ConfigFileConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
-        public static final String CONFIG_FILENAME = "config.xml";
+        public static final String CONFIG_FILENAME = "config.csv";
         public static final String DEFAULT_CHARSET = "UTF-8";
     }
 }
