@@ -1,4 +1,4 @@
-package qcha.arfind.controller;
+package qcha.arfind;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,7 +15,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
-import qcha.arfind.Constants;
 import qcha.arfind.model.Company;
 
 import java.io.File;
@@ -27,8 +26,6 @@ import java.util.Objects;
 class CompanyShowDialogs {
     private Stage dialogStage;
     private Company company;
-
-
     private TextField companyNameField;
     private TextField filePathField;
     private Label companyNameErrorText;
@@ -44,10 +41,10 @@ class CompanyShowDialogs {
         Company company = new Company();
         showEditDialog(company);
         handleOk();
-        ConfigurationWindowInterface.getCompanyData().add(company);
+        ConfigurationWindow.getCompanyData().add(company);
     }
     void editCompany() {
-        Company company = ConfigurationWindowInterface.getConfigurationCompanyTable().getSelectionModel().getSelectedItem();
+        Company company = ConfigurationWindow.getConfigurationCompanyTable().getSelectionModel().getSelectedItem();
         if (company != null) {
             showEditDialog(company);
             handleOk();
@@ -55,21 +52,21 @@ class CompanyShowDialogs {
     }
 
     void removeCompany() {
-        int selectedIndex = ConfigurationWindowInterface.getConfigurationCompanyTable().getSelectionModel().getSelectedIndex();
+        int selectedIndex = ConfigurationWindow.getConfigurationCompanyTable().getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            ConfigurationWindowInterface.getConfigurationCompanyTable().getItems().remove(selectedIndex);
+            ConfigurationWindow.getConfigurationCompanyTable().getItems().remove(selectedIndex);
         }
     }
 
     void removeAll() {
-        ConfigurationWindowInterface.getConfigurationCompanyTable().getItems().clear();
+        ConfigurationWindow.getConfigurationCompanyTable().getItems().clear();
     }
 
     void saveConfigurations() {
         try {
-            ConfigurationWindowInterface.convertTableDataToString();
-            FileUtils.writeLines(new File(Constants.ConfigFileConstants.CONFIG_FILENAME), Constants.ConfigFileConstants.DEFAULT_CHARSET, ConfigurationWindowInterface.getTableStringData());
-            ConfigurationWindowInterface.getConfigurationWindow().close();
+            ConfigurationWindow.convertTableDataToString();
+            FileUtils.writeLines(new File(Constants.ConfigFileConstants.CONFIG_FILENAME), Constants.ConfigFileConstants.DEFAULT_CHARSET, ConfigurationWindow.getTableStringData());
+            ConfigurationWindow.getConfigurationWindow().close();
         } catch (IOException e) {
             throw new RuntimeException("Cannot find such file", e);
         }
@@ -138,7 +135,7 @@ class CompanyShowDialogs {
 
 
         dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(ConfigurationWindowInterface.getConfigurationCompanyTable().getScene().getWindow());
+        dialogStage.initOwner(ConfigurationWindow.getConfigurationCompanyTable().getScene().getWindow());
         Scene scene = new Scene(dialogRootLayout, 400, 250);
         dialogStage.setScene(scene);
         setCompany(company);

@@ -1,24 +1,22 @@
 package qcha.arfind;
 
-
-public final class Constants {
+final class Constants {
     private Constants() {
         throw new AssertionError("Don't create instance of constant class");
     }
 
-    public static final class MainWindow {
-
+    static final class MainWindow {
         private MainWindow() {
             throw new AssertionError("Don't create instance of constant class");
         }
-        public static final String TITLE = "JavaFx App";
-
+        static final String TITLE = "JavaFx App";
     }
-    public static final class ConfigFileConstants {
+
+    static final class ConfigFileConstants {
         private ConfigFileConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
-        public static final String CONFIG_FILENAME = "config.csv";
-        public static final String DEFAULT_CHARSET = "UTF-8";
+        static final String CONFIG_FILENAME = "config.csv";
+        static final String DEFAULT_CHARSET = "UTF-8";
     }
 }

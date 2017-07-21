@@ -3,15 +3,11 @@ package qcha.arfind.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-
 public class Company {
 
     private final StringProperty companyName;
     private final StringProperty filePath;
 
-    public Company() {
-        this(null, null);
-    }
     public Company(String sourceColumn, String filePath) {
         this.companyName = new SimpleStringProperty(sourceColumn);
         this.filePath = new SimpleStringProperty(filePath);
@@ -40,6 +36,4 @@ public class Company {
     public StringProperty filePathProperty() {
         return filePath;
     }
-
-
 }
