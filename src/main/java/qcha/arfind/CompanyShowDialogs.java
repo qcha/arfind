@@ -1,6 +1,5 @@
 package qcha.arfind;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -10,15 +9,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
 import qcha.arfind.model.Company;
+import qcha.arfind.utils.LabelConfiguration;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -31,37 +28,40 @@ class CompanyShowDialogs {
     private Label companyNameErrorText;
     private Label filePathErrorText;
 
+
     private void setCompany(Company company) {
         this.company = company;
         companyNameField.setText(company.getCompanyName());
         filePathField.setText(company.getFilePath());
     }
-
+    //todo
     void addCompany() {
         Company company = new Company();
         showEditDialog(company);
         handleOk();
-        ConfigurationWindow.getCompanyData().add(company);
+        new ConfigurationWindow().getCompanies().add(company);
     }
+    //todo
     void editCompany() {
-        Company company = ConfigurationWindow.getConfigurationCompanyTable().getSelectionModel().getSelectedItem();
-        if (company != null) {
+        Company company = ConfigurationWindow.getCompanyTableView().getSelectionModel().getSelectedItem();
             showEditDialog(company);
             handleOk();
         }
-    }
 
+    //todo
     void removeCompany() {
-        int selectedIndex = ConfigurationWindow.getConfigurationCompanyTable().getSelectionModel().getSelectedIndex();
+        int selectedIndex = new ConfigurationWindow().getCompanyTableView().getSelectionModel().getSelectedIndex();
         if (selectedIndex >= 0) {
-            ConfigurationWindow.getConfigurationCompanyTable().getItems().remove(selectedIndex);
+            new ConfigurationWindow().getCompanyTableView().getItems().remove(selectedIndex);
         }
     }
 
+    //todo
     void removeAll() {
-        ConfigurationWindow.getConfigurationCompanyTable().getItems().clear();
+        new ConfigurationWindow().getCompanyTableView().getItems().clear();
     }
 
+    /*//todo
     void saveConfigurations() {
         try {
             ConfigurationWindow.convertTableDataToString();
@@ -70,18 +70,51 @@ class CompanyShowDialogs {
         } catch (IOException e) {
             throw new RuntimeException("Cannot find such file", e);
         }
-    }
+    }*/
 
     private void showEditDialog(Company company) {
         dialogStage = new Stage();
         AnchorPane dialogRootLayout = new AnchorPane();
-        dialogStage.setTitle("Edit Company");
+        dialogRootLayout.getChildren().add(createGridPane());
+        dialogStage.setTitle(Constants.DialogWindowConstants.TITLE);
+        dialogStage.initModality(Modality.WINDOW_MODAL);
+        dialogStage.initOwner(new ConfigurationWindow().getCompanyTableView().getScene().getWindow());
+        Scene scene = new Scene(dialogRootLayout, Constants.DialogWindowConstants.DEFAULT_WIDTH, Constants.DialogWindowConstants.DEFAULT_HEIGHT);
+        dialogStage.setScene(scene);
+        setCompany(company);
+        dialogStage.showAndWait();
+    }
 
+    private Label createLabel() {
+        return new LabelConfiguration().label;
+    }
+
+    private HBox createButtonBarBox() {
+        Button okButton = new Button("OK");
+        okButton.setOnAction(e -> handleOk());
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(e -> dialogStage.close());
+        HBox buttonBarBox = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
+        buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
+        buttonBarBox.getChildren().addAll(okButton, cancelButton);
+        return buttonBarBox;
+    }
+    private HBox createFilePathBox() {
+        filePathField = new TextField();
+        Button loadFilePath = new Button("...");
+        loadFilePath.setOnAction(e -> openFileChooser());
+        HBox filePathBox = new HBox();
+        HBox.setHgrow(filePathField, Priority.ALWAYS);
+        filePathBox.getChildren().addAll(filePathField, loadFilePath);
+        return filePathBox;
+    }
+
+    private GridPane createGridPane() {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(10);
-        gridPane.setVgap(15);
-        gridPane.setPadding(new Insets(25, 25, 25, 25));
+        gridPane.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
+        gridPane.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
+        gridPane.setPadding(Constants.InsetsConstants.DEFAULT_PADDING);
 
         Label companyNameInfo = new Label("Название фирмы:");
         gridPane.add(companyNameInfo, 0, 1);
@@ -90,56 +123,17 @@ class CompanyShowDialogs {
         companyNameField.setMinWidth(250);
         gridPane.add(companyNameField, 1, 1);
 
-        companyNameErrorText = new Label();
-        companyNameErrorText.setMinWidth(100);
-        companyNameErrorText.setAlignment(Pos.CENTER);
-        gridPane.add(companyNameErrorText, 1, 2);
+        gridPane.add(createLabel(), 1, 2);
 
         Label filePathInfo = new Label("Путь к файлу:");
         gridPane.add(filePathInfo, 0, 3);
 
-        filePathField = new TextField();
-        Button loadFilePath = new Button("...");
+        gridPane.add(createFilePathBox(), 1, 3);
 
-        loadFilePath.setOnAction(e -> openFileChooser());
+        gridPane.add(createLabel(), 1, 4);
 
-        HBox filePathBox = new HBox();
-        HBox.setHgrow(filePathField, Priority.ALWAYS);
-
-        filePathBox.getChildren().addAll(filePathField, loadFilePath);
-        gridPane.add(filePathBox, 1, 3);
-
-
-        filePathErrorText = new Label();
-        filePathErrorText.setMinWidth(100);
-        filePathErrorText.setAlignment(Pos.CENTER);
-        gridPane.add(filePathErrorText, 1, 4);
-
-
-        Button okButton = new Button("OK");
-
-        okButton.setOnAction(e -> handleOk());
-
-        Button cancelButton = new Button("Cancel");
-
-        cancelButton.setOnAction(e -> dialogStage.close());
-
-        HBox buttonBarBox = new HBox(10);
-        buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
-        buttonBarBox.getChildren().addAll(okButton, cancelButton);
-        gridPane.add(buttonBarBox, 1, 5);
-
-        AnchorPane.setRightAnchor(filePathBox, 0.0);
-        AnchorPane.setBottomAnchor(filePathBox, 0.0);
-        dialogRootLayout.getChildren().add(gridPane);
-
-
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(ConfigurationWindow.getConfigurationCompanyTable().getScene().getWindow());
-        Scene scene = new Scene(dialogRootLayout, 400, 250);
-        dialogStage.setScene(scene);
-        setCompany(company);
-        dialogStage.showAndWait();
+        gridPane.add(createButtonBarBox(), 1, 5);
+        return gridPane;
     }
 
     private void handleOk() {
@@ -168,7 +162,7 @@ class CompanyShowDialogs {
     private boolean validateInput(TextField field, Label label) {
         if (Objects.isNull(field.getText())) {
             label.setText("Введите данные");
-            label.setTextFill(Color.rgb(210, 39, 30));
+            label.setTextFill(Constants.LabelConstants.DEFAULT_TEXTFILL);
             return false;
         }
         return true;

@@ -14,8 +14,11 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
+
+    private static Stage primaryStage;
     @Override
     public void start(Stage primaryStage) throws Exception {
+        setPrimaryStage(primaryStage);
         initMainWindow(primaryStage);
     }
 
@@ -35,7 +38,7 @@ public class MainApplication extends Application {
         mainWindow.getChildren().add(createSearcher());
         rootLayout.setCenter(mainWindow);
 
-        primaryStage.setScene(new Scene(rootLayout, 640, 480));
+        primaryStage.setScene(new Scene(rootLayout, Constants.MainWindow.DEFAULT_WIDTH, Constants.MainWindow.DEFAULT_HEIGHT));
         primaryStage.show();
     }
 
@@ -51,8 +54,8 @@ public class MainApplication extends Application {
         searchLine.setPromptText("Поиск");
         searchLine.setAlignment(Pos.CENTER);
         searchLine.setFocusTraversable(false);
-        searchLine.setMinWidth(640);
-        searchLine.setMinHeight(35);
+        searchLine.setMinWidth(Constants.LabelConstants.DEFAULT_WIDTH);
+        searchLine.setMinHeight(Constants.LabelConstants.DEFAULT_HEIGHT);
         HBox.setHgrow(searchLine, Priority.ALWAYS);
 
         searcher.getChildren().add(searchLine);
@@ -77,8 +80,7 @@ public class MainApplication extends Application {
         Menu options = new Menu("Настройки");
 
         MenuItem configuration = new MenuItem("Конфигурации");
-        //fixme fix after configuration window
-//        configuration.setOnAction(event -> ConfigurationWindow.createAndShow());
+        configuration.setOnAction(event -> new ConfigurationWindow().createConfigurationWindow());
         options.getItems().add(configuration);
 
         menuBar.getMenus().addAll(
@@ -87,5 +89,12 @@ public class MainApplication extends Application {
                 new Menu("О программе"));
 
         return menuBar;
+    }
+    static Stage getPrimaryStage() {
+        return primaryStage;
+    }
+
+    private void setPrimaryStage(Stage primaryStage) {
+        MainApplication.primaryStage = primaryStage;
     }
 }
