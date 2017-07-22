@@ -52,7 +52,7 @@ class ConfigurationWindow {
         TableColumn<Company, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
-        //fixme
+        //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filePathColumn);
         companyTableView.setItems(companies);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
