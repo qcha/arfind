@@ -20,20 +20,28 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-class CompanyShowDialogs {
+class EditCompanyDialog {
+    private static final int DEFAULT_WIDTH = 400;
+    private static final int DEFAULT_HEIGHT = 250;
+
     private Stage dialogStage;
     private Company company;
     private TextField companyNameField;
     private TextField filePathField;
     private Label companyNameErrorText;
     private Label filePathErrorText;
+    private ConfigurationWindow configurationWindow;
 
+    EditCompanyDialog(ConfigurationWindow configurationWindow) {
+        this.configurationWindow = configurationWindow;
+    }
 
     private void setCompany(Company company) {
         this.company = company;
         companyNameField.setText(company.getCompanyName());
         filePathField.setText(company.getFilePath());
     }
+
     //todo
     void addCompany() {
         Company company = new Company();
@@ -41,12 +49,13 @@ class CompanyShowDialogs {
         handleOk();
         new ConfigurationWindow().getCompanies().add(company);
     }
+
     //todo
     void editCompany() {
-        Company company = ConfigurationWindow.getCompanyTableView().getSelectionModel().getSelectedItem();
-            showEditDialog(company);
-            handleOk();
-        }
+        Company company = configurationWindow.getCompanyTableView().getSelectionModel().getSelectedItem();
+        showEditDialog(company);
+        handleOk();
+    }
 
     //todo
     void removeCompany() {
@@ -99,6 +108,7 @@ class CompanyShowDialogs {
         buttonBarBox.getChildren().addAll(okButton, cancelButton);
         return buttonBarBox;
     }
+
     private HBox createFilePathBox() {
         filePathField = new TextField();
         Button loadFilePath = new Button("...");
@@ -162,6 +172,7 @@ class CompanyShowDialogs {
     private boolean validateInput(TextField field, Label label) {
         if (Objects.isNull(field.getText())) {
             label.setText("Введите данные");
+            //fixme
             label.setTextFill(Constants.LabelConstants.DEFAULT_TEXTFILL);
             return false;
         }

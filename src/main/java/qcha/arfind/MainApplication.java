@@ -14,16 +14,14 @@ import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
 
 public class MainApplication extends Application {
-
-    private static Stage primaryStage;
     @Override
     public void start(Stage primaryStage) throws Exception {
-        setPrimaryStage(primaryStage);
         initMainWindow(primaryStage);
     }
 
     /**
      * Initialize main window.
+     *
      * @param primaryStage for main window.
      */
     private void initMainWindow(Stage primaryStage) {
@@ -44,6 +42,7 @@ public class MainApplication extends Application {
 
     /**
      * Create search line.
+     *
      * @return HBox which includes field for input text and button for search.
      */
     private HBox createSearcher() {
@@ -71,6 +70,7 @@ public class MainApplication extends Application {
 
     /**
      * Create menu bar.
+     *
      * @return MenuBar with menus: File, Options, About.
      */
     private MenuBar createMenuBar() {
@@ -89,12 +89,5 @@ public class MainApplication extends Application {
                 new Menu("О программе"));
 
         return menuBar;
-    }
-    static Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
-    private void setPrimaryStage(Stage primaryStage) {
-        MainApplication.primaryStage = primaryStage;
     }
 }

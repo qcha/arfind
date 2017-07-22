@@ -1,13 +1,13 @@
 package qcha.arfind;
 
 import javafx.geometry.Insets;
-import javafx.scene.paint.Color;
 
 final class Constants {
     private Constants() {
         throw new AssertionError("Don't create instance of constant class");
     }
 
+    //fixme move to class
     static final class MainWindow {
         static final String TITLE = "JavaFx App";
         static final int DEFAULT_WIDTH = 640;
@@ -37,6 +37,7 @@ final class Constants {
         }
     }
 
+    //fixme move to class
     static final class DialogWindowConstants {
         static final String TITLE = "Editing company";
         static final int DEFAULT_WIDTH = 400;
@@ -52,7 +53,6 @@ final class Constants {
 
         private HBoxConstants() {
             throw new AssertionError("Don't create instance of constant class");
-
         }
     }
 
@@ -65,18 +65,9 @@ final class Constants {
         }
     }
 
-    static final class LabelConstants {
-        static final Color DEFAULT_TEXTFILL = Color.rgb(210, 39, 30);
-        static final int DEFAULT_WIDTH = 640;
-        static final int DEFAULT_HEIGHT = 35;
-
-        private LabelConstants() {
-            throw new AssertionError("Don't create instance of constant class");
-        }
-    }
-
     static final class InsetsConstants {
         static final Insets DEFAULT_PADDING = new Insets(25, 25, 25, 25);
+
         private InsetsConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
