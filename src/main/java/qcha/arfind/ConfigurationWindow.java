@@ -43,24 +43,8 @@ class ConfigurationWindow {
         configurationWindow.show();
     }
 
-    Stage getConfigurationWindow() {
-        return configurationWindow;
-    }
-
     ObservableList<Company> getCompanies() {
         return companies;
-    }
-
-    List<String> getCompanyData() {
-        List<String> companyData = new ArrayList<>();
-
-        for (Company company : companies) {
-            companyData.add(String.format("%s,%s",
-                    company.getCompanyName(),
-                    company.getFilePath()));
-        }
-
-        return companyData;
     }
 
     TableView<Company> getCompanyTableView() {
@@ -72,7 +56,7 @@ class ConfigurationWindow {
      *
      * @return Stage.
      */
-    Stage createConfigurationWindow() {
+    private Stage createConfigurationWindow() {
         VBox configurationWindowLayout = new VBox();
 
         configurationWindowLayout.getChildren().addAll(

@@ -164,6 +164,7 @@ class EditCompanyDialog {
             company.setCompanyName(companyName.getText());
             company.setFilePath(filePath.getText());
 
+            //if we edit existing company - don't add it again
             if (!isForEdit) {
                 parentWindow.getCompanies().add(company);
             }
@@ -177,14 +178,10 @@ class EditCompanyDialog {
     private void openFileChooser() {
         File file = new FileChooser().showOpenDialog(dialogWindow);
         if (file.exists()) {
-            setFilePath(file);
+            filePath.setText(file.getAbsolutePath());
         } else {
             errorLabel.isVisible();
         }
-    }
-
-    private void setFilePath(File file) {
-        filePath.setText(file.getAbsolutePath());
     }
 
     /**
