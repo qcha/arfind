@@ -12,11 +12,10 @@ import javafx.scene.layout.Priority;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
 import qcha.arfind.model.Company;
 import qcha.arfind.view.ErrorLabel;
 
-import java.io.*;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
@@ -26,144 +25,112 @@ class EditCompanyDialog {
     private final int DEFAULT_WIDTH = 550;
     private final int DEFAULT_HEIGHT = 300;
 
-    private Stage dialogStage;
+    private final boolean isForEdit;
+
+    private Stage dialogWindow;
+    private ConfigurationWindow parentWindow;
+    private TextField companyName;
+    private TextField filePath;
+    private Label errorLabel;
     private Company company;
-    private TextField companyNameField;
-    private TextField filePathField;
-    private ErrorLabel filePathErrorText;
-    private ConfigurationWindow configurationWindow;
 
-    EditCompanyDialog(ConfigurationWindow configurationWindow) {
-        this.configurationWindow = configurationWindow;
-    }
-
-    private void setCompany(Company company) {
-        if (Objects.isNull(company)) {
-            return;
-        }
+    EditCompanyDialog(ConfigurationWindow parentWindow, Company company) {
+        this.parentWindow = parentWindow;
         this.company = company;
-        companyNameField.setText(company.getCompanyName());
-        filePathField.setText(company.getFilePath());
-    }
+        initEditDialog();
 
-    //fixme clicking red cross adds empty data to table
-    void addCompany() {
-        Company addingCompany = new Company();
-        createEditDialog(addingCompany);
-        dialogStage.showAndWait();
-        if (Objects.nonNull(company.getCompanyName()) || Objects.nonNull(company.getFilePath())) {
-            configurationWindow.getCompanies().add(addingCompany);
+        //is it company for edit?
+        if (Objects.nonNull(company)) {
+            companyName.setText(company.getCompanyName());
+            filePath.setText(company.getFilePath());
+            isForEdit = true;
+        } else {
+            //is for adding new company
+            this.company = new Company();
+            isForEdit = false;
         }
-    }
 
-    void editCompany() {
-        Company selectedCompany = configurationWindow.getCompanyTableView().getSelectionModel().getSelectedItem();
-        if (Objects.nonNull(selectedCompany)) {
-            createEditDialog(selectedCompany);
-            dialogStage.showAndWait();
-        }
-    }
-
-    void removeCompany() {
-        int selectedIndex = configurationWindow.getCompanyTableView().getSelectionModel().getSelectedIndex();
-        if (selectedIndex >= 0) {
-            configurationWindow.getCompanyTableView().getItems().remove(selectedIndex);
-        }
-    }
-
-    void removeAll() {
-        configurationWindow.getCompanyTableView().getItems().clear();
-    }
-
-    void saveConfigurations() {
-        try {
-            FileUtils.writeLines(new File(Constants.ConfigFileConstants.CONFIG_FILENAME),
-                    Constants.ConfigFileConstants.DEFAULT_CHARSET,
-                    configurationWindow.getCompanyData());
-            //readConfigFileToListView();
-            configurationWindow.getConfigurationWindow().close();
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot find such file", e);
-        }
+        dialogWindow.showAndWait();
     }
 
     /**
-     * Create dialog window and set company
+     * Init dialog window for edit company.
      */
-    private void createEditDialog(Company company) {
-        dialogStage = new Stage();
+    private void initEditDialog() {
+        dialogWindow = new Stage();
         AnchorPane dialogRootLayout = new AnchorPane();
-        dialogRootLayout.getChildren().add(
-                createGridPane());
+        dialogRootLayout.getChildren().add(createGridPane());
 
-        dialogStage.setTitle(TITLE);
-        dialogStage.initModality(Modality.WINDOW_MODAL);
-        dialogStage.initOwner(configurationWindow.getCompanyTableView().getScene().getWindow());
-        dialogStage.setResizable(false);
+        dialogWindow.setTitle(TITLE);
+        dialogWindow.initModality(Modality.WINDOW_MODAL);
+        dialogWindow.initOwner(parentWindow.getCompanyTableView().getScene().getWindow());
+        dialogWindow.setResizable(false);
+
         Scene scene = new Scene(
                 dialogRootLayout,
                 DEFAULT_WIDTH,
-                DEFAULT_HEIGHT);
-        dialogStage.setScene(scene);
-        setCompany(company);
-    }
+                DEFAULT_HEIGHT
+        );
 
-    /**
-     * Create error label which appears after wrong input
-     * @return Label
-     */
-    private Label createLabel() {
-        filePathErrorText = new ErrorLabel("Неправильно указан путь к файлу");
-        return filePathErrorText;
+        dialogWindow.setScene(scene);
     }
 
     /**
      * Create two default buttons - "OK" and "Cancel"
+     *
      * @return HBox
      */
     private HBox createButtonBarBox() {
         HBox buttonBarBox = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
 
-        Button okButton = new Button("OK");
+        Button okButton = new Button("Save");
         okButton.setDefaultButton(true);
-        okButton.disableProperty().bind(companyNameField.textProperty().isEqualTo("").
-                or(filePathField.textProperty().isEqualTo("")));
+        //fixme WTF?
+        okButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
+                or(filePath.textProperty().isEqualTo("")));
 
-        okButton.setOnAction(e -> handleOk());
+        okButton.setOnAction(e -> saveAndClose());
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setDefaultButton(true);
-        cancelButton.setOnAction(e -> dialogStage.close());
+        cancelButton.setOnAction(e -> dialogWindow.close());
+
         buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
         buttonBarBox.getChildren().addAll(
                 okButton,
-                cancelButton);
+                cancelButton
+        );
 
         return buttonBarBox;
     }
 
     /**
      * Create file path text field with button to open file chooser.
+     *
      * @return HBox
      */
-    private HBox createFilePathBox() {
+    private HBox createFinderLine() {
         HBox filePathBox = new HBox();
 
-        filePathField = new TextField();
+        filePath = new TextField();
         Button loadFilePath = new Button("...");
         loadFilePath.setOnAction(e -> openFileChooser());
-        HBox.setHgrow(filePathField, Priority.ALWAYS);
+        HBox.setHgrow(filePath, Priority.ALWAYS);
+
         filePathBox.getChildren().addAll(
-                filePathField,
-                loadFilePath);
+                filePath,
+                loadFilePath
+        );
 
         return filePathBox;
     }
 
     /**
      * Create grid pane
-     * @return GridPane with dialog text fields and labels.
+     *
+     * @return GridPane with dialogWindow text fields and labels.
      */
+    //fixme rewrite it
     private GridPane createGridPane() {
         GridPane gridPane = new GridPane();
 
@@ -175,62 +142,59 @@ class EditCompanyDialog {
         Label companyNameInfo = new Label("Название фирмы:");
         gridPane.add(companyNameInfo, 0, 1);
 
-        companyNameField = new TextField();
-        companyNameField.setMinWidth(250);
-        gridPane.add(companyNameField, 1, 1);
+        companyName = new TextField();
+        companyName.setMinWidth(250);
+        gridPane.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
         gridPane.add(filePathInfo, 0, 2);
 
-        gridPane.add(createFilePathBox(), 1, 2);
+        gridPane.add(createFinderLine(), 1, 2);
 
-        gridPane.add(createLabel(), 1, 3);
+        errorLabel = createErrorLabel();
+        gridPane.add(errorLabel, 1, 3);
 
         gridPane.add(createButtonBarBox(), 1, 4);
 
         return gridPane;
     }
 
-    private void handleOk() {
-        if (Files.exists(Paths.get(filePathField.getText()))) {
-            company.setCompanyName(companyNameField.getText());
-            company.setFilePath(filePathField.getText());
-            dialogStage.close();
+    private void saveAndClose() {
+        if (Files.exists(Paths.get(filePath.getText()))) {
+            company.setCompanyName(companyName.getText());
+            company.setFilePath(filePath.getText());
+
+            if (!isForEdit) {
+                parentWindow.getCompanies().add(company);
+            }
+
+            dialogWindow.close();
         } else {
-            filePathErrorText.setVisible(true);
+            errorLabel.setVisible(true);
         }
     }
 
     private void openFileChooser() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Resource File");
-        File file = fileChooser.showOpenDialog(dialogStage);
+        File file = new FileChooser().showOpenDialog(dialogWindow);
         if (file.exists()) {
             setFilePath(file);
+        } else {
+            errorLabel.isVisible();
         }
     }
 
     private void setFilePath(File file) {
-        filePathField.setText(file.getAbsolutePath());
+        filePath.setText(file.getAbsolutePath());
     }
 
-   /* private void readConfigFileToListView() {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(Constants.ConfigFileConstants.CONFIG_FILENAME));
-            String line;
-            while ((Objects.nonNull(line = br.readLine()))) {
-                String[] companyField = line.split(Constants.ConfigFileConstants.DEFAULT_FIELD_DELIMITER);
-                String companyName = companyField[0];
-                .getCompanyList().add(companyName);
-            }
-
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Cannot find file", e);
-        } catch (IOException e) {
-            throw new RuntimeException("Cannot read file with such name", e);
-        }
-
+    /**
+     * Create error label which appears after wrong input
+     *
+     * @return ErrorLabel with error message
+     * @see ErrorLabel
+     */
+    private Label createErrorLabel() {
+        return new ErrorLabel("Неправильно указан путь к файлу");
     }
-*/
 
 }

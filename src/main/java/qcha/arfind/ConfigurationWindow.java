@@ -15,8 +15,11 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 import qcha.arfind.model.Company;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +69,7 @@ class ConfigurationWindow {
 
     /**
      * Create initial window of configurations.
+     *
      * @return Stage.
      */
     Stage createConfigurationWindow() {
@@ -95,6 +99,7 @@ class ConfigurationWindow {
 
     /**
      * Create header.
+     *
      * @return Label with the name of window.
      */
     private Label createHeader() {
@@ -111,6 +116,7 @@ class ConfigurationWindow {
 
     /**
      * Create table of companies.
+     *
      * @return TableView<Company> with two columns - name and filepath.
      * @see Company
      */
@@ -134,6 +140,7 @@ class ConfigurationWindow {
 
     /**
      * Create editor bar.
+     *
      * @return HBox with buttons for edit company.
      * @see Company
      */
@@ -151,10 +158,25 @@ class ConfigurationWindow {
                 removeButton,
                 removeAllButton
         );
-        addButton.setOnAction(e -> new EditCompanyDialog(this).addCompany());
-        editButton.setOnAction(e -> new EditCompanyDialog(this).editCompany());
-        removeButton.setOnAction(e -> new EditCompanyDialog(this).removeCompany());
-        removeAllButton.setOnAction(e -> new EditCompanyDialog(this).removeAll());
+
+        addButton.setOnAction(e -> {
+            new EditCompanyDialog(this, null);
+        });
+
+        editButton.setOnAction(e -> {
+            new EditCompanyDialog(this, getCompanyTableView()
+                    .getSelectionModel()
+                    .getSelectedItem());
+        });
+
+        removeButton.setOnAction(e -> {
+            int selectedIndex = getCompanyTableView().getSelectionModel().getSelectedIndex();
+            if (selectedIndex >= 0) {
+                getCompanyTableView().getItems().remove(selectedIndex);
+            }
+        });
+
+        removeAllButton.setOnAction(e -> getCompanyTableView().getItems().clear());
 
         buttonBar.setFocusTraversable(false);
 
@@ -164,13 +186,15 @@ class ConfigurationWindow {
 
     /**
      * Create save button.
+     *
      * @return Button saving configurations
      */
     private Button createSaveButton() {
         Button saveButton = new Button("Сохранить");
 
         saveButton.setLayoutX(550);
-        saveButton.setOnAction(e -> new EditCompanyDialog(this).saveConfigurations());
+        //todo add logic for saving companies to csv
+//        saveButton.setOnAction(e -> new EditCompanyDialog(this).saveConfigurations());
 
         AnchorPane.setBottomAnchor(saveButton, 10.0);
         AnchorPane.setRightAnchor(saveButton, 10.0);
