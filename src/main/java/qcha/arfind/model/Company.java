@@ -8,8 +8,13 @@ public class Company {
     private final StringProperty companyName;
     private final StringProperty filePath;
 
-    public Company(String sourceColumn, String filePath) {
-        this.companyName = new SimpleStringProperty(sourceColumn);
+    public Company() {
+        this.companyName = new SimpleStringProperty("");
+        this.filePath = new SimpleStringProperty("");
+    }
+
+    public Company(String companyName, String filePath) {
+        this.companyName = new SimpleStringProperty(companyName);
         this.filePath = new SimpleStringProperty(filePath);
     }
 

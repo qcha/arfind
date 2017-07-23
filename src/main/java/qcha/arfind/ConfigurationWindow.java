@@ -2,7 +2,6 @@ package qcha.arfind;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -18,57 +17,91 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 
+import java.util.ArrayList;
+import java.util.List;
+
 class ConfigurationWindow {
+
+    private final String TITLE = "Настройки конфигурации";
+    private final int DEFAULT_WIDTH = 600;
+    private final int DEFAULT_HEIGHT = 400;
+
+    private MainApplication mainApplication;
     private ObservableList<Company> companies;
     private Stage configurationWindow;
     private TableView<Company> companyTableView;
 
-    ConfigurationWindow() {
+    ConfigurationWindow(MainApplication mainApplication) {
+        this.mainApplication = mainApplication;
         configurationWindow = new Stage();
         companies = FXCollections.observableArrayList();
-        companies.add(new Company("Asus", "Jest"));
         companyTableView = createTable();
+        createConfigurationWindow();
+        configurationWindow.show();
+    }
+
+    Stage getConfigurationWindow() {
+        return configurationWindow;
     }
 
     ObservableList<Company> getCompanies() {
         return companies;
     }
 
+    List<String> getCompanyData() {
+        List<String> companyData = new ArrayList<>();
+
+        for (Company company : companies) {
+            companyData.add(String.format("%s,%s",
+                    company.getCompanyName(),
+                    company.getFilePath()));
+        }
+
+        return companyData;
+    }
+
     TableView<Company> getCompanyTableView() {
         return companyTableView;
     }
 
-    void createConfigurationWindow() {
+    /**
+     * Create initial window of configurations.
+     * @return Stage.
+     */
+    Stage createConfigurationWindow() {
         VBox configurationWindowLayout = new VBox();
 
         configurationWindowLayout.getChildren().addAll(
                 createHeader(),
                 createTable(),
                 new AnchorPane(createEditorBar()),
-                createSaveButton()
+                new AnchorPane(createSaveButton())
         );
 
         Scene configurationWindowInterface = new Scene(
                 configurationWindowLayout,
-                Constants.ConfigurationWindow.DEFAULT_WIDTH,
-                Constants.ConfigurationWindow.DEFAULT_HEIGHT
+                DEFAULT_WIDTH,
+                DEFAULT_HEIGHT
         );
 
-        configurationWindow.setTitle(Constants.ConfigurationWindow.TITLE);
+        configurationWindow.setTitle(TITLE);
         configurationWindow.setResizable(false);
         configurationWindow.setScene(configurationWindowInterface);
         configurationWindow.initModality(Modality.WINDOW_MODAL);
-        configurationWindow.initOwner(MainApplication.getPrimaryStage().getScene().getWindow());
-        //fixme move it to another place
-        configurationWindow.show();
+        configurationWindow.initOwner(mainApplication.getPrimaryStage().getScene().getWindow());
+
+        return configurationWindow;
     }
 
+    /**
+     * Create header.
+     * @return Label with the name of window.
+     */
     private Label createHeader() {
         Label header = new Label();
 
-        header.setMinWidth(Constants.LabelConstants.DEFAULT_WIDTH);
         header.setText("Настройки конфигурации");
-        header.setMinHeight(Constants.LabelConstants.DEFAULT_HEIGHT);
+        header.setMinWidth(DEFAULT_WIDTH);
         header.setAlignment(Pos.TOP_CENTER);
         header.setTextAlignment(TextAlignment.CENTER);
         header.setFont(Font.font(18));
@@ -76,6 +109,11 @@ class ConfigurationWindow {
         return header;
     }
 
+    /**
+     * Create table of companies.
+     * @return TableView<Company> with two columns - name and filepath.
+     * @see Company
+     */
     private TableView<Company> createTable() {
         companyTableView = new TableView<>();
 
@@ -113,7 +151,6 @@ class ConfigurationWindow {
                 removeButton,
                 removeAllButton
         );
-
         addButton.setOnAction(e -> new EditCompanyDialog(this).addCompany());
         editButton.setOnAction(e -> new EditCompanyDialog(this).editCompany());
         removeButton.setOnAction(e -> new EditCompanyDialog(this).removeCompany());
@@ -125,19 +162,19 @@ class ConfigurationWindow {
         return buttonBar;
     }
 
-    //todo refactoring
-    private AnchorPane createSaveButton() {
-        AnchorPane saveButtonBarAnchor = new AnchorPane();
-
-        HBox saveButtonBar = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
-        saveButtonBar.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+    /**
+     * Create save button.
+     * @return Button saving configurations
+     */
+    private Button createSaveButton() {
         Button saveButton = new Button("Сохранить");
-        //saveButton.setOnAction(e -> new EditCompanyDialog().saveConfigurations());
 
-        saveButtonBar.getChildren().add(saveButton);
-        AnchorPane.setRightAnchor(saveButtonBar, 10.0);
-        saveButtonBarAnchor.getChildren().add(saveButtonBar);
+        saveButton.setLayoutX(550);
+        saveButton.setOnAction(e -> new EditCompanyDialog(this).saveConfigurations());
 
-        return saveButtonBarAnchor;
+        AnchorPane.setBottomAnchor(saveButton, 10.0);
+        AnchorPane.setRightAnchor(saveButton, 10.0);
+
+        return saveButton;
     }
 }

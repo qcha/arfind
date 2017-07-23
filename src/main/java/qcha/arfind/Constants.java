@@ -7,43 +7,12 @@ final class Constants {
         throw new AssertionError("Don't create instance of constant class");
     }
 
-    //fixme move to class
-    static final class MainWindow {
-        static final String TITLE = "JavaFx App";
-        static final int DEFAULT_WIDTH = 640;
-        static final int DEFAULT_HEIGHT = 480;
-
-        private MainWindow() {
-            throw new AssertionError("Don't create instance of constant class");
-        }
-    }
-
     static final class ConfigFileConstants {
         static final String CONFIG_FILENAME = "config.csv";
         static final String DEFAULT_CHARSET = "UTF-8";
+        static final String DEFAULT_FIELD_DELIMITER = ",";
 
         private ConfigFileConstants() {
-            throw new AssertionError("Don't create instance of constant class");
-        }
-    }
-
-    static final class ConfigurationWindow {
-        static final String TITLE = "Настройки конфигурации";
-        static final int DEFAULT_WIDTH = 600;
-        static final int DEFAULT_HEIGHT = 400;
-
-        private ConfigurationWindow() {
-            throw new AssertionError("Don't create instance of constant class");
-        }
-    }
-
-    //fixme move to class
-    static final class DialogWindowConstants {
-        static final String TITLE = "Editing company";
-        static final int DEFAULT_WIDTH = 400;
-        static final int DEFAULT_HEIGHT = 250;
-
-        private DialogWindowConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
     }
@@ -65,10 +34,10 @@ final class Constants {
         }
     }
 
-    static final class InsetsConstants {
+    static final class PaddingConstants {
         static final Insets DEFAULT_PADDING = new Insets(25, 25, 25, 25);
 
-        private InsetsConstants() {
+        private PaddingConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
     }
