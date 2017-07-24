@@ -6,6 +6,7 @@
 
     <groupId>qcha.arfind</groupId>
     <artifactId>arfind</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
     <developers>
@@ -32,6 +33,9 @@
             </roles>
         </developer>
     </developers>
+    <modules>
+        <module>vendor-code-finder</module>
+    </modules>
 
     <properties>
         <junit.version>4.12</junit.version>
