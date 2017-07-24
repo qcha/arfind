@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ConfigurationWindow {
+class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
     private final int DEFAULT_WIDTH = 600;
@@ -33,14 +33,14 @@ public class ConfigurationWindow {
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
         companies = FXCollections.observableArrayList();
-        new ConfigFileUtils(this).readConfigFileToCompanyTableView();
+        ConfigFileUtils.readConfigFileToCompanyTableView(getCompanies());
         companyTableView = createTable();
         createConfigurationWindow();
         configurationWindow.show();
 
     }
 
-    public ObservableList<Company> getCompanies() {
+    ObservableList<Company> getCompanies() {
         return companies;
     }
 
@@ -162,13 +162,13 @@ public class ConfigurationWindow {
     }
 
     private void saveConfigurations() {
-        new ConfigFileUtils(this).saveDataToConfigFile();
+        ConfigFileUtils.saveDataToConfigFile(getCompanyData());
         mainApplication.getCompanyList().clear();
-        new ConfigFileUtils(mainApplication).readConfigFileToCompanyListView();
+        ConfigFileUtils.readConfigFileToCompanyListView(mainApplication.getCompanyList());
         configurationWindow.close();
     }
 
-    public List<String> getCompanyData() {
+    private List<String> getCompanyData() {
         List<String> companyData = new ArrayList<>();
 
         for (Company company : companies) {

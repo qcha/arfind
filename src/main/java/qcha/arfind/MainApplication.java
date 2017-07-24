@@ -30,7 +30,7 @@ public class MainApplication extends Application {
     private Stage primaryStage;
     private ObservableList<String> companyList;
 
-    public ObservableList<String> getCompanyList() {
+    ObservableList<String> getCompanyList() {
         return companyList;
     }
 
@@ -139,7 +139,7 @@ public class MainApplication extends Application {
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
-        new ConfigFileUtils(this).readConfigFileToCompanyListView();
+        ConfigFileUtils.readConfigFileToCompanyListView(getCompanyList());
 
         AnchorPane.setBottomAnchor(companyListView, 25.0);
         AnchorPane.setLeftAnchor(companyListView, 0.0);
