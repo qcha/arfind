@@ -20,7 +20,7 @@ public class ConfigFileUtils {
                     data);
         }
         catch (IOException e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Cannot save data to file - config.csv", e);
         }
     }
 

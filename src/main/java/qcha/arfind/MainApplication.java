@@ -47,17 +47,12 @@ public class MainApplication extends Application {
         //init menu bar
         rootLayout.setTop(createMenuBar());
 
-        AnchorPane windowLayout = new AnchorPane();
+        AnchorPane mainWindow = new AnchorPane();
 
-        VBox mainWindow = new VBox();
-        VBox.setVgrow(windowLayout, Priority.ALWAYS);
-
-        windowLayout.getChildren().addAll(
+        mainWindow.getChildren().addAll(
                 createSearcher(),
                 createCompanyListView(),
                 createCompanyTableView());
-
-        mainWindow.getChildren().add(windowLayout);
 
         rootLayout.setCenter(mainWindow);
 
@@ -135,7 +130,7 @@ public class MainApplication extends Application {
             return observable;
         }));
 
-        companyListView.setMinSize(200, 455);
+        companyListView.setPrefSize(200, 455);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
@@ -157,7 +152,7 @@ public class MainApplication extends Application {
     private TableView<Company> createCompanyTableView() {
         TableView<Company> companyTableView = new TableView<>();
 
-        companyTableView.setMinSize(440, 455);
+        companyTableView.setPrefSize(440, 455);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
