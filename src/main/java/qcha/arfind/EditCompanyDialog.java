@@ -103,6 +103,7 @@ class EditCompanyDialog {
 
         return buttonBarBox;
     }
+
     /**
      * Create line to separate button bar from text fields
      *
@@ -117,6 +118,7 @@ class EditCompanyDialog {
 
         return separatingLine;
     }
+
     /**
      * Create file path text field with button to open file chooser.
      *

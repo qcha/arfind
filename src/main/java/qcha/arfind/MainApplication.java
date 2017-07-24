@@ -3,24 +3,16 @@ package qcha.arfind;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import qcha.arfind.Constants.ConfigFileConstants;
+import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
@@ -29,6 +21,7 @@ public class MainApplication extends Application {
 
     private Stage primaryStage;
     private ObservableList<String> companyList;
+    private ObservableList<Company> items;
 
     ObservableList<String> getCompanyList() {
         return companyList;
@@ -54,10 +47,17 @@ public class MainApplication extends Application {
         //init menu bar
         rootLayout.setTop(createMenuBar());
 
-        AnchorPane mainWindow = new AnchorPane();
-        mainWindow.getChildren().addAll(
+        AnchorPane windowLayout = new AnchorPane();
+
+        VBox mainWindow = new VBox();
+        VBox.setVgrow(windowLayout, Priority.ALWAYS);
+
+        windowLayout.getChildren().addAll(
                 createSearcher(),
-                createCompanyListView());
+                createCompanyListView(),
+                createCompanyTableView());
+
+        mainWindow.getChildren().add(windowLayout);
 
         rootLayout.setCenter(mainWindow);
 
@@ -124,28 +124,61 @@ public class MainApplication extends Application {
      * @return ListView company names.
      */
     private ListView createCompanyListView() {
-
         ListView<String> companyListView = new ListView<>();
+
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) -> {
-                //todo listener to search for needed data
+                        //todo listener to search for needed data
                     }
             );
-            return observable ;
+            return observable;
         }));
 
-        companyListView.setPrefSize(200, 455);
+        companyListView.setMinSize(200, 455);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
         ConfigFileUtils.readConfigFileToCompanyListView(getCompanyList());
 
+        AnchorPane.setRightAnchor(companyListView, 200.0);
         AnchorPane.setBottomAnchor(companyListView, 25.0);
         AnchorPane.setLeftAnchor(companyListView, 0.0);
         AnchorPane.setTopAnchor(companyListView, 0.0);
 
         return companyListView;
+    }
+
+    /**
+     * Create list of full items info to filter search
+     *
+     * @return TableView with 3 columns - company, item and price.
+     */
+    private TableView<Company> createCompanyTableView() {
+        TableView<Company> companyTableView = new TableView<>();
+
+        companyTableView.setMinSize(440, 455);
+        companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        companyTableView.setFocusTraversable(false);
+
+        TableColumn<Company, String> companyColumn = new TableColumn<>("Название фирмы");
+        TableColumn<Company, String> fullItemNameColumn = new TableColumn<>("Модель товара");
+        TableColumn<Company, String> priceColumn = new TableColumn<>("Цена");
+
+        //noinspection unchecked
+        companyTableView.getColumns().addAll(companyColumn, fullItemNameColumn, priceColumn);
+        companyTableView.setItems(items);
+
+        companyColumn.setCellValueFactory(cellData -> cellData.getValue().companyNameProperty());
+        fullItemNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullItemNameProperty());
+        priceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());
+
+        AnchorPane.setLeftAnchor(companyTableView, 200.0);
+        AnchorPane.setBottomAnchor(companyTableView, 25.0);
+        AnchorPane.setRightAnchor(companyTableView, 0.0);
+        AnchorPane.setTopAnchor(companyTableView, 0.0);
+
+        return companyTableView;
     }
 
 
