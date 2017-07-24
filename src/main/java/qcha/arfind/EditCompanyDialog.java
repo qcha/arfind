@@ -61,7 +61,7 @@ class EditCompanyDialog {
     private void initEditDialog() {
         dialogWindow = new Stage();
         AnchorPane dialogRootLayout = new AnchorPane();
-        dialogRootLayout.getChildren().add(createDialogInterface());
+        dialogRootLayout.getChildren().add(createDialogWindowInterface());
 
         dialogWindow.setTitle(TITLE);
         dialogWindow.initModality(Modality.WINDOW_MODAL);
@@ -144,34 +144,34 @@ class EditCompanyDialog {
      *
      * @return GridPane with dialogWindow text fields and labels.
      */
-    private GridPane createDialogInterface() {
-        GridPane dialogLayout = new GridPane();
+    private GridPane createDialogWindowInterface() {
+        GridPane dialogWindowLayout = new GridPane();
 
-        dialogLayout.setAlignment(Pos.CENTER);
-        dialogLayout.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
-        dialogLayout.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
-        dialogLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
+        dialogWindowLayout.setAlignment(Pos.CENTER);
+        dialogWindowLayout.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
+        dialogWindowLayout.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
+        dialogWindowLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
 
         Label companyNameInfo = new Label("Название фирмы:");
-        dialogLayout.add(companyNameInfo, 0, 1);
+        dialogWindowLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
         companyName.setMaxWidth(350);
-        dialogLayout.add(companyName, 1, 1);
+        dialogWindowLayout.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
-        dialogLayout.add(filePathInfo, 0, 2);
+        dialogWindowLayout.add(filePathInfo, 0, 2);
 
-        dialogLayout.add(createFinderLine(), 1, 2);
+        dialogWindowLayout.add(createFinderLine(), 1, 2);
 
         errorLabel = createErrorLabel();
-        dialogLayout.add(errorLabel, 1, 3);
+        dialogWindowLayout.add(errorLabel, 1, 3);
 
-        dialogLayout.add(createSeparatingLine(), 0, 4);
+        dialogWindowLayout.add(createSeparatingLine(), 0, 4);
 
-        dialogLayout.add(createButtonBarBox(), 1, 5);
+        dialogWindowLayout.add(createButtonBarBox(), 1, 5);
 
-        return dialogLayout;
+        return dialogWindowLayout;
     }
 
     private void saveAndClose() {

@@ -12,10 +12,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
+import qcha.arfind.utils.ConfigFileUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-class ConfigurationWindow {
+public class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
     private final int DEFAULT_WIDTH = 600;
@@ -30,12 +33,14 @@ class ConfigurationWindow {
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
         companies = FXCollections.observableArrayList();
+        new ConfigFileUtils(this).readConfigFileToCompanyTableView();
         companyTableView = createTable();
         createConfigurationWindow();
         configurationWindow.show();
+
     }
 
-    ObservableList<Company> getCompanies() {
+    public ObservableList<Company> getCompanies() {
         return companies;
     }
 
@@ -118,9 +123,9 @@ class ConfigurationWindow {
 
         editButton.setOnAction(e -> {
             if (Objects.nonNull(getCompanyTableView().getSelectionModel().getSelectedItem()))
-            new EditCompanyDialog(this, getCompanyTableView()
-                    .getSelectionModel()
-                    .getSelectedItem());
+                new EditCompanyDialog(this, getCompanyTableView()
+                        .getSelectionModel()
+                        .getSelectedItem());
         });
 
         removeButton.setOnAction(e -> {
@@ -148,12 +153,30 @@ class ConfigurationWindow {
         Button saveButton = new Button("Сохранить");
 
         saveButton.setLayoutX(550);
-        //todo add logic for saving companies to csv
-//        saveButton.setOnAction(e -> new EditCompanyDialog(this).saveConfigurations());
+        saveButton.setOnAction(e -> saveConfigurations());
 
         AnchorPane.setBottomAnchor(saveButton, 10.0);
         AnchorPane.setRightAnchor(saveButton, 10.0);
 
         return saveButton;
+    }
+
+    private void saveConfigurations() {
+        new ConfigFileUtils(this).saveDataToConfigFile();
+        mainApplication.getCompanyList().clear();
+        new ConfigFileUtils(mainApplication).readConfigFileToCompanyListView();
+        configurationWindow.close();
+    }
+
+    public List<String> getCompanyData() {
+        List<String> companyData = new ArrayList<>();
+
+        for (Company company : companies) {
+            companyData.add(String.format("%s;%s",
+                    company.getCompanyName(),
+                    company.getFilePath()));
+        }
+
+        return companyData;
     }
 }

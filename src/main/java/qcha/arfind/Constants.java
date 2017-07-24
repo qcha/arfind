@@ -2,15 +2,15 @@ package qcha.arfind;
 
 import javafx.geometry.Insets;
 
-final class Constants {
+public final class Constants {
     private Constants() {
         throw new AssertionError("Don't create instance of constant class");
     }
 
-    static final class ConfigFileConstants {
-        static final String CONFIG_FILENAME = "config.csv";
-        static final String DEFAULT_CHARSET = "UTF-8";
-        static final String DEFAULT_FIELD_DELIMITER = ",";
+    public static final class ConfigFileConstants {
+        public static final String CONFIG_FILENAME = "config.csv";
+        public static final String DEFAULT_CHARSET = "UTF-8";
+        public static final String DEFAULT_FIELD_DELIMITER = ";";
 
         private ConfigFileConstants() {
             throw new AssertionError("Don't create instance of constant class");
@@ -26,7 +26,7 @@ final class Constants {
     }
 
     static final class GridPaneConstants {
-        static final int DEFAULT_HGAP = 10;
+        static final int DEFAULT_HGAP = 15;
         static final int DEFAULT_VGAP = 25;
 
         private GridPaneConstants() {
