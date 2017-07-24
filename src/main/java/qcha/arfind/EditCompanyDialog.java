@@ -1,9 +1,11 @@
 package qcha.arfind;
 
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -59,7 +61,7 @@ class EditCompanyDialog {
     private void initEditDialog() {
         dialogWindow = new Stage();
         AnchorPane dialogRootLayout = new AnchorPane();
-        dialogRootLayout.getChildren().add(createGridPane());
+        dialogRootLayout.getChildren().add(createDialogInterface());
 
         dialogWindow.setTitle(TITLE);
         dialogWindow.initModality(Modality.WINDOW_MODAL);
@@ -76,7 +78,7 @@ class EditCompanyDialog {
     }
 
     /**
-     * Create two default buttons - "OK" and "Cancel"
+     * Create two buttons - "OK" and "Cancel"
      *
      * @return HBox
      */
@@ -85,14 +87,12 @@ class EditCompanyDialog {
 
         Button okButton = new Button("Save");
         okButton.setDefaultButton(true);
-        //fixme WTF?
         okButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
                 or(filePath.textProperty().isEqualTo("")));
 
         okButton.setOnAction(e -> saveAndClose());
 
         Button cancelButton = new Button("Cancel");
-        cancelButton.setDefaultButton(true);
         cancelButton.setOnAction(e -> dialogWindow.close());
 
         buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
@@ -103,7 +103,20 @@ class EditCompanyDialog {
 
         return buttonBarBox;
     }
+    /**
+     * Create line to separate button bar from text fields
+     *
+     * @return Separator
+     */
+    private Separator createSeparatingLine() {
+        Separator separatingLine = new Separator();
 
+        separatingLine.setValignment(VPos.CENTER);
+        GridPane.setConstraints(separatingLine, 0, 1);
+        GridPane.setColumnSpan(separatingLine, 2);
+
+        return separatingLine;
+    }
     /**
      * Create file path text field with button to open file chooser.
      *
@@ -113,6 +126,7 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
+        filePath.setMaxWidth(330);
         Button loadFilePath = new Button("...");
         loadFilePath.setOnAction(e -> openFileChooser());
         HBox.setHgrow(filePath, Priority.ALWAYS);
@@ -130,33 +144,34 @@ class EditCompanyDialog {
      *
      * @return GridPane with dialogWindow text fields and labels.
      */
-    //fixme rewrite it
-    private GridPane createGridPane() {
-        GridPane gridPane = new GridPane();
+    private GridPane createDialogInterface() {
+        GridPane dialogLayout = new GridPane();
 
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
-        gridPane.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
-        gridPane.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
+        dialogLayout.setAlignment(Pos.CENTER);
+        dialogLayout.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
+        dialogLayout.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
+        dialogLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
 
         Label companyNameInfo = new Label("Название фирмы:");
-        gridPane.add(companyNameInfo, 0, 1);
+        dialogLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
-        companyName.setMinWidth(250);
-        gridPane.add(companyName, 1, 1);
+        companyName.setMaxWidth(350);
+        dialogLayout.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
-        gridPane.add(filePathInfo, 0, 2);
+        dialogLayout.add(filePathInfo, 0, 2);
 
-        gridPane.add(createFinderLine(), 1, 2);
+        dialogLayout.add(createFinderLine(), 1, 2);
 
         errorLabel = createErrorLabel();
-        gridPane.add(errorLabel, 1, 3);
+        dialogLayout.add(errorLabel, 1, 3);
 
-        gridPane.add(createButtonBarBox(), 1, 4);
+        dialogLayout.add(createSeparatingLine(), 0, 4);
 
-        return gridPane;
+        dialogLayout.add(createButtonBarBox(), 1, 5);
+
+        return dialogLayout;
     }
 
     private void saveAndClose() {

@@ -118,9 +118,12 @@ public class MainApplication extends Application {
 
         companyList = FXCollections.observableArrayList();
 
-        companyListView.setPrefSize(200, 430);
+        companyListView.setPrefSize(200, 455);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
+        AnchorPane.setBottomAnchor(companyListView, 25.0);
+        AnchorPane.setLeftAnchor(companyListView, 0.0);
+        AnchorPane.setTopAnchor(companyListView, 0.0);
 
         return companyListView;
     }

@@ -2,26 +2,16 @@ package qcha.arfind;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import org.apache.commons.io.FileUtils;
 import qcha.arfind.model.Company;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 class ConfigurationWindow {
 
@@ -53,14 +43,11 @@ class ConfigurationWindow {
 
     /**
      * Create initial window of configurations.
-     *
-     * @return Stage.
      */
-    private Stage createConfigurationWindow() {
+    private void createConfigurationWindow() {
         VBox configurationWindowLayout = new VBox();
 
         configurationWindowLayout.getChildren().addAll(
-                createHeader(),
                 createTable(),
                 new AnchorPane(createEditorBar()),
                 new AnchorPane(createSaveButton())
@@ -78,24 +65,6 @@ class ConfigurationWindow {
         configurationWindow.initModality(Modality.WINDOW_MODAL);
         configurationWindow.initOwner(mainApplication.getPrimaryStage().getScene().getWindow());
 
-        return configurationWindow;
-    }
-
-    /**
-     * Create header.
-     *
-     * @return Label with the name of window.
-     */
-    private Label createHeader() {
-        Label header = new Label();
-
-        header.setText("Настройки конфигурации");
-        header.setMinWidth(DEFAULT_WIDTH);
-        header.setAlignment(Pos.TOP_CENTER);
-        header.setTextAlignment(TextAlignment.CENTER);
-        header.setFont(Font.font(18));
-
-        return header;
     }
 
     /**
@@ -147,6 +116,7 @@ class ConfigurationWindow {
             new EditCompanyDialog(this, null);
         });
 
+        //fixme if there are no companies, it opens dialog window anyway
         editButton.setOnAction(e -> {
             new EditCompanyDialog(this, getCompanyTableView()
                     .getSelectionModel()
@@ -164,6 +134,7 @@ class ConfigurationWindow {
 
         buttonBar.setFocusTraversable(false);
 
+        AnchorPane.setTopAnchor(buttonBar, 10.0);
         AnchorPane.setLeftAnchor(buttonBar, 10.0);
         return buttonBar;
     }
