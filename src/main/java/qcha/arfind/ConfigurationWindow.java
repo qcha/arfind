@@ -13,6 +13,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 
+import java.util.Objects;
+
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
@@ -112,12 +114,10 @@ class ConfigurationWindow {
                 removeAllButton
         );
 
-        addButton.setOnAction(e -> {
-            new EditCompanyDialog(this, null);
-        });
+        addButton.setOnAction(e -> new EditCompanyDialog(this, null));
 
-        //fixme if there are no companies, it opens dialog window anyway
         editButton.setOnAction(e -> {
+            if (Objects.nonNull(getCompanyTableView().getSelectionModel().getSelectedItem()))
             new EditCompanyDialog(this, getCompanyTableView()
                     .getSelectionModel()
                     .getSelectedItem());
