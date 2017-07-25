@@ -165,6 +165,8 @@ class ConfigurationWindow {
         ConfigFileUtils.saveDataToConfigFile(getCompanyData());
         mainApplication.getCompanyList().clear();
         ConfigFileUtils.readConfigFileToCompanyListView(mainApplication.getCompanyList());
+        mainApplication.getItems().clear();
+        ConfigFileUtils.readFullDataToTableView(mainApplication.getItems());
         configurationWindow.close();
     }
 

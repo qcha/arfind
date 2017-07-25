@@ -5,6 +5,8 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -22,14 +24,21 @@ public class MainApplication extends Application {
     private Stage primaryStage;
     private ObservableList<String> companyList;
     private ObservableList<Company> items;
+    private TableView<Company> companyTableView;
+    private TextField searchLine;
 
     ObservableList<String> getCompanyList() {
         return companyList;
     }
 
+    ObservableList<Company> getItems() {
+        return items;
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        items = FXCollections.observableArrayList();
         companyList = FXCollections.observableArrayList();
         initMainWindow(primaryStage);
     }
@@ -68,7 +77,7 @@ public class MainApplication extends Application {
     private HBox createSearcher() {
         HBox searcher = new HBox();
 
-        TextField searchLine = new TextField();
+        searchLine = new TextField();
 
         searchLine.setPromptText("Поиск");
         searchLine.setAlignment(Pos.CENTER);
@@ -81,6 +90,9 @@ public class MainApplication extends Application {
 
         Button searchButton = new Button("Поиск");
         searchButton.setFocusTraversable(false);
+        searchButton.setDefaultButton(true);
+
+        searchButton.setOnAction(e -> filterData());
 
         searcher.getChildren().addAll(
                 searchLine,
@@ -123,7 +135,7 @@ public class MainApplication extends Application {
 
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isNowSelected) -> {
+            observable.addListener((obs, wasSelected, isSelected) -> {
                         //todo listener to search for needed data
                     }
             );
@@ -134,7 +146,7 @@ public class MainApplication extends Application {
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
-        ConfigFileUtils.readConfigFileToCompanyListView(getCompanyList());
+        ConfigFileUtils.readConfigFileToCompanyListView(companyList);
 
         AnchorPane.setRightAnchor(companyListView, 200.0);
         AnchorPane.setBottomAnchor(companyListView, 25.0);
@@ -150,7 +162,7 @@ public class MainApplication extends Application {
      * @return TableView with 3 columns - company, item and price.
      */
     private TableView<Company> createCompanyTableView() {
-        TableView<Company> companyTableView = new TableView<>();
+        companyTableView = new TableView<>();
 
         companyTableView.setPrefSize(440, 455);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -163,6 +175,7 @@ public class MainApplication extends Application {
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, fullItemNameColumn, priceColumn);
         companyTableView.setItems(items);
+        ConfigFileUtils.readFullDataToTableView(items);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().companyNameProperty());
         fullItemNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullItemNameProperty());
@@ -176,6 +189,16 @@ public class MainApplication extends Application {
         return companyTableView;
     }
 
+    private void filterData() {
+        FilteredList<Company> filteredData = new FilteredList<>(items, p -> true);
+
+        filteredData.setPredicate(company -> company.getFullItemName().toLowerCase().contains(searchLine.getText().toLowerCase()) ||
+                company.getPrice().contains(searchLine.getText()));
+
+        SortedList<Company> sortedData = new SortedList<>(filteredData);
+        sortedData.comparatorProperty().bind(companyTableView.comparatorProperty());
+        companyTableView.setItems(sortedData);
+    }
 
     Stage getPrimaryStage() {
         return primaryStage;
