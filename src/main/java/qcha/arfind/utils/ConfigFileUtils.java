@@ -9,24 +9,31 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class ConfigFileUtils {
 
-    public static void saveDataToConfigFile(List<String> data) {
+    public static void saveCompanies(List<Company> data) {
         try {
-            FileUtils.writeLines(new File(Constants.ConfigFileConstants.CONFIG_FILENAME),
+            FileUtils.writeLines(
+                    new File(Constants.ConfigFileConstants.CONFIG_FILENAME),
                     Constants.ConfigFileConstants.DEFAULT_CHARSET,
-                    data);
-        }
-        catch (IOException e) {
-            throw new RuntimeException("Cannot save data to file - config.csv", e);
+                    data
+            );
+        } catch (IOException exception) {
+            throw new RuntimeException(
+                    String.format("Cannot save data to file: %s", Constants.ConfigFileConstants.CONFIG_FILENAME),
+                    exception
+            );
         }
     }
 
-    public static void readConfigFileToCompanyListView(List<String> data) {
+    //todo convert to companies
+    public static List<String> readCompanies() {
         if (Files.exists(Paths.get(ConfigFileConstants.CONFIG_FILENAME))) {
+            List<String> data = new ArrayList<>();
             try {
                 BufferedReader br = new BufferedReader(new FileReader(ConfigFileConstants.CONFIG_FILENAME));
                 String line;
@@ -35,9 +42,14 @@ public class ConfigFileUtils {
                     String companyName = fields[0];
                     data.add(companyName);
                 }
+
+                return data;
             } catch (IOException e) {
                 throw new RuntimeException("Cannot read file - config.csv", e);
             }
+        } else {
+            //todo throw Exception - cause we can't read config
+            return Collections.emptyList();
         }
     }
 
@@ -58,7 +70,7 @@ public class ConfigFileUtils {
     }
 
     private static List<String> readFilePathsToList() {
-        List <String> data = new ArrayList<>();
+        List<String> data = new ArrayList<>();
         if (Files.exists(Paths.get(ConfigFileConstants.CONFIG_FILENAME))) {
             try {
                 BufferedReader br = new BufferedReader(new FileReader(ConfigFileConstants.CONFIG_FILENAME));

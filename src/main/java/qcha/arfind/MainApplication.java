@@ -146,7 +146,7 @@ public class MainApplication extends Application {
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
-        ConfigFileUtils.readConfigFileToCompanyListView(companyList);
+        ConfigFileUtils.readCompanies(companyList);
 
         AnchorPane.setRightAnchor(companyListView, 200.0);
         AnchorPane.setBottomAnchor(companyListView, 25.0);
