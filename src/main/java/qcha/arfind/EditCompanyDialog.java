@@ -43,8 +43,8 @@ class EditCompanyDialog {
 
         //is it company for edit?
         if (Objects.nonNull(company)) {
-            companyName.setText(company.getCompanyName());
-            filePath.setText(company.getFilePath());
+            companyName.setText(company.getName());
+            filePath.setText(company.getPathToPrice());
             isForEdit = true;
         } else {
             //is for adding new company
@@ -178,8 +178,8 @@ class EditCompanyDialog {
 
     private void saveAndClose() {
         if (Files.exists(Paths.get(filePath.getText()))) {
-            company.setCompanyName(companyName.getText());
-            company.setFilePath(filePath.getText());
+            company.setName(companyName.getText());
+            company.setPathToPrice(filePath.getText());
 
             //if we edit existing company - don't add it again
             if (!isForEdit) {

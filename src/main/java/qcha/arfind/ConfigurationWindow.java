@@ -14,8 +14,6 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 class ConfigurationWindow {
@@ -92,8 +90,8 @@ class ConfigurationWindow {
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
-        companyColumn.setCellValueFactory(cellData -> cellData.getValue().companyNameProperty());
-        filePathColumn.setCellValueFactory(cellData -> cellData.getValue().filePathProperty());
+        companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        filePathColumn.setCellValueFactory(cellData -> cellData.getValue().pathToPriceProperty());
 
         return companyTableView;
     }

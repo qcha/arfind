@@ -146,7 +146,7 @@ public class MainApplication extends Application {
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
-        ConfigFileUtils.readCompanies(companyList);
+//        ConfigFileUtils.readCompanies(companyList);
 
         AnchorPane.setRightAnchor(companyListView, 200.0);
         AnchorPane.setBottomAnchor(companyListView, 25.0);
@@ -177,7 +177,7 @@ public class MainApplication extends Application {
         companyTableView.setItems(items);
         ConfigFileUtils.readFullDataToTableView(items);
 
-        companyColumn.setCellValueFactory(cellData -> cellData.getValue().companyNameProperty());
+        companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         fullItemNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullItemNameProperty());
         priceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());
 
