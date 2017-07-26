@@ -193,11 +193,17 @@ class EditCompanyDialog {
     }
 
     private void openFileChooser() {
-        File file = new FileChooser().showOpenDialog(dialogWindow);
-        if (file.exists()) {
+        FileChooser fileChooser = new FileChooser();
+
+        FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
+                "CSV files (*.csv)", "*.csv");
+        fileChooser.getExtensionFilters().add(extensionFilter);
+        File file = fileChooser.showOpenDialog(dialogWindow);
+        if (Objects.isNull(file)) {
+            filePath.setText("");
+        }
+        else {
             filePath.setText(file.getAbsolutePath());
-        } else {
-            errorLabel.isVisible();
         }
     }
 
