@@ -162,23 +162,14 @@ class ConfigurationWindow {
     }
 
     private void saveConfigurations() {
-        ConfigFileUtils.saveDataToConfigFile(getCompanyData());
+        //todo
+//        ConfigFileUtils.saveCompanies(getCompanyData());
         mainApplication.getCompanyList().clear();
-        ConfigFileUtils.readConfigFileToCompanyListView(mainApplication.getCompanyList());
+        //todo
+//        ConfigFileUtils.readCompanies(mainApplication.getCompanyList());
         mainApplication.getItems().clear();
         ConfigFileUtils.readFullDataToTableView(mainApplication.getItems());
         configurationWindow.close();
     }
 
-    private List<String> getCompanyData() {
-        List<String> companyData = new ArrayList<>();
-
-        for (Company company : companies) {
-            companyData.add(String.format("%s;%s",
-                    company.getCompanyName(),
-                    company.getFilePath()));
-        }
-
-        return companyData;
-    }
 }
