@@ -5,15 +5,15 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
 public class MainApplication extends Application {
@@ -23,23 +23,18 @@ public class MainApplication extends Application {
 
     private Stage primaryStage;
     private ObservableList<String> companyList;
-    private ObservableList<Company> items;
-    private TableView<Company> companyTableView;
+    private ListView<String> companyListView;
+    private TableView<String> companyTableView;
     private TextField searchLine;
 
     ObservableList<String> getCompanyList() {
         return companyList;
     }
 
-    ObservableList<Company> getItems() {
-        return items;
-    }
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        items = FXCollections.observableArrayList();
-        companyList = FXCollections.observableArrayList();
+        companyList = FXCollections.observableArrayList(ConfigFileUtils.readCompanyNames());
         initMainWindow(primaryStage);
     }
 
@@ -61,11 +56,16 @@ public class MainApplication extends Application {
         mainWindow.getChildren().addAll(
                 createSearcher(),
                 createCompanyListView(),
-                createCompanyTableView());
+                createCompanyTableView()
+        );
 
         rootLayout.setCenter(mainWindow);
 
-        primaryStage.setScene(new Scene(rootLayout, DEFAULT_WIDTH, DEFAULT_HEIGHT));
+        primaryStage.setScene(new Scene(
+                rootLayout,
+                DEFAULT_WIDTH,
+                DEFAULT_HEIGHT)
+        );
         primaryStage.show();
     }
 
@@ -92,11 +92,13 @@ public class MainApplication extends Application {
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
 
-        searchButton.setOnAction(e -> filterData());
+        //todo
+//       searchButton.setOnAction(e -> filterData());
 
         searcher.getChildren().addAll(
                 searchLine,
-                searchButton);
+                searchButton
+        );
 
 
         return searcher;
@@ -131,22 +133,20 @@ public class MainApplication extends Application {
      * @return ListView company names.
      */
     private ListView createCompanyListView() {
-        ListView<String> companyListView = new ListView<>();
-
-        companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
-            BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isSelected) -> {
-                        //todo listener to search for needed data
-                    }
-            );
-            return observable;
-        }));
+        companyListView = new ListView<>();
 
         companyListView.setPrefSize(200, 455);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
 
-//        ConfigFileUtils.readCompanies(companyList);
+        companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
+            BooleanProperty observable = new SimpleBooleanProperty();
+            observable.addListener((obs, wasSelected, isNowSelected) -> {
+                        //todo listener to search for needed data
+                    }
+            );
+            return observable;
+        }));
 
         AnchorPane.setRightAnchor(companyListView, 200.0);
         AnchorPane.setBottomAnchor(companyListView, 25.0);
@@ -161,25 +161,18 @@ public class MainApplication extends Application {
      *
      * @return TableView with 3 columns - company, item and price.
      */
-    private TableView<Company> createCompanyTableView() {
+    private TableView<String> createCompanyTableView() {
         companyTableView = new TableView<>();
 
         companyTableView.setPrefSize(440, 455);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
-        TableColumn<Company, String> companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<Company, String> fullItemNameColumn = new TableColumn<>("Модель товара");
-        TableColumn<Company, String> priceColumn = new TableColumn<>("Цена");
+        TableColumn<String, String> companyColumn = new TableColumn<>("Название фирмы");
+        TableColumn<String, String> filterResultColumn = new TableColumn<>("Результат поиска");
 
         //noinspection unchecked
-        companyTableView.getColumns().addAll(companyColumn, fullItemNameColumn, priceColumn);
-        companyTableView.setItems(items);
-        ConfigFileUtils.readFullDataToTableView(items);
-
-        companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        fullItemNameColumn.setCellValueFactory(cellData -> cellData.getValue().fullItemNameProperty());
-        priceColumn.setCellValueFactory(cellData -> cellData.getValue().priceProperty());
+        companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
         AnchorPane.setLeftAnchor(companyTableView, 200.0);
         AnchorPane.setBottomAnchor(companyTableView, 25.0);
@@ -189,16 +182,10 @@ public class MainApplication extends Application {
         return companyTableView;
     }
 
-    private void filterData() {
-        FilteredList<Company> filteredData = new FilteredList<>(items, p -> true);
-
-        filteredData.setPredicate(company -> company.getFullItemName().toLowerCase().contains(searchLine.getText().toLowerCase()) ||
-                company.getPrice().contains(searchLine.getText()));
-
-        SortedList<Company> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(companyTableView.comparatorProperty());
-        companyTableView.setItems(sortedData);
+    ListView<String> getCompanyListView() {
+        return companyListView;
     }
+
 
     Stage getPrimaryStage() {
         return primaryStage;

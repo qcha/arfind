@@ -196,7 +196,7 @@ class EditCompanyDialog {
         FileChooser fileChooser = new FileChooser();
 
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
-                "CSV files (*.csv)", "*.csv");
+                "Excel files (*.xlsx, *.xls)", "*.xlsx", "*.xls");
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(dialogWindow);
         if (Objects.isNull(file)) {

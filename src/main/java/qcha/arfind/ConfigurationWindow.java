@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 class ConfigurationWindow {
@@ -30,20 +32,11 @@ class ConfigurationWindow {
     ConfigurationWindow(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
-        companies = FXCollections.observableArrayList();
-        ConfigFileUtils.readConfigFileToCompanyTableView(getCompanies());
+        companies = FXCollections.observableArrayList(ConfigFileUtils.readCompanies());
         companyTableView = createTable();
         createConfigurationWindow();
         configurationWindow.show();
 
-    }
-
-    ObservableList<Company> getCompanies() {
-        return companies;
-    }
-
-    TableView<Company> getCompanyTableView() {
-        return companyTableView;
     }
 
     /**
@@ -85,7 +78,10 @@ class ConfigurationWindow {
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
         //noinspection unchecked
-        companyTableView.getColumns().addAll(companyColumn, filePathColumn);
+        companyTableView.getColumns().addAll(
+                companyColumn,
+                filePathColumn
+        );
         companyTableView.setItems(companies);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
@@ -160,14 +156,35 @@ class ConfigurationWindow {
     }
 
     private void saveConfigurations() {
-        //todo
-//        ConfigFileUtils.saveCompanies(getCompanyData());
+        ConfigFileUtils.saveCompanies(getCompanyData());
+
         mainApplication.getCompanyList().clear();
-        //todo
-//        ConfigFileUtils.readCompanies(mainApplication.getCompanyList());
-        mainApplication.getItems().clear();
-        ConfigFileUtils.readFullDataToTableView(mainApplication.getItems());
+        ObservableList<String> newCompanyList = FXCollections.observableList(ConfigFileUtils.readCompanyNames());
+        mainApplication.getCompanyListView().setItems(newCompanyList);
+
         configurationWindow.close();
     }
+
+    ObservableList<Company> getCompanies() {
+        return companies;
+    }
+
+    TableView<Company> getCompanyTableView() {
+        return companyTableView;
+    }
+
+    private List<String> getCompanyData() {
+        List<String> companyData = new ArrayList<>();
+
+        for (Company company : companies) {
+            companyData.add(String.format(
+                    "%s;%s",
+                    company.getName(),
+                    company.getPathToPrice()
+            ));
+        }
+        return companyData;
+    }
+
 
 }
