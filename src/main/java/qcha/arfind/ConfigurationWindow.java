@@ -156,8 +156,9 @@ class ConfigurationWindow {
     }
 
     private void saveConfigurations() {
-        ConfigFileUtils.saveCompanies(getCompanyData());
+        mainApplication.getFirstLoadStage().close();
 
+        ConfigFileUtils.saveCompanies(getCompanyData());
         mainApplication.getCompanyList().clear();
         ObservableList<String> newCompanyList = FXCollections.observableList(ConfigFileUtils.readCompanyNames());
         mainApplication.getCompanyListView().setItems(newCompanyList);

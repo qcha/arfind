@@ -1,6 +1,7 @@
 package qcha.arfind;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -13,8 +14,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.utils.ConfigFileUtils;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
@@ -22,6 +31,7 @@ public class MainApplication extends Application {
     private final int DEFAULT_HEIGHT = 480;
 
     private Stage primaryStage;
+    private Stage firstLoadStage;
     private ObservableList<String> companyList;
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
@@ -36,6 +46,70 @@ public class MainApplication extends Application {
         this.primaryStage = primaryStage;
         companyList = FXCollections.observableArrayList(ConfigFileUtils.readCompanyNames());
         initMainWindow(primaryStage);
+        if (!Files.exists(Paths.get(CONFIG_FILENAME))) initFirstLoadWindow();
+    }
+
+    /**
+     * Initialize window during the first start of application.
+     */
+    private void initFirstLoadWindow() {
+        firstLoadStage = new Stage();
+
+        AnchorPane firstWindow = new AnchorPane();
+
+        firstWindow.getChildren().addAll(
+                createHeader(),
+                createConfigurationButton()
+        );
+
+        Scene firstLoadScene = new Scene(firstWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        firstLoadStage.initModality(Modality.WINDOW_MODAL);
+        firstLoadStage.initOwner(getPrimaryStage().getScene().getWindow());
+        firstLoadStage.setScene(firstLoadScene);
+        firstLoadStage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
+        firstLoadStage.show();
+    }
+
+    /**
+     * Create header for the first load window.
+     *
+     * @return Label with header text.
+     */
+    private Label createHeader() {
+        Label header = new Label();
+
+        header.setMinWidth(640);
+        header.setText("Задайте конфигурацию");
+        header.setMinHeight(30);
+        header.setAlignment(Pos.CENTER);
+        header.setTextAlignment(TextAlignment.CENTER);
+        header.setFont(Font.font(28));
+        AnchorPane.setTopAnchor(header, 150.0);
+
+        return header;
+    }
+
+    /**
+     * Create button for the first load window.
+     *
+     * @return Button which opens configuration window.
+     */
+    private Button createConfigurationButton() {
+        Button configButton = new Button();
+        configButton.setText("Задайте конфигурацию ПО");
+        configButton.setFont(Font.font(20));
+        configButton.setMinWidth(640);
+        configButton.setAlignment(Pos.CENTER);
+        configButton.setTextAlignment(TextAlignment.CENTER);
+        AnchorPane.setTopAnchor(configButton, 220.0);
+
+        configButton.setOnAction(e -> new ConfigurationWindow(this));
+
+        return configButton;
     }
 
     /**
@@ -186,8 +260,11 @@ public class MainApplication extends Application {
         return companyListView;
     }
 
-
     Stage getPrimaryStage() {
         return primaryStage;
+    }
+
+    Stage getFirstLoadStage() {
+        return firstLoadStage;
     }
 }
