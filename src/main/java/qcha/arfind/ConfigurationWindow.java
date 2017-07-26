@@ -14,9 +14,13 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 class ConfigurationWindow {
 
@@ -156,7 +160,7 @@ class ConfigurationWindow {
     }
 
     private void saveConfigurations() {
-        mainApplication.getFirstLoadStage().close();
+        if (!Files.exists(Paths.get(CONFIG_FILENAME))) mainApplication.getFirstLoadStage().close();
 
         ConfigFileUtils.saveCompanies(getCompanyData());
         mainApplication.getCompanyList().clear();
