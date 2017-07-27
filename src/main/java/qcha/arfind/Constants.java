@@ -26,8 +26,8 @@ public final class Constants {
     }
 
     static final class GridPaneConstants {
-        static final int DEFAULT_HGAP = 15;
-        static final int DEFAULT_VGAP = 40;
+        static final int DEFAULT_HGAP = 35;
+        static final int DEFAULT_VGAP = 50;
 
         private GridPaneConstants() {
             throw new AssertionError("Don't create instance of constant class");

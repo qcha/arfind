@@ -10,30 +10,39 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
+import qcha.arfind.view.ButtonConfiguration;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
+/**
+ * This class is responsible for working with companies(adding, editing, etc).
+ *
+ */
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
-    private final int DEFAULT_WIDTH = 800;
-    private final int DEFAULT_HEIGHT = 600;
+    private final int DEFAULT_WIDTH = 1024;
+    private final int DEFAULT_HEIGHT = 768;
 
     private MainApplication mainApplication;
     private ObservableList<Company> companies;
     private Stage configurationWindow;
     private TableView<Company> companyTableView;
+    private TableColumn<Company, String> companyColumn;
 
+    /**
+     * Class constructor.
+     */
     ConfigurationWindow(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
@@ -79,10 +88,12 @@ class ConfigurationWindow {
     private TableView<Company> createTable() {
         companyTableView = new TableView<>();
 
-        companyTableView.setMinHeight(525);
-        AnchorPane.setBottomAnchor(companyTableView,50.0);
+        companyTableView.setFixedCellSize(45);
+        companyTableView.setStyle("-fx-font-size: 16px;");
+        companyTableView.setMinHeight(625);
+        AnchorPane.setBottomAnchor(companyTableView, 50.0);
 
-        TableColumn<Company, String> companyColumn = new TableColumn<>("Название фирмы");
+        companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
         //noinspection unchecked
@@ -109,10 +120,10 @@ class ConfigurationWindow {
     private HBox createEditorBar() {
         HBox buttonBar = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
 
-        Button addButton = new Button("Добавить");
-        Button editButton = new Button("Изменить");
-        Button removeButton = new Button("Удалить");
-        Button removeAllButton = new Button("Удалить всё");
+        ButtonConfiguration addButton = new ButtonConfiguration("Добавить");
+        ButtonConfiguration editButton = new ButtonConfiguration("Изменить");
+        ButtonConfiguration removeButton = new ButtonConfiguration("Удалить");
+        ButtonConfiguration removeAllButton = new ButtonConfiguration("Удалить всё");
 
         buttonBar.getChildren().addAll(
                 addButton,
@@ -155,6 +166,9 @@ class ConfigurationWindow {
     private Button createSaveButton() {
         Button saveButton = new Button("Сохранить");
 
+        saveButton.setMinSize(150, 60);
+        saveButton.setFont(Font.font(17));
+        saveButton.setStyle("-fx-base: #b6e7c9;");
         saveButton.setLayoutX(550);
         saveButton.setOnAction(e -> saveConfigurations());
 
@@ -164,6 +178,10 @@ class ConfigurationWindow {
         return saveButton;
     }
 
+    /**
+     * Saves user configuration and shows it in the main window
+     *
+     */
     private void saveConfigurations() {
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) mainApplication.getFirstLoadStage().close();
 
@@ -181,6 +199,14 @@ class ConfigurationWindow {
 
     TableView<Company> getCompanyTableView() {
         return companyTableView;
+    }
+
+    List<String> getCompanyColumnData() {
+        List<String> companyColumnData = new ArrayList<>();
+        for (Company item : getCompanyTableView().getItems()) {
+            companyColumnData.add(companyColumn.getCellObservableValue(item).getValue());
+        }
+        return companyColumnData;
     }
 
     private List<String> getCompanyData() {

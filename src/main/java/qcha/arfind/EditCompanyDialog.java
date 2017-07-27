@@ -23,10 +23,14 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+/**
+ * This class is responsible for creating dialog window
+ *
+ */
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
-    private final int DEFAULT_WIDTH = 600;
-    private final int DEFAULT_HEIGHT = 400;
+    private final int DEFAULT_WIDTH = 800;
+    private final int DEFAULT_HEIGHT = 600;
 
     private final boolean isForEdit;
 
@@ -34,9 +38,13 @@ class EditCompanyDialog {
     private ConfigurationWindow parentWindow;
     private TextField companyName;
     private TextField filePath;
-    private Label errorLabel;
+    private Label nameErrorLabel;
+    private Label fileErrorLabel;
     private Company company;
 
+    /**
+     * Class constructor.
+     */
     EditCompanyDialog(ConfigurationWindow parentWindow, Company company) {
         this.parentWindow = parentWindow;
         this.company = company;
@@ -53,7 +61,7 @@ class EditCompanyDialog {
             isForEdit = false;
         }
 
-        dialogWindow.showAndWait();
+        dialogWindow.show();
     }
 
     /**
@@ -93,14 +101,14 @@ class EditCompanyDialog {
                 or(filePath.textProperty().isEqualTo("")));
 
         saveButton.setOnAction(e -> saveAndClose());
-        saveButton.setMinWidth(75);
-        saveButton.setMinHeight(40);
+        saveButton.setMinWidth(120);
+        saveButton.setMinHeight(45);
         saveButton.setFont(Font.font(16));
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction(e -> dialogWindow.close());
-        cancelButton.setMinWidth(75);
-        cancelButton.setMinHeight(40);
+        cancelButton.setMinWidth(120);
+        cancelButton.setMinHeight(45);
         cancelButton.setFont(Font.font(16));
 
 
@@ -139,8 +147,11 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
-        filePath.setMaxWidth(450);
-        Button loadFilePath = new Button("...");
+        filePath.setMinWidth(500);
+        filePath.setMinHeight(40);
+        Button loadFilePath = new Button("Browse...");
+        loadFilePath.setMinHeight(40);
+        loadFilePath.setMinWidth(60);
         loadFilePath.setOnAction(e -> openFileChooser());
         HBox.setHgrow(filePath, Priority.ALWAYS);
 
@@ -153,7 +164,7 @@ class EditCompanyDialog {
     }
 
     /**
-     * Create grid pane
+     * Create grid pane of dialog window layout
      *
      * @return GridPane with dialogWindow text fields and labels.
      */
@@ -166,29 +177,38 @@ class EditCompanyDialog {
         dialogWindowLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
 
         Label companyNameInfo = new Label("Название фирмы:");
+        companyNameInfo.setFont(Font.font(14));
         dialogWindowLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
-        companyName.setMaxWidth(450);
+        companyName.setMinWidth(500);
+        companyName.setMinHeight(40);
         dialogWindowLayout.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
+        filePathInfo.setFont(Font.font(14));
         dialogWindowLayout.add(filePathInfo, 0, 2);
 
         dialogWindowLayout.add(createFinderLine(), 1, 2);
 
-        errorLabel = createErrorLabel();
-        dialogWindowLayout.add(errorLabel, 1, 3);
+        fileErrorLabel = createFileErrorLabel();
+        dialogWindowLayout.add(fileErrorLabel, 1, 4);
 
-        dialogWindowLayout.add(createSeparatingLine(), 0, 4);
+        nameErrorLabel = createNameErrorLabel();
+        dialogWindowLayout.add(nameErrorLabel, 1, 4);
 
-        dialogWindowLayout.add(createButtonBarBox(), 1, 5);
+
+        dialogWindowLayout.add(createSeparatingLine(), 0, 5);
+
+        dialogWindowLayout.add(createButtonBarBox(), 1, 6);
 
         return dialogWindowLayout;
     }
-
+    /**
+     * Saves configuration and closes the dialog window if input is correct
+     */
     private void saveAndClose() {
-        if (Files.exists(Paths.get(filePath.getText()))) {
+        if (Files.exists(Paths.get(filePath.getText())) && validateCompanyName()) {
             company.setName(companyName.getText());
             company.setPathToPrice(filePath.getText());
 
@@ -196,10 +216,13 @@ class EditCompanyDialog {
             if (!isForEdit) {
                 parentWindow.getCompanies().add(company);
             }
-
             dialogWindow.close();
-        } else {
-            errorLabel.setVisible(true);
+        }
+        if(!validateCompanyName()) {
+            nameErrorLabel.setVisible(true);
+        }
+        else {
+            fileErrorLabel.setVisible(true);
         }
     }
 
@@ -217,15 +240,39 @@ class EditCompanyDialog {
             filePath.setText(file.getAbsolutePath());
         }
     }
-
     /**
-     * Create error label which appears after wrong input
+     * Create error label which appears after wrong input to file path text field
+     *
+     * @return false - if company name written in text field already exists in company table
+     *         true - if does not exist
+     */
+
+    private boolean validateCompanyName() {
+        for(String item : parentWindow.getCompanyColumnData()) {
+            if(item.equals(companyName.getText())) {
+                return false;
+            }
+        }
+        return true;
+    }
+    /**
+     * Create error label which appears after wrong input to file path text field
      *
      * @return ErrorLabel with error message
      * @see ErrorLabel
      */
-    private Label createErrorLabel() {
+    private Label createFileErrorLabel() {
         return new ErrorLabel("Неправильно указан путь к файлу");
+    }
+
+    /**
+     * Create error label which appears after wrong input to company name text field
+     *
+     * @return ErrorLabel with error message
+     * @see ErrorLabel
+     */
+    private Label createNameErrorLabel() {
+        return new ErrorLabel("Такая компания уже существует");
     }
 
 }

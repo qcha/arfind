@@ -2,6 +2,7 @@ package qcha.arfind;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -27,8 +28,8 @@ import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
-    private final int DEFAULT_WIDTH = 1024;
-    private final int DEFAULT_HEIGHT = 768;
+    private final int DEFAULT_WIDTH = 1280;
+    private final int DEFAULT_HEIGHT = 1024;
 
     private Stage primaryStage;
     private Stage firstLoadStage;
@@ -36,10 +37,6 @@ public class MainApplication extends Application {
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
     private TextField searchLine;
-
-    ObservableList<String> getCompanyList() {
-        return companyList;
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -88,7 +85,7 @@ public class MainApplication extends Application {
         header.setAlignment(Pos.CENTER);
         header.setTextAlignment(TextAlignment.CENTER);
         header.setFont(Font.font(28));
-        AnchorPane.setTopAnchor(header, 280.0);
+        AnchorPane.setTopAnchor(header, 350.0);
 
         return header;
     }
@@ -105,7 +102,7 @@ public class MainApplication extends Application {
         configButton.setMinWidth(DEFAULT_WIDTH);
         configButton.setAlignment(Pos.CENTER);
         configButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(configButton, 350.0);
+        AnchorPane.setTopAnchor(configButton, 420.0);
 
         configButton.setOnAction(e -> new ConfigurationWindow(this));
 
@@ -133,13 +130,13 @@ public class MainApplication extends Application {
                 createCompanyTableView()
         );
 
+        Scene mainScene = new Scene(rootLayout,
+                DEFAULT_WIDTH,
+                DEFAULT_HEIGHT);
+
         rootLayout.setCenter(mainWindow);
 
-        primaryStage.setScene(new Scene(
-                rootLayout,
-                DEFAULT_WIDTH,
-                DEFAULT_HEIGHT)
-        );
+        primaryStage.setScene(mainScene);
         primaryStage.show();
     }
 
@@ -168,14 +165,17 @@ public class MainApplication extends Application {
 
 
         Button searchButton = new Button("Поиск");
-        searchButton.setFont(Font.font(18));
+
+        searchButton.disableProperty().bind(searchLine.textProperty().isEqualTo(""));
+
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
         searchButton.setMinHeight(75);
-        searchButton.setMinWidth(100);
+        searchButton.setMinWidth(220);
+        searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
         //todo
-//       searchButton.setOnAction(e -> filterData());
+       searchButton.setOnAction(e -> showFilteredData());
 
         searcher.getChildren().addAll(
                 searchLine,
@@ -195,16 +195,31 @@ public class MainApplication extends Application {
         MenuBar menuBar = new MenuBar();
 
         //init option menu
-        Menu options = new Menu("Настройки");
+        Menu file = new Menu("Файл");
 
-        MenuItem configuration = new MenuItem("Конфигурации");
+        MenuItem exit = new MenuItem("Выход");
+        exit.setOnAction(event -> {
+                    Platform.exit();
+                    System.exit(0);
+                });
+
+        file.getItems().add(exit);
+
+        Menu options = new Menu("Настройки");
+        MenuItem configuration = new MenuItem("Конфигурация");
         configuration.setOnAction(event -> new ConfigurationWindow(this));
         options.getItems().add(configuration);
 
+        Menu help = new Menu("Помощь");
+        MenuItem about = new MenuItem("О программе");
+        about.setOnAction(event -> applicationInfo());
+        help.getItems().add(about);
+
         menuBar.getMenus().addAll(
-                new Menu("Файл"),
+                file,
                 options,
-                new Menu("О программе"));
+                help
+        );
 
         return menuBar;
     }
@@ -217,9 +232,12 @@ public class MainApplication extends Application {
     private ListView createCompanyListView() {
         companyListView = new ListView<>();
 
-        companyListView.setPrefSize(200, 455);
+        companyListView.setStyle("-fx-font-size: 16px;");
+        companyListView.setMinSize(600, 455);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyList);
+
+        companyListView.setFixedCellSize(45);
 
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
@@ -264,8 +282,81 @@ public class MainApplication extends Application {
         return companyTableView;
     }
 
+    /**
+     * Creates informative window when clicking on "About" menu item
+     */
+    private void applicationInfo(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Информация о программе");
+        alert.setHeaderText(null);
+        alert.setContentText("Данная программа производит поиск товаров по артикулам из excel-файла.");
+        alert.showAndWait();
+    }
+
+    /**
+     * Creates button to apply a new search
+     * @return Button which allows user to apply a new search
+     */
+    private Button createNewSearchButton() {
+        Button newSearchButton = new Button("Новый поиск");
+
+        newSearchButton.setOnAction(e -> initMainWindow(getPrimaryStage()));
+
+        newSearchButton.setFocusTraversable(false);
+        newSearchButton.setDefaultButton(true);
+        newSearchButton.setMinHeight(75);
+        newSearchButton.setMinWidth(DEFAULT_WIDTH);
+        newSearchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+
+        newSearchButton.setMinHeight(75);
+        AnchorPane.setLeftAnchor(newSearchButton, 0.0);
+        AnchorPane.setBottomAnchor(newSearchButton, 0.0);
+        AnchorPane.setRightAnchor(newSearchButton, 0.0);
+
+        return newSearchButton;
+    }
+    /**
+     * New scene which shows filtered data after pressing the "search" button
+     */
+
+    private void showFilteredData() {
+
+        BorderPane rootLayout = new BorderPane();
+        //init menu bar
+        rootLayout.setTop(createMenuBar());
+
+        AnchorPane mainWindow = new AnchorPane();
+
+        TableView<String> initialTableView = getCompanyTableView();
+        initialTableView.setMinWidth(DEFAULT_WIDTH);
+        AnchorPane.setLeftAnchor(initialTableView, 0.0);
+
+        mainWindow.getChildren().addAll(
+                createNewSearchButton(),
+                initialTableView
+        );
+
+        rootLayout.setCenter(mainWindow);
+
+        Scene filteredScene = new Scene(
+                rootLayout,
+                DEFAULT_WIDTH,
+                DEFAULT_HEIGHT);
+        getPrimaryStage().setScene(filteredScene);
+        getPrimaryStage().show();
+    }
+
+
     ListView<String> getCompanyListView() {
         return companyListView;
+    }
+
+    ObservableList<String> getCompanyList() {
+        return companyList;
+    }
+
+    private TableView<String> getCompanyTableView() {
+        return companyTableView;
     }
 
     Stage getPrimaryStage() {
