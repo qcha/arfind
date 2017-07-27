@@ -1,5 +1,6 @@
 package qcha.arfind;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -25,8 +26,8 @@ import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
-    private final int DEFAULT_WIDTH = 600;
-    private final int DEFAULT_HEIGHT = 400;
+    private final int DEFAULT_WIDTH = 800;
+    private final int DEFAULT_HEIGHT = 600;
 
     private MainApplication mainApplication;
     private ObservableList<Company> companies;
@@ -78,6 +79,9 @@ class ConfigurationWindow {
     private TableView<Company> createTable() {
         companyTableView = new TableView<>();
 
+        companyTableView.setMinHeight(525);
+        AnchorPane.setBottomAnchor(companyTableView,50.0);
+
         TableColumn<Company, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
@@ -119,12 +123,13 @@ class ConfigurationWindow {
 
         addButton.setOnAction(e -> new EditCompanyDialog(this, null));
 
-        editButton.setOnAction(e -> {
-            if (Objects.nonNull(getCompanyTableView().getSelectionModel().getSelectedItem()))
-                new EditCompanyDialog(this, getCompanyTableView()
-                        .getSelectionModel()
-                        .getSelectedItem());
-        });
+        editButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
+
+        editButton.setOnAction(e -> new EditCompanyDialog(this, getCompanyTableView()
+                .getSelectionModel()
+                .getSelectedItem()));
+
+        removeButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
 
         removeButton.setOnAction(e -> {
             int selectedIndex = getCompanyTableView().getSelectionModel().getSelectedIndex();

@@ -27,8 +27,8 @@ import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
-    private final int DEFAULT_WIDTH = 640;
-    private final int DEFAULT_HEIGHT = 480;
+    private final int DEFAULT_WIDTH = 1024;
+    private final int DEFAULT_HEIGHT = 768;
 
     private Stage primaryStage;
     private Stage firstLoadStage;
@@ -63,7 +63,7 @@ public class MainApplication extends Application {
         );
 
         Scene firstLoadScene = new Scene(firstWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
+        firstLoadStage.setResizable(false);
         firstLoadStage.initModality(Modality.WINDOW_MODAL);
         firstLoadStage.initOwner(getPrimaryStage().getScene().getWindow());
         firstLoadStage.setScene(firstLoadScene);
@@ -82,13 +82,13 @@ public class MainApplication extends Application {
     private Label createHeader() {
         Label header = new Label();
 
-        header.setMinWidth(640);
+        header.setMinWidth(DEFAULT_WIDTH);
         header.setText("Задайте конфигурацию");
         header.setMinHeight(30);
         header.setAlignment(Pos.CENTER);
         header.setTextAlignment(TextAlignment.CENTER);
         header.setFont(Font.font(28));
-        AnchorPane.setTopAnchor(header, 150.0);
+        AnchorPane.setTopAnchor(header, 280.0);
 
         return header;
     }
@@ -102,10 +102,10 @@ public class MainApplication extends Application {
         Button configButton = new Button();
         configButton.setText("Задайте конфигурацию ПО");
         configButton.setFont(Font.font(20));
-        configButton.setMinWidth(640);
+        configButton.setMinWidth(DEFAULT_WIDTH);
         configButton.setAlignment(Pos.CENTER);
         configButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(configButton, 220.0);
+        AnchorPane.setTopAnchor(configButton, 350.0);
 
         configButton.setOnAction(e -> new ConfigurationWindow(this));
 
@@ -154,17 +154,25 @@ public class MainApplication extends Application {
         searchLine = new TextField();
 
         searchLine.setPromptText("Поиск");
+        searchLine.setFont(Font.font(18));
         searchLine.setAlignment(Pos.CENTER);
         searchLine.setFocusTraversable(false);
+        searchLine.setMinHeight(75);
         HBox.setHgrow(searchLine, Priority.ALWAYS);
+
+        searcher.setMinHeight(75);
 
         AnchorPane.setLeftAnchor(searcher, 0.0);
         AnchorPane.setBottomAnchor(searcher, 0.0);
         AnchorPane.setRightAnchor(searcher, 0.0);
 
+
         Button searchButton = new Button("Поиск");
+        searchButton.setFont(Font.font(18));
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
+        searchButton.setMinHeight(75);
+        searchButton.setMinWidth(100);
 
         //todo
 //       searchButton.setOnAction(e -> filterData());
@@ -223,7 +231,7 @@ public class MainApplication extends Application {
         }));
 
         AnchorPane.setRightAnchor(companyListView, 200.0);
-        AnchorPane.setBottomAnchor(companyListView, 25.0);
+        AnchorPane.setBottomAnchor(companyListView, 75.0);
         AnchorPane.setLeftAnchor(companyListView, 0.0);
         AnchorPane.setTopAnchor(companyListView, 0.0);
 
@@ -249,7 +257,7 @@ public class MainApplication extends Application {
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
         AnchorPane.setLeftAnchor(companyTableView, 200.0);
-        AnchorPane.setBottomAnchor(companyTableView, 25.0);
+        AnchorPane.setBottomAnchor(companyTableView, 75.0);
         AnchorPane.setRightAnchor(companyTableView, 0.0);
         AnchorPane.setTopAnchor(companyTableView, 0.0);
 

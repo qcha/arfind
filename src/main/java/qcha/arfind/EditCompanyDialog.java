@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,8 +25,8 @@ import java.util.Objects;
 
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
-    private final int DEFAULT_WIDTH = 550;
-    private final int DEFAULT_HEIGHT = 300;
+    private final int DEFAULT_WIDTH = 600;
+    private final int DEFAULT_HEIGHT = 400;
 
     private final boolean isForEdit;
 
@@ -85,19 +86,29 @@ class EditCompanyDialog {
     private HBox createButtonBarBox() {
         HBox buttonBarBox = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
 
-        Button okButton = new Button("Save");
-        okButton.setDefaultButton(true);
-        okButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
+        Button saveButton = new Button("Save");
+        saveButton.setDefaultButton(true);
+
+        saveButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
                 or(filePath.textProperty().isEqualTo("")));
 
-        okButton.setOnAction(e -> saveAndClose());
+        saveButton.setOnAction(e -> saveAndClose());
+        saveButton.setMinWidth(75);
+        saveButton.setMinHeight(40);
+        saveButton.setFont(Font.font(16));
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction(e -> dialogWindow.close());
+        cancelButton.setMinWidth(75);
+        cancelButton.setMinHeight(40);
+        cancelButton.setFont(Font.font(16));
+
+
+        AnchorPane.setRightAnchor(cancelButton, 10.0);
 
         buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
         buttonBarBox.getChildren().addAll(
-                okButton,
+                saveButton,
                 cancelButton
         );
 
@@ -128,7 +139,7 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
-        filePath.setMaxWidth(330);
+        filePath.setMaxWidth(450);
         Button loadFilePath = new Button("...");
         loadFilePath.setOnAction(e -> openFileChooser());
         HBox.setHgrow(filePath, Priority.ALWAYS);
@@ -158,7 +169,7 @@ class EditCompanyDialog {
         dialogWindowLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
-        companyName.setMaxWidth(350);
+        companyName.setMaxWidth(450);
         dialogWindowLayout.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
