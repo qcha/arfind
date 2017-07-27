@@ -2,7 +2,6 @@ package qcha.arfind;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -175,7 +174,7 @@ public class MainApplication extends Application {
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
         //todo
-       searchButton.setOnAction(e -> showFilteredData());
+        searchButton.setOnAction(e -> showFilteredData());
 
         searcher.getChildren().addAll(
                 searchLine,
@@ -199,9 +198,9 @@ public class MainApplication extends Application {
 
         MenuItem exit = new MenuItem("Выход");
         exit.setOnAction(event -> {
-                    Platform.exit();
-                    System.exit(0);
-                });
+            Platform.exit();
+            System.exit(0);
+        });
 
         file.getItems().add(exit);
 
@@ -285,7 +284,7 @@ public class MainApplication extends Application {
     /**
      * Creates informative window when clicking on "About" menu item
      */
-    private void applicationInfo(){
+    private void applicationInfo() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Информация о программе");
         alert.setHeaderText(null);
@@ -295,6 +294,7 @@ public class MainApplication extends Application {
 
     /**
      * Creates button to apply a new search
+     *
      * @return Button which allows user to apply a new search
      */
     private Button createNewSearchButton() {
@@ -315,6 +315,7 @@ public class MainApplication extends Application {
 
         return newSearchButton;
     }
+
     /**
      * New scene which shows filtered data after pressing the "search" button
      */
@@ -327,13 +328,12 @@ public class MainApplication extends Application {
 
         AnchorPane mainWindow = new AnchorPane();
 
-        TableView<String> initialTableView = getCompanyTableView();
-        initialTableView.setMinWidth(DEFAULT_WIDTH);
-        AnchorPane.setLeftAnchor(initialTableView, 0.0);
+        companyTableView.setMinWidth(DEFAULT_WIDTH);
+        AnchorPane.setLeftAnchor(companyTableView, 0.0);
 
         mainWindow.getChildren().addAll(
                 createNewSearchButton(),
-                initialTableView
+                companyTableView
         );
 
         rootLayout.setCenter(mainWindow);
@@ -353,10 +353,6 @@ public class MainApplication extends Application {
 
     ObservableList<String> getCompanyList() {
         return companyList;
-    }
-
-    private TableView<String> getCompanyTableView() {
-        return companyTableView;
     }
 
     Stage getPrimaryStage() {

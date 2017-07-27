@@ -15,7 +15,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
-import qcha.arfind.view.ButtonConfiguration;
+import qcha.arfind.view.ConfigurationButton;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -120,10 +120,10 @@ class ConfigurationWindow {
     private HBox createEditorBar() {
         HBox buttonBar = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
 
-        ButtonConfiguration addButton = new ButtonConfiguration("Добавить");
-        ButtonConfiguration editButton = new ButtonConfiguration("Изменить");
-        ButtonConfiguration removeButton = new ButtonConfiguration("Удалить");
-        ButtonConfiguration removeAllButton = new ButtonConfiguration("Удалить всё");
+        ConfigurationButton addButton = new ConfigurationButton("Добавить");
+        ConfigurationButton editButton = new ConfigurationButton("Изменить");
+        ConfigurationButton removeButton = new ConfigurationButton("Удалить");
+        ConfigurationButton removeAllButton = new ConfigurationButton("Удалить всё");
 
         buttonBar.getChildren().addAll(
                 addButton,
