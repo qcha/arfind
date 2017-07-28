@@ -18,10 +18,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
@@ -31,8 +33,9 @@ public class MainApplication extends Application {
     private final int DEFAULT_HEIGHT = 1024;
 
     private Stage primaryStage;
+    //fixme delete it
     private Stage firstLoadStage;
-    private ObservableList<String> companyList;
+    private ObservableList<String> companyNameList;
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
     private TextField searchLine;
@@ -40,9 +43,16 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
-        companyList = FXCollections.observableArrayList(ConfigFileUtils.readCompanyNames());
+        companyNameList = FXCollections.observableArrayList(
+                ConfigFileUtils.extractCompanyNames(ConfigFileUtils.readCompanies())
+        );
+
+        //todo refactroing
         initMainWindow(primaryStage);
-        if (!Files.exists(Paths.get(CONFIG_FILENAME))) initFirstLoadWindow();
+
+        if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
+            initFirstLoadWindow();
+        }
     }
 
     /**
@@ -234,7 +244,7 @@ public class MainApplication extends Application {
         companyListView.setStyle("-fx-font-size: 16px;");
         companyListView.setMinSize(600, 455);
         companyListView.setFocusTraversable(false);
-        companyListView.setItems(companyList);
+        companyListView.setItems(companyNameList);
 
         companyListView.setFixedCellSize(45);
 
@@ -346,20 +356,13 @@ public class MainApplication extends Application {
         getPrimaryStage().show();
     }
 
-
-    ListView<String> getCompanyListView() {
-        return companyListView;
-    }
-
-    ObservableList<String> getCompanyList() {
-        return companyList;
-    }
-
     Stage getPrimaryStage() {
         return primaryStage;
     }
 
-    Stage getFirstLoadStage() {
-        return firstLoadStage;
+    //fixme refactroing
+    void updateCompaniesListView(List<Company> companies) {
+        companyNameList.removeAll();
+        companyNameList.addAll(ConfigFileUtils.extractCompanyNames(companies));
     }
 }

@@ -183,12 +183,12 @@ class ConfigurationWindow {
      *
      */
     private void saveConfigurations() {
-        if (!Files.exists(Paths.get(CONFIG_FILENAME))) mainApplication.getFirstLoadStage().close();
+        if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
+            mainApplication.getFirstLoadStage().close();
+        }
 
-        ConfigFileUtils.saveCompanies(getCompanyData());
-        mainApplication.getCompanyList().clear();
-        ObservableList<String> newCompanyList = FXCollections.observableList(ConfigFileUtils.readCompanyNames());
-        mainApplication.getCompanyListView().setItems(newCompanyList);
+        ConfigFileUtils.saveCompanies(companies);
+        mainApplication.updateCompaniesListView(FXCollections.observableList(ConfigFileUtils.readCompanies()));
 
         configurationWindow.close();
     }
@@ -208,19 +208,4 @@ class ConfigurationWindow {
         }
         return companyColumnData;
     }
-
-    private List<String> getCompanyData() {
-        List<String> companyData = new ArrayList<>();
-
-        for (Company company : companies) {
-            companyData.add(String.format(
-                    "%s;%s",
-                    company.getName(),
-                    company.getPathToPrice()
-            ));
-        }
-        return companyData;
-    }
-
-
 }

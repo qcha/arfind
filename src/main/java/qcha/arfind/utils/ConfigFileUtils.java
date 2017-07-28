@@ -19,12 +19,13 @@ import static qcha.arfind.Constants.ConfigFileConstants.*;
 
 public class ConfigFileUtils {
 
-    public static void saveCompanies(List<String> data) {
+    public static void saveCompanies(List<Company> companies) {
         try {
+
             FileUtils.writeLines(
                     new File(CONFIG_FILENAME),
                     DEFAULT_CHARSET,
-                    data
+                    extractCompanyNames(companies)
             );
         } catch (IOException exception) {
             throw new RuntimeException(
@@ -57,25 +58,9 @@ public class ConfigFileUtils {
         }
     }
 
-    public static List<String> readCompanyNames() {
-        if (Files.exists(Paths.get(CONFIG_FILENAME))) {
-            try {
-                return FileUtils.readLines(new File(CONFIG_FILENAME), DEFAULT_CHARSET)
-                        .stream()
-                        .map(line -> {
-                            String[] fields = line.split(DEFAULT_FIELD_DELIMITER);
-                            return fields[0];
-                        })
-                        .collect(Collectors.toList());
-
-            } catch (IOException exception) {
-                throw new RuntimeException(
-                        String.format("Cannot read file - %s", CONFIG_FILENAME),
-                        exception
-                );
-            }
-        } else {
-            return Collections.emptyList();
-        }
+    public static List<String> extractCompanyNames(List<Company> data) {
+        return data.stream()
+                .map(Company::getName)
+                .collect(Collectors.toList());
     }
 }
