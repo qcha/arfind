@@ -21,7 +21,6 @@ public class ConfigFileUtils {
 
     public static void saveCompanies(List<Company> companies) {
         try {
-
             FileUtils.writeLines(
                     new File(CONFIG_FILENAME),
                     DEFAULT_CHARSET,
@@ -63,4 +62,5 @@ public class ConfigFileUtils {
                 .map(Company::getName)
                 .collect(Collectors.toList());
     }
+
 }

@@ -10,13 +10,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
@@ -33,12 +29,11 @@ public class MainApplication extends Application {
     private final int DEFAULT_HEIGHT = 1024;
 
     private Stage primaryStage;
-    //fixme delete it
-    private Stage firstLoadStage;
     private ObservableList<String> companyNameList;
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
     private TextField searchLine;
+    private Alert alert;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -46,38 +41,36 @@ public class MainApplication extends Application {
         companyNameList = FXCollections.observableArrayList(
                 ConfigFileUtils.extractCompanyNames(ConfigFileUtils.readCompanies())
         );
-
-        //todo refactroing
         initMainWindow(primaryStage);
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            initFirstLoadWindow();
+            initAlertWindow();
         }
+
+
     }
 
     /**
      * Initialize window during the first start of application.
      */
-    private void initFirstLoadWindow() {
-        firstLoadStage = new Stage();
+    private void initAlertWindow() {
+        alert = new Alert(Alert.AlertType.NONE);
 
-        AnchorPane firstWindow = new AnchorPane();
+        alert.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
-        firstWindow.getChildren().addAll(
-                createHeader(),
-                createConfigurationButton()
-        );
+        GridPane alertWindowLayout = new GridPane();
+        alertWindowLayout.setAlignment(Pos.TOP_CENTER);
+        alertWindowLayout.setVgap(25);
+        alertWindowLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
 
-        Scene firstLoadScene = new Scene(firstWindow, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        firstLoadStage.setResizable(false);
-        firstLoadStage.initModality(Modality.WINDOW_MODAL);
-        firstLoadStage.initOwner(getPrimaryStage().getScene().getWindow());
-        firstLoadStage.setScene(firstLoadScene);
-        firstLoadStage.setOnCloseRequest(e -> {
-            Platform.exit();
-            System.exit(0);
-        });
-        firstLoadStage.show();
+        alertWindowLayout.add(createHeader(), 0, 10);
+        alertWindowLayout.add(createConfigurationButton(), 0, 11);
+        alert.getDialogPane().setContent(alertWindowLayout);
+        alert.getDialogPane().setMinHeight(DEFAULT_HEIGHT);
+        alert.getDialogPane().setMinWidth(DEFAULT_WIDTH);
+        alert.setOnCloseRequest(e-> alert.close());
+
+        alert.showAndWait();
     }
 
     /**
@@ -90,11 +83,11 @@ public class MainApplication extends Application {
 
         header.setMinWidth(DEFAULT_WIDTH);
         header.setText("Задайте конфигурацию");
-        header.setMinHeight(30);
+        header.setMinHeight(150);
         header.setAlignment(Pos.CENTER);
         header.setTextAlignment(TextAlignment.CENTER);
         header.setFont(Font.font(28));
-        AnchorPane.setTopAnchor(header, 350.0);
+        AnchorPane.setTopAnchor(header, 150.0);
 
         return header;
     }
@@ -109,11 +102,15 @@ public class MainApplication extends Application {
         configButton.setText("Задайте конфигурацию ПО");
         configButton.setFont(Font.font(20));
         configButton.setMinWidth(DEFAULT_WIDTH);
+        configButton.setMaxHeight(50);
         configButton.setAlignment(Pos.CENTER);
         configButton.setTextAlignment(TextAlignment.CENTER);
         AnchorPane.setTopAnchor(configButton, 420.0);
 
-        configButton.setOnAction(e -> new ConfigurationWindow(this));
+        configButton.setOnAction(e -> {
+            alert.close();
+            new ConfigurationWindow(this);
+        });
 
         return configButton;
     }
@@ -121,7 +118,6 @@ public class MainApplication extends Application {
     /**
      * Initialize main window.
      *
-     * @param primaryStage for main window.
      */
     private void initMainWindow(Stage primaryStage) {
         primaryStage.setTitle(TITLE);
@@ -310,7 +306,7 @@ public class MainApplication extends Application {
     private Button createNewSearchButton() {
         Button newSearchButton = new Button("Новый поиск");
 
-        newSearchButton.setOnAction(e -> initMainWindow(getPrimaryStage()));
+        newSearchButton.setOnAction(e -> initMainWindow(primaryStage));
 
         newSearchButton.setFocusTraversable(false);
         newSearchButton.setDefaultButton(true);
