@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
 import static qcha.arfind.Constants.ConfigFileConstants.*;
 
 public class ConfigFileUtils {
@@ -60,7 +61,7 @@ public class ConfigFileUtils {
     public static List<String> extractCompanyNames(List<Company> data) {
         return data.stream()
                 .map(Company::getName)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
 }
