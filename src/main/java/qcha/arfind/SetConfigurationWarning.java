@@ -3,7 +3,6 @@ package qcha.arfind;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -31,12 +30,11 @@ class SetConfigurationWarning {
 
         AnchorPane layout = new AnchorPane();
         layout.getChildren().addAll(
-                setHeader(),
-                setConfigurationButton()
+                createConfigurationButton()
         );
         Scene mainScene = new Scene(layout, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         warningWindow.setScene(mainScene);
-        //making window modal
+        warningWindow.setResizable(false);
         warningWindow.initModality(Modality.WINDOW_MODAL);
         warningWindow.initOwner(mainApplication.getPrimaryStage().getScene().getWindow());
 
@@ -44,44 +42,26 @@ class SetConfigurationWarning {
     }
 
     /**
-     * Create header for this window with text - "Set configuration"
-     * @return Label
-     */
-    private Label setHeader() {
-        Label header = new Label();
-
-        header.setMinWidth(DEFAULT_WIDTH);
-        header.setText("Задайте конфигурацию");
-        header.setMinHeight(30);
-        header.setAlignment(Pos.CENTER);
-        header.setTextAlignment(TextAlignment.CENTER);
-        header.setFont(Font.font(28));
-        AnchorPane.setTopAnchor(header, 200.0);
-
-        return header;
-    }
-
-    /**
      * Create button for this window with text - "Set configuration"
      * @return Button which opens configuration window
      */
-    private Button setConfigurationButton() {
+    private Button createConfigurationButton() {
         Button warningButton = new Button();
 
         warningButton.setText("Задайте конфигурацию ПО");
         warningButton.setFont(Font.font(28));
         warningButton.setMinWidth(DEFAULT_WIDTH);
-        warningButton.setMinHeight(300);
+        warningButton.setMinHeight(600);
         warningButton.setAlignment(Pos.CENTER);
         warningButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(warningButton, 250.0);
+        AnchorPane.setTopAnchor(warningButton, 212.0);
 
-        warningButton.setOnAction(e -> new ConfigurationWindow(mainApplication, this));
+        warningButton.setOnAction(e -> {
+            new ConfigurationWindow(mainApplication);
+            warningWindow.close();
+        });
 
         return warningButton;
     }
 
-    Stage getWarningWindow() {
-        return warningWindow;
-    }
 }
