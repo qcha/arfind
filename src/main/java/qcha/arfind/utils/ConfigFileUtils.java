@@ -25,7 +25,7 @@ public class ConfigFileUtils {
             FileUtils.writeLines(
                     new File(CONFIG_FILENAME),
                     DEFAULT_CHARSET,
-                    extractCompanyNames(companies)
+                    convertCompaniesToStringRepresentation(companies)
             );
         } catch (IOException exception) {
             throw new RuntimeException(
@@ -64,4 +64,9 @@ public class ConfigFileUtils {
                 .collect(toList());
     }
 
+    private static List<String> convertCompaniesToStringRepresentation(List<Company> data) {
+        return data.stream()
+                .map(company -> String.format("%s%s%s", company.getName(), DEFAULT_FIELD_DELIMITER, company.getPath()))
+                .collect(Collectors.toList());
+    }
 }

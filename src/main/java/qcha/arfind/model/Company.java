@@ -29,7 +29,7 @@ public class Company {
         return name;
     }
 
-    public String getPathToPrice() {
+    public String getPath() {
         return pathToPrice.get();
     }
 

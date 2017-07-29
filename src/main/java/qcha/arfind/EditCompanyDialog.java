@@ -53,7 +53,7 @@ class EditCompanyDialog {
         //is it company for edit?
         if (Objects.nonNull(company)) {
             companyName.setText(company.getName());
-            filePath.setText(company.getPathToPrice());
+            filePath.setText(company.getPath());
             isForEdit = true;
         } else {
             //is for adding new company
