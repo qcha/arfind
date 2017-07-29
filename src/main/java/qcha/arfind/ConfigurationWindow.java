@@ -17,9 +17,12 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 import qcha.arfind.view.ConfigurationButton;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.ConfigFileUtils.readCompanies;
 
 /**
@@ -33,6 +36,7 @@ class ConfigurationWindow {
     private final int DEFAULT_HEIGHT = 768;
 
     private MainApplication mainApplication;
+    private SetConfigurationWarning warningWindow;
     private ObservableList<Company> companies;
     private Stage configurationWindow;
     private TableView<Company> companyTableView;
@@ -41,7 +45,8 @@ class ConfigurationWindow {
     /**
      * Class constructor.
      */
-    ConfigurationWindow(MainApplication mainApplication) {
+    ConfigurationWindow(MainApplication mainApplication, SetConfigurationWarning warningWindow) {
+        this.warningWindow = warningWindow;
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
         companies = FXCollections.observableArrayList(readCompanies());
@@ -181,6 +186,10 @@ class ConfigurationWindow {
      *
      */
     private void saveConfigurations() {
+        if(!Files.exists(Paths.get(CONFIG_FILENAME))) {
+            warningWindow.getWarningWindow().close();
+        }
+
         ConfigFileUtils.saveCompanies(companies);
         mainApplication.updateCompaniesListView(companies);
 

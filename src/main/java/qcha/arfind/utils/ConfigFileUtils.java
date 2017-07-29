@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 import static qcha.arfind.Constants.ConfigFileConstants.*;
@@ -67,6 +66,6 @@ public class ConfigFileUtils {
     private static List<String> convertCompaniesToStringRepresentation(List<Company> data) {
         return data.stream()
                 .map(company -> String.format("%s%s%s", company.getName(), DEFAULT_FIELD_DELIMITER, company.getPath()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

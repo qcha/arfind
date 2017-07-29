@@ -10,9 +10,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
@@ -33,7 +35,6 @@ public class MainApplication extends Application {
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
     private TextField searchLine;
-    private Alert alert;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -44,80 +45,14 @@ public class MainApplication extends Application {
         initMainWindow(primaryStage);
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            initAlertWindow();
+            new SetConfigurationWarning(this);
         }
 
 
     }
 
     /**
-     * Initialize window during the first start of application.
-     */
-    private void initAlertWindow() {
-        alert = new Alert(Alert.AlertType.NONE);
-
-        alert.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
-
-        GridPane alertWindowLayout = new GridPane();
-        alertWindowLayout.setAlignment(Pos.TOP_CENTER);
-        alertWindowLayout.setVgap(25);
-        alertWindowLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
-
-        alertWindowLayout.add(createHeader(), 0, 10);
-        alertWindowLayout.add(createConfigurationButton(), 0, 11);
-        alert.getDialogPane().setContent(alertWindowLayout);
-        alert.getDialogPane().setMinHeight(DEFAULT_HEIGHT);
-        alert.getDialogPane().setMinWidth(DEFAULT_WIDTH);
-        alert.setOnCloseRequest(e-> alert.close());
-
-        alert.showAndWait();
-    }
-
-    /**
-     * Create header for the first load window.
-     *
-     * @return Label with header text.
-     */
-    private Label createHeader() {
-        Label header = new Label();
-
-        header.setMinWidth(DEFAULT_WIDTH);
-        header.setText("Задайте конфигурацию");
-        header.setMinHeight(150);
-        header.setAlignment(Pos.CENTER);
-        header.setTextAlignment(TextAlignment.CENTER);
-        header.setFont(Font.font(28));
-        AnchorPane.setTopAnchor(header, 150.0);
-
-        return header;
-    }
-
-    /**
-     * Create button for the first load window.
-     *
-     * @return Button which opens configuration window.
-     */
-    private Button createConfigurationButton() {
-        Button configButton = new Button();
-        configButton.setText("Задайте конфигурацию ПО");
-        configButton.setFont(Font.font(20));
-        configButton.setMinWidth(DEFAULT_WIDTH);
-        configButton.setMaxHeight(50);
-        configButton.setAlignment(Pos.CENTER);
-        configButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(configButton, 420.0);
-
-        configButton.setOnAction(e -> {
-            alert.close();
-            new ConfigurationWindow(this);
-        });
-
-        return configButton;
-    }
-
-    /**
      * Initialize main window.
-     *
      */
     private void initMainWindow(Stage primaryStage) {
         primaryStage.setTitle(TITLE);
@@ -212,7 +147,7 @@ public class MainApplication extends Application {
 
         Menu options = new Menu("Настройки");
         MenuItem configuration = new MenuItem("Конфигурация");
-        configuration.setOnAction(event -> new ConfigurationWindow(this));
+        configuration.setOnAction(event -> new ConfigurationWindow(this, null));
         options.getItems().add(configuration);
 
         Menu help = new Menu("Помощь");
@@ -356,8 +291,8 @@ public class MainApplication extends Application {
         return primaryStage;
     }
 
-    //fixme refactroing
     void updateCompaniesListView(List<Company> companies) {
+        companyListView.getItems().clear();
         companyNameList.removeAll();
         companyNameList.addAll(ConfigFileUtils.extractCompanyNames(companies));
     }

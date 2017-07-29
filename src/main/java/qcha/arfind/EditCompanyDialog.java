@@ -73,6 +73,7 @@ class EditCompanyDialog {
         dialogRootLayout.getChildren().add(createDialogWindowInterface());
 
         dialogWindow.setTitle(TITLE);
+        //making this window modal
         dialogWindow.initModality(Modality.WINDOW_MODAL);
         dialogWindow.initOwner(parentWindow.getCompanyTableView().getScene().getWindow());
         dialogWindow.setResizable(false);
@@ -97,6 +98,7 @@ class EditCompanyDialog {
         Button saveButton = new Button("Save");
         saveButton.setDefaultButton(true);
 
+        //do not allow user to press the button when there is no input in text fields
         saveButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
                 or(filePath.textProperty().isEqualTo("")));
 
@@ -218,6 +220,7 @@ class EditCompanyDialog {
             }
             dialogWindow.close();
         }
+        //if company with input name already exists
         if(!validateCompanyName()) {
             nameErrorLabel.setVisible(true);
         }
@@ -229,6 +232,7 @@ class EditCompanyDialog {
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
 
+        //only excel files
         FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
                 "Excel files (*.xlsx, *.xls)", "*.xlsx", "*.xls");
         fileChooser.getExtensionFilters().add(extensionFilter);
