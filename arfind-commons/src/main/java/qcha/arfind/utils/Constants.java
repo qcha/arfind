@@ -1,4 +1,4 @@
-package qcha.arfind;
+package qcha.arfind.utils;
 
 import javafx.geometry.Insets;
 
@@ -17,25 +17,25 @@ public final class Constants {
         }
     }
 
-    static final class HBoxConstants {
-        static final int DEFAULT_SPACING = 10;
+    public static final class HBoxConstants {
+        public static final int DEFAULT_SPACING = 10;
 
         private HBoxConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
     }
 
-    static final class GridPaneConstants {
-        static final int DEFAULT_HGAP = 35;
-        static final int DEFAULT_VGAP = 50;
+    public static final class GridPaneConstants {
+        public static final int DEFAULT_HGAP = 35;
+        public static final int DEFAULT_VGAP = 50;
 
         private GridPaneConstants() {
             throw new AssertionError("Don't create instance of constant class");
         }
     }
 
-    static final class PaddingConstants {
-        static final Insets DEFAULT_PADDING = new Insets(25, 25, 25, 25);
+    public static final class PaddingConstants {
+        public static final Insets DEFAULT_PADDING = new Insets(25, 25, 25, 25);
 
         private PaddingConstants() {
             throw new AssertionError("Don't create instance of constant class");

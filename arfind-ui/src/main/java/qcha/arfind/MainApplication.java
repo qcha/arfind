@@ -23,7 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
-import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
+import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";

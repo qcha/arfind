@@ -35,6 +35,9 @@
     </developers>
     <modules>
         <module>vendor-code-finder</module>
+        <module>arfind-ui</module>
+        <module>arfind-commons</module>
+        <module>arfind-model</module>
     </modules>
 
     <properties>

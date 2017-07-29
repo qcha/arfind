@@ -17,17 +17,14 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 import qcha.arfind.view.ConfigurationButton;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import static qcha.arfind.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.ConfigFileUtils.readCompanies;
+import static qcha.arfind.utils.Constants.HBoxConstants.DEFAULT_SPACING;
 
 /**
  * This class is responsible for working with companies(adding, editing, etc).
- *
  */
 class ConfigurationWindow {
 
@@ -119,7 +116,7 @@ class ConfigurationWindow {
      * @see Company
      */
     private HBox createEditorBar() {
-        HBox buttonBar = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
+        HBox buttonBar = new HBox(DEFAULT_SPACING);
 
         ConfigurationButton addButton = new ConfigurationButton("Добавить");
         ConfigurationButton editButton = new ConfigurationButton("Изменить");
@@ -181,7 +178,6 @@ class ConfigurationWindow {
 
     /**
      * Saves user configuration and shows it in the main window
-     *
      */
     private void saveConfigurations() {
 

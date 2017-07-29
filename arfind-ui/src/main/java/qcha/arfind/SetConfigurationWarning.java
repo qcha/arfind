@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 
 /**
  * This class is responsible for creating warning window and asks user to set configuration
- *
  */
 class SetConfigurationWarning {
     private final int DEFAULT_WIDTH = 1280;
@@ -43,6 +42,7 @@ class SetConfigurationWarning {
 
     /**
      * Create button for this window with text - "Set configuration"
+     *
      * @return Button which opens configuration window
      */
     private Button createConfigurationButton() {

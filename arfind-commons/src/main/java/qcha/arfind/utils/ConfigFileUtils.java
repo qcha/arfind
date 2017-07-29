@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
-import static qcha.arfind.Constants.ConfigFileConstants.*;
+import static qcha.arfind.utils.Constants.ConfigFileConstants.*;
 
 public class ConfigFileUtils {
 

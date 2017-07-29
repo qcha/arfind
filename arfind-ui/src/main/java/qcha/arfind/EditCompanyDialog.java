@@ -16,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
+import qcha.arfind.utils.Constants;
 import qcha.arfind.view.ErrorLabel;
 
 import java.io.File;
@@ -23,9 +24,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_HGAP;
+import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_VGAP;
+import static qcha.arfind.utils.Constants.PaddingConstants.DEFAULT_PADDING;
+
 /**
  * This class is responsible for creating dialog window
- *
  */
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
@@ -174,9 +178,9 @@ class EditCompanyDialog {
         GridPane dialogWindowLayout = new GridPane();
 
         dialogWindowLayout.setAlignment(Pos.CENTER);
-        dialogWindowLayout.setHgap(Constants.GridPaneConstants.DEFAULT_HGAP);
-        dialogWindowLayout.setVgap(Constants.GridPaneConstants.DEFAULT_VGAP);
-        dialogWindowLayout.setPadding(Constants.PaddingConstants.DEFAULT_PADDING);
+        dialogWindowLayout.setHgap(DEFAULT_HGAP);
+        dialogWindowLayout.setVgap(DEFAULT_VGAP);
+        dialogWindowLayout.setPadding(DEFAULT_PADDING);
 
         Label companyNameInfo = new Label("Название фирмы:");
         companyNameInfo.setFont(Font.font(14));
@@ -206,6 +210,7 @@ class EditCompanyDialog {
 
         return dialogWindowLayout;
     }
+
     /**
      * Saves configuration and closes the dialog window if input is correct
      */
@@ -221,10 +226,9 @@ class EditCompanyDialog {
             dialogWindow.close();
         }
         //if company with input name already exists
-        if(!validateCompanyName()) {
+        if (!validateCompanyName()) {
             nameErrorLabel.setVisible(true);
-        }
-        else {
+        } else {
             fileErrorLabel.setVisible(true);
         }
     }
@@ -239,26 +243,27 @@ class EditCompanyDialog {
         File file = fileChooser.showOpenDialog(dialogWindow);
         if (Objects.isNull(file)) {
             filePath.setText("");
-        }
-        else {
+        } else {
             filePath.setText(file.getAbsolutePath());
         }
     }
+
     /**
      * Create error label which appears after wrong input to file path text field
      *
      * @return false - if company name written in text field already exists in company table
-     *         true - if does not exist
+     * true - if does not exist
      */
 
     private boolean validateCompanyName() {
-        for(String item : parentWindow.getCompanyColumnData()) {
-            if(item.equals(companyName.getText())) {
+        for (String item : parentWindow.getCompanyColumnData()) {
+            if (item.equals(companyName.getText())) {
                 return false;
             }
         }
         return true;
     }
+
     /**
      * Create error label which appears after wrong input to file path text field
      *
