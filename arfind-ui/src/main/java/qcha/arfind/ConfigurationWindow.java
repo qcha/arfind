@@ -17,6 +17,7 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 import qcha.arfind.view.ConfigurationButton;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,8 +30,8 @@ import static qcha.arfind.utils.Constants.HBoxConstants.DEFAULT_SPACING;
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
-    private final int DEFAULT_WIDTH = 1024;
-    private final int DEFAULT_HEIGHT = 768;
+    private final double DEFAULT_WIDTH = 0.53 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+    private final double DEFAULT_HEIGHT = 0.71 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
 
     private MainApplication mainApplication;
     private ObservableList<Company> companies;
@@ -86,10 +87,10 @@ class ConfigurationWindow {
     private TableView<Company> createTable() {
         companyTableView = new TableView<>();
 
-        companyTableView.setFixedCellSize(45);
+        companyTableView.setFixedCellSize(0.06 * DEFAULT_HEIGHT);
         companyTableView.setStyle("-fx-font-size: 16px;");
-        companyTableView.setMinHeight(625);
-        AnchorPane.setBottomAnchor(companyTableView, 50.0);
+        companyTableView.setMinHeight(0.8 * DEFAULT_HEIGHT);
+        AnchorPane.setBottomAnchor(companyTableView, 0.046 * DEFAULT_HEIGHT);
 
         companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
@@ -151,8 +152,8 @@ class ConfigurationWindow {
 
         buttonBar.setFocusTraversable(false);
 
-        AnchorPane.setTopAnchor(buttonBar, 10.0);
-        AnchorPane.setLeftAnchor(buttonBar, 10.0);
+        AnchorPane.setTopAnchor(buttonBar, 0.01 * DEFAULT_HEIGHT);
+        AnchorPane.setLeftAnchor(buttonBar, 0.01 * DEFAULT_HEIGHT);
         return buttonBar;
     }
 
@@ -164,14 +165,14 @@ class ConfigurationWindow {
     private Button createSaveButton() {
         Button saveButton = new Button("Сохранить");
 
-        saveButton.setMinSize(150, 60);
+        saveButton.setMinSize(0.14 * DEFAULT_WIDTH, 0.08 * DEFAULT_HEIGHT);
         saveButton.setFont(Font.font(17));
         saveButton.setStyle("-fx-base: #b6e7c9;");
-        saveButton.setLayoutX(550);
+        saveButton.setLayoutX(0.287 * DEFAULT_WIDTH);
         saveButton.setOnAction(e -> saveConfigurations());
 
-        AnchorPane.setBottomAnchor(saveButton, 10.0);
-        AnchorPane.setRightAnchor(saveButton, 10.0);
+        AnchorPane.setBottomAnchor(saveButton, 0.01 * DEFAULT_HEIGHT);
+        AnchorPane.setRightAnchor(saveButton, 0.01 * DEFAULT_HEIGHT);
 
         return saveButton;
     }

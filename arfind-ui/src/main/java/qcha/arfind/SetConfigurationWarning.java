@@ -9,12 +9,14 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.*;
+
 /**
  * This class is responsible for creating warning window and asks user to set configuration
  */
 class SetConfigurationWarning {
-    private final int DEFAULT_WIDTH = 1280;
-    private final int DEFAULT_HEIGHT = 1024;
+    private final double DEFAULT_WIDTH = 0.65 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+    private final double DEFAULT_HEIGHT = 0.9 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
     private Stage warningWindow;
     private MainApplication mainApplication;
 
@@ -51,10 +53,10 @@ class SetConfigurationWarning {
         warningButton.setText("Задайте конфигурацию ПО");
         warningButton.setFont(Font.font(28));
         warningButton.setMinWidth(DEFAULT_WIDTH);
-        warningButton.setMinHeight(600);
+        warningButton.setMinHeight(0.55 * DEFAULT_HEIGHT);
         warningButton.setAlignment(Pos.CENTER);
         warningButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(warningButton, 212.0);
+        AnchorPane.setTopAnchor(warningButton, 0.196 * DEFAULT_HEIGHT);
 
         warningButton.setOnAction(e -> {
             new ConfigurationWindow(mainApplication);

@@ -9,6 +9,11 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -19,6 +24,7 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
+import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -27,8 +33,8 @@ import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
-    private final int DEFAULT_WIDTH = 1280;
-    private final int DEFAULT_HEIGHT = 1024;
+    private final double DEFAULT_WIDTH = 0.65 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+    private final double DEFAULT_HEIGHT = 0.9 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
 
     private Stage primaryStage;
     private ObservableList<String> companyNameList;
@@ -96,10 +102,10 @@ public class MainApplication extends Application {
         searchLine.setFont(Font.font(18));
         searchLine.setAlignment(Pos.CENTER);
         searchLine.setFocusTraversable(false);
-        searchLine.setMinHeight(75);
+        searchLine.setMinHeight(0.07 * DEFAULT_HEIGHT);
         HBox.setHgrow(searchLine, Priority.ALWAYS);
 
-        searcher.setMinHeight(75);
+        searcher.setMinHeight(0.07 * DEFAULT_HEIGHT);
 
         AnchorPane.setLeftAnchor(searcher, 0.0);
         AnchorPane.setBottomAnchor(searcher, 0.0);
@@ -112,8 +118,8 @@ public class MainApplication extends Application {
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(75);
-        searchButton.setMinWidth(220);
+        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
+        searchButton.setMinWidth(0.115 * DEFAULT_WIDTH);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
         //todo
@@ -175,11 +181,11 @@ public class MainApplication extends Application {
         companyListView = new ListView<>();
 
         companyListView.setStyle("-fx-font-size: 16px;");
-        companyListView.setMinSize(600, 455);
+        companyListView.setPrefSize(0.3125 * DEFAULT_WIDTH, 0.42 * DEFAULT_HEIGHT);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyNameList);
 
-        companyListView.setFixedCellSize(45);
+        companyListView.setFixedCellSize(0.042 * DEFAULT_HEIGHT);
 
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
@@ -190,8 +196,8 @@ public class MainApplication extends Application {
             return observable;
         }));
 
-        AnchorPane.setRightAnchor(companyListView, 200.0);
-        AnchorPane.setBottomAnchor(companyListView, 75.0);
+        AnchorPane.setRightAnchor(companyListView, 0.25 * DEFAULT_WIDTH);
+        AnchorPane.setBottomAnchor(companyListView, 0.07 * DEFAULT_HEIGHT);
         AnchorPane.setLeftAnchor(companyListView, 0.0);
         AnchorPane.setTopAnchor(companyListView, 0.0);
 
@@ -206,7 +212,7 @@ public class MainApplication extends Application {
     private TableView<String> createCompanyTableView() {
         companyTableView = new TableView<>();
 
-        companyTableView.setPrefSize(440, 455);
+        companyTableView.setPrefSize(0.23 * DEFAULT_WIDTH, 0.42 * DEFAULT_HEIGHT);
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
@@ -216,8 +222,8 @@ public class MainApplication extends Application {
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
-        AnchorPane.setLeftAnchor(companyTableView, 200.0);
-        AnchorPane.setBottomAnchor(companyTableView, 75.0);
+        AnchorPane.setLeftAnchor(companyTableView, 0.25 * DEFAULT_WIDTH);
+        AnchorPane.setBottomAnchor(companyTableView, 0.07 * DEFAULT_HEIGHT);
         AnchorPane.setRightAnchor(companyTableView, 0.0);
         AnchorPane.setTopAnchor(companyTableView, 0.0);
 
@@ -247,11 +253,11 @@ public class MainApplication extends Application {
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(75);
+        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
         searchButton.setMinWidth(DEFAULT_WIDTH);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
-        searchButton.setMinHeight(75);
+        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
         AnchorPane.setLeftAnchor(searchButton, 0.0);
         AnchorPane.setBottomAnchor(searchButton, 0.0);
         AnchorPane.setRightAnchor(searchButton, 0.0);

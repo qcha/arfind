@@ -19,6 +19,7 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.Constants;
 import qcha.arfind.view.ErrorLabel;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -33,8 +34,8 @@ import static qcha.arfind.utils.Constants.PaddingConstants.DEFAULT_PADDING;
  */
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
-    private final int DEFAULT_WIDTH = 800;
-    private final int DEFAULT_HEIGHT = 600;
+    private final double DEFAULT_WIDTH = 0.5 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+    private final double DEFAULT_HEIGHT = 0.35 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
 
     private final boolean isForEdit;
 
@@ -107,14 +108,14 @@ class EditCompanyDialog {
                 or(filePath.textProperty().isEqualTo("")));
 
         saveButton.setOnAction(e -> saveAndClose());
-        saveButton.setMinWidth(120);
-        saveButton.setMinHeight(45);
+        saveButton.setMinWidth(0.15 * DEFAULT_WIDTH);
+        saveButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
         saveButton.setFont(Font.font(16));
 
         Button cancelButton = new Button("Cancel");
         cancelButton.setOnAction(e -> dialogWindow.close());
-        cancelButton.setMinWidth(120);
-        cancelButton.setMinHeight(45);
+        cancelButton.setMinWidth(0.15 * DEFAULT_WIDTH);
+        cancelButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
         cancelButton.setFont(Font.font(16));
 
 
@@ -153,11 +154,11 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
-        filePath.setMinWidth(500);
-        filePath.setMinHeight(40);
+        filePath.setMinWidth(0.625 * DEFAULT_WIDTH);
+        filePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
         Button loadFilePath = new Button("Browse...");
-        loadFilePath.setMinHeight(40);
-        loadFilePath.setMinWidth(60);
+        loadFilePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
+        loadFilePath.setMinWidth(0.075 * DEFAULT_WIDTH);
         loadFilePath.setOnAction(e -> openFileChooser());
         HBox.setHgrow(filePath, Priority.ALWAYS);
 
@@ -187,8 +188,8 @@ class EditCompanyDialog {
         dialogWindowLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
-        companyName.setMinWidth(500);
-        companyName.setMinHeight(40);
+        companyName.setMinWidth(0.625 * DEFAULT_WIDTH);
+        companyName.setMinHeight(0.07 * DEFAULT_HEIGHT);
         dialogWindowLayout.add(companyName, 1, 1);
 
         Label filePathInfo = new Label("Путь к файлу:");
