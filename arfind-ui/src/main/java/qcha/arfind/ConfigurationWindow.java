@@ -49,8 +49,10 @@ class ConfigurationWindow {
         companies = FXCollections.observableArrayList(readCompanies());
         companyTableView = createTable();
         createConfigurationWindow();
-        configurationWindow.show();
+    }
 
+    public void show() {
+        configurationWindow.show();
     }
 
     /**
@@ -132,13 +134,17 @@ class ConfigurationWindow {
                 removeAllButton
         );
 
-        addButton.setOnAction(e -> new EditCompanyDialog(this, null));
+        addButton.setOnAction(e -> new EditCompanyDialog(this, null).show());
 
         editButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
 
-        editButton.setOnAction(e -> new EditCompanyDialog(this, getCompanyTableView()
-                .getSelectionModel()
-                .getSelectedItem()));
+        editButton.setOnAction(e -> new EditCompanyDialog(
+                        this,
+                        getCompanyTableView()
+                                .getSelectionModel()
+                                .getSelectedItem()
+                ).show()
+        );
 
         removeButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
 

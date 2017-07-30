@@ -21,7 +21,6 @@ class SetConfigurationWarning {
     private Stage warningWindow;
     private MainApplication mainApplication;
 
-
     /**
      * Class constructor.
      */
@@ -60,7 +59,7 @@ class SetConfigurationWarning {
         AnchorPane.setTopAnchor(warningButton, 0.196 * DEFAULT_HEIGHT);
 
         warningButton.setOnAction(e -> {
-            new ConfigurationWindow(mainApplication);
+            new ConfigurationWindow(mainApplication).show();
             warningWindow.close();
         });
 

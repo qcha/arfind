@@ -66,7 +66,9 @@ class EditCompanyDialog {
             this.company = new Company();
             isForEdit = false;
         }
+    }
 
+    public void show() {
         dialogWindow.show();
     }
 

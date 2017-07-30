@@ -151,7 +151,7 @@ public class MainApplication extends Application {
 
         Menu options = new Menu("Настройки");
         MenuItem configuration = new MenuItem("Конфигурация");
-        configuration.setOnAction(event -> new ConfigurationWindow(this));
+        configuration.setOnAction(event -> new ConfigurationWindow(this).show());
         options.getItems().add(configuration);
 
         Menu help = new Menu("Помощь");
