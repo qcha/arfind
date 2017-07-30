@@ -35,7 +35,7 @@ import static qcha.arfind.utils.Constants.PaddingConstants.DEFAULT_PADDING;
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
     private final double DEFAULT_WIDTH = 0.5 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
-    private final double DEFAULT_HEIGHT = 0.35 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+    private final double DEFAULT_HEIGHT = 0.45 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
 
     private final boolean isForEdit;
 
