@@ -103,7 +103,7 @@ class EditCompanyDialog {
     private HBox createButtonBarBox() {
         HBox buttonBarBox = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
 
-        Button saveButton = new Button("Save");
+        Button saveButton = new Button("Сохранить");
         saveButton.setDefaultButton(true);
 
         //do not allow user to press the button when there is no input in text fields
@@ -115,7 +115,7 @@ class EditCompanyDialog {
         saveButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
         saveButton.setFont(Font.font(16));
 
-        Button cancelButton = new Button("Cancel");
+        Button cancelButton = new Button("Отмена");
         cancelButton.setOnAction(e -> dialogWindow.close());
         cancelButton.setMinWidth(0.15 * DEFAULT_WIDTH);
         cancelButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
@@ -159,7 +159,7 @@ class EditCompanyDialog {
         filePath = new TextField();
         filePath.setMinWidth(0.625 * DEFAULT_WIDTH);
         filePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
-        Button loadFilePath = new Button("Browse...");
+        Button loadFilePath = new Button("Просмотр");
         loadFilePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
         loadFilePath.setMinWidth(0.075 * DEFAULT_WIDTH);
         loadFilePath.setOnAction(e -> openFileChooser());
