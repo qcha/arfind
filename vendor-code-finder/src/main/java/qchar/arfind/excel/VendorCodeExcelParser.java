@@ -1,21 +1,29 @@
 package qchar.arfind.excel;
 
+import com.google.common.base.Verify;
+import com.google.common.collect.Lists;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Basic class for parsing excel files with vendor codes.
  */
 public class VendorCodeExcelParser implements AutoCloseable {
+    private final String filename;
     private Workbook excelReader;
     private Sheet currentSheet;
 
     public VendorCodeExcelParser(String filename) throws IOException {
+        this.filename = filename;
         switch (excelExtension(filename)) {
             case XLSX:
                 excelReader = new XSSFWorkbook(new FileInputStream(filename));
@@ -25,6 +33,30 @@ public class VendorCodeExcelParser implements AutoCloseable {
                 excelReader = new HSSFWorkbook(new FileInputStream(filename));
                 break;
         }
+    }
+
+    public List<Row> findMatches(String matches) {
+        Verify.verify(Objects.nonNull(currentSheet), String.format("Need to set sheet name for %s", filename));
+
+        List<Row> result = Lists.newArrayList();
+
+        for (Row currentRow : currentSheet) {
+            for (Cell currentCell : currentRow) {
+                switch (currentCell.getCellTypeEnum()) {
+                    case STRING:
+                        //todo it's only for test
+                        String value = currentCell.getStringCellValue();
+                        if (value.contains(matches)) {
+                            result.add(currentRow);
+                        }
+
+                    default:
+                        break;
+                }
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -47,6 +79,7 @@ public class VendorCodeExcelParser implements AutoCloseable {
 
     /**
      * Set sheet for work
+     *
      * @param name sheet name.
      */
     public void workWithSheet(String name) {
