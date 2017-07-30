@@ -39,16 +39,16 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+
         companyNameList = FXCollections.observableArrayList(
                 ConfigFileUtils.extractCompanyNames(ConfigFileUtils.readCompanies())
         );
+
         initMainWindow(primaryStage);
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
             new SetConfigurationWarning(this);
         }
-
-
     }
 
     /**
@@ -70,9 +70,11 @@ public class MainApplication extends Application {
                 createCompanyTableView()
         );
 
-        Scene mainScene = new Scene(rootLayout,
+        Scene mainScene = new Scene(
+                rootLayout,
                 DEFAULT_WIDTH,
-                DEFAULT_HEIGHT);
+                DEFAULT_HEIGHT
+        );
 
         rootLayout.setCenter(mainWindow);
 
@@ -239,22 +241,22 @@ public class MainApplication extends Application {
      * @return Button which allows user to apply a new search
      */
     private Button createNewSearchButton() {
-        Button newSearchButton = new Button("Новый поиск");
+        Button searchButton = new Button("Новый поиск");
 
-        newSearchButton.setOnAction(e -> initMainWindow(primaryStage));
+        searchButton.setOnAction(e -> initMainWindow(primaryStage));
 
-        newSearchButton.setFocusTraversable(false);
-        newSearchButton.setDefaultButton(true);
-        newSearchButton.setMinHeight(75);
-        newSearchButton.setMinWidth(DEFAULT_WIDTH);
-        newSearchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+        searchButton.setFocusTraversable(false);
+        searchButton.setDefaultButton(true);
+        searchButton.setMinHeight(75);
+        searchButton.setMinWidth(DEFAULT_WIDTH);
+        searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
-        newSearchButton.setMinHeight(75);
-        AnchorPane.setLeftAnchor(newSearchButton, 0.0);
-        AnchorPane.setBottomAnchor(newSearchButton, 0.0);
-        AnchorPane.setRightAnchor(newSearchButton, 0.0);
+        searchButton.setMinHeight(75);
+        AnchorPane.setLeftAnchor(searchButton, 0.0);
+        AnchorPane.setBottomAnchor(searchButton, 0.0);
+        AnchorPane.setRightAnchor(searchButton, 0.0);
 
-        return newSearchButton;
+        return searchButton;
     }
 
     /**
@@ -262,7 +264,6 @@ public class MainApplication extends Application {
      */
 
     private void showFilteredData() {
-
         BorderPane rootLayout = new BorderPane();
         //init menu bar
         rootLayout.setTop(createMenuBar());
@@ -282,18 +283,20 @@ public class MainApplication extends Application {
         Scene filteredScene = new Scene(
                 rootLayout,
                 DEFAULT_WIDTH,
-                DEFAULT_HEIGHT);
+                DEFAULT_HEIGHT
+        );
+
         getPrimaryStage().setScene(filteredScene);
         getPrimaryStage().show();
-    }
-
-    Stage getPrimaryStage() {
-        return primaryStage;
     }
 
     void updateCompaniesListView(List<Company> companies) {
         companyListView.getItems().clear();
         companyNameList.removeAll();
         companyNameList.addAll(ConfigFileUtils.extractCompanyNames(companies));
+    }
+
+    Stage getPrimaryStage() {
+        return primaryStage;
     }
 }
