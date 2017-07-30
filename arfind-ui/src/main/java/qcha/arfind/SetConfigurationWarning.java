@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
@@ -29,11 +30,12 @@ class SetConfigurationWarning {
 
         warningWindow = new Stage();
 
-        AnchorPane layout = new AnchorPane();
+        VBox layout = new VBox();
         layout.getChildren().addAll(
                 createConfigurationButton()
         );
-        Scene mainScene = new Scene(layout, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        Scene mainScene = new Scene(layout);
         warningWindow.setScene(mainScene);
         warningWindow.setResizable(false);
         warningWindow.initModality(Modality.WINDOW_MODAL);
@@ -50,7 +52,7 @@ class SetConfigurationWarning {
     private Button createConfigurationButton() {
         Button warningButton = new Button();
 
-        warningButton.setText("Задайте конфигурацию ПО");
+        warningButton.setText("Задайте список компаний и источников для поиска");
         warningButton.setFont(Font.font(28));
         warningButton.setMinWidth(DEFAULT_WIDTH);
         warningButton.setMinHeight(0.55 * DEFAULT_HEIGHT);

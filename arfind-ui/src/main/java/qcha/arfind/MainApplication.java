@@ -28,7 +28,7 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 public class MainApplication extends Application {
-    private final String TITLE = "JavaFx App";
+    private final String TITLE = "Поисковик артикулов";
     private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
@@ -94,7 +94,7 @@ public class MainApplication extends Application {
 
         searchLine = new TextField();
 
-        searchLine.setPromptText("Поиск");
+        searchLine.setPromptText("Введите текст для поиска");
         searchLine.setFont(Font.font(18));
         searchLine.setAlignment(Pos.CENTER);
         searchLine.setFocusTraversable(false);

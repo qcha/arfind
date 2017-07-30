@@ -34,7 +34,7 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
  * This class is responsible for creating dialog window
  */
 class EditCompanyDialog {
-    private final String TITLE = "Editing company";
+    private final String TITLE = "Редактирование";
     private final double DEFAULT_WIDTH = 0.5 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.45 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
