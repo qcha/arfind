@@ -27,6 +27,11 @@ public final class Constants {
         }
     }
 
+    public static final class UserResolutionConstants {
+        public static final int DEFAULT_USER_RESOLUTION_WIDTH = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
+        public static final int DEFAULT_USER_RESOLUTION_HEIGHT = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+    }
+
     public static final class GridPaneConstants {
         public static final double DEFAULT_HGAP = 0.018 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
         public static final double DEFAULT_VGAP = 0.042 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();

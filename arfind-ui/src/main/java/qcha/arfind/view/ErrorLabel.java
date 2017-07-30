@@ -7,14 +7,17 @@ import javafx.scene.text.Font;
 
 import java.awt.*;
 
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
+
 public class ErrorLabel extends Label {
     public ErrorLabel(String text) {
         super(text);
         setVisible(false);
         setAlignment(Pos.CENTER);
         setTextFill(Color.rgb(210, 39, 30));
-        setMinSize(0.21 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth(),
-                0.03 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth());
+        setMinSize(0.21 * DEFAULT_USER_RESOLUTION_WIDTH,
+                0.03 * DEFAULT_USER_RESOLUTION_HEIGHT);
         setFont(Font.font(18));
     }
 }

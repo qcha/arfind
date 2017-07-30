@@ -19,7 +19,6 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.Constants;
 import qcha.arfind.view.ErrorLabel;
 
-import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -28,14 +27,16 @@ import java.util.Objects;
 import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_HGAP;
 import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_VGAP;
 import static qcha.arfind.utils.Constants.PaddingConstants.DEFAULT_PADDING;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 /**
  * This class is responsible for creating dialog window
  */
 class EditCompanyDialog {
     private final String TITLE = "Editing company";
-    private final double DEFAULT_WIDTH = 0.5 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
-    private final double DEFAULT_HEIGHT = 0.45 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+    private final double DEFAULT_WIDTH = 0.5 * DEFAULT_USER_RESOLUTION_WIDTH;
+    private final double DEFAULT_HEIGHT = 0.45 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private final boolean isForEdit;
 

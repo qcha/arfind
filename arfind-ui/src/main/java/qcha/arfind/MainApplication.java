@@ -9,11 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -24,17 +19,18 @@ import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 
-import java.awt.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 public class MainApplication extends Application {
     private final String TITLE = "JavaFx App";
-    private final double DEFAULT_WIDTH = 0.65 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
-    private final double DEFAULT_HEIGHT = 0.9 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+    private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
+    private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private Stage primaryStage;
     private ObservableList<String> companyNameList;

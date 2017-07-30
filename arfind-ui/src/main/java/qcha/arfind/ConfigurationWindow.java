@@ -17,12 +17,13 @@ import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
 import qcha.arfind.view.ConfigurationButton;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 import static qcha.arfind.utils.ConfigFileUtils.readCompanies;
 import static qcha.arfind.utils.Constants.HBoxConstants.DEFAULT_SPACING;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 /**
  * This class is responsible for working with companies(adding, editing, etc).
@@ -30,8 +31,8 @@ import static qcha.arfind.utils.Constants.HBoxConstants.DEFAULT_SPACING;
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
-    private final double DEFAULT_WIDTH = 0.53 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
-    private final double DEFAULT_HEIGHT = 0.71 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+    private final double DEFAULT_WIDTH = 0.53 * DEFAULT_USER_RESOLUTION_WIDTH;
+    private final double DEFAULT_HEIGHT = 0.71 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private MainApplication mainApplication;
     private ObservableList<Company> companies;

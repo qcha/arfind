@@ -9,14 +9,15 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.awt.*;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 /**
  * This class is responsible for creating warning window and asks user to set configuration
  */
 class SetConfigurationWarning {
-    private final double DEFAULT_WIDTH = 0.65 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getWidth();
-    private final double DEFAULT_HEIGHT = 0.9 * GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getHeight();
+    private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
+    private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
     private Stage warningWindow;
     private MainApplication mainApplication;
 
