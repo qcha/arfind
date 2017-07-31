@@ -92,6 +92,7 @@ class ConfigurationWindow {
 
         companyTableView.setFixedCellSize(40);
         companyTableView.setStyle("-fx-font-size: 16px;");
+        //table view occupies 80% of window height
         companyTableView.setPrefHeight(0.8 * DEFAULT_HEIGHT);
         AnchorPane.setBottomAnchor(companyTableView, 50.0);
 
