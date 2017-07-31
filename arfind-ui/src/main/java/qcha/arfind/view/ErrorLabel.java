@@ -12,7 +12,7 @@ public class ErrorLabel extends Label {
     public ErrorLabel(String text) {
         super(text);
         setVisible(false);
-        setAlignment(Pos.CENTER_RIGHT);
+        setAlignment(Pos.CENTER_LEFT);
         setTextFill(Color.rgb(210, 39, 30));
         setMinSize(0.21 * DEFAULT_USER_RESOLUTION_WIDTH,
                 0.03 * DEFAULT_USER_RESOLUTION_HEIGHT);

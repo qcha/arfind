@@ -3,6 +3,7 @@ package qcha.arfind;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -15,7 +16,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
 import qcha.arfind.utils.ConfigFileUtils;
-import qcha.arfind.view.ConfigurationButton;
+import qcha.arfind.view.ConfigurationButtonFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,10 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 class ConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
-    private final double DEFAULT_WIDTH = 0.53 * DEFAULT_USER_RESOLUTION_WIDTH;
-    private final double DEFAULT_HEIGHT = 0.71 * DEFAULT_USER_RESOLUTION_HEIGHT;
+
+    //this window size occupies 65% of user's display width and 70% of display height
+    private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
+    private final double DEFAULT_HEIGHT = 0.7 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private MainApplication mainApplication;
     private ObservableList<Company> companies;
@@ -60,17 +63,15 @@ class ConfigurationWindow {
     private void createConfigurationWindow() {
         VBox configurationWindowLayout = new VBox();
 
+        configurationWindowLayout.setAlignment(Pos.CENTER);
+
         configurationWindowLayout.getChildren().addAll(
                 createTable(),
                 new AnchorPane(createEditorBar()),
                 new AnchorPane(createSaveButton())
         );
 
-        Scene configurationWindowInterface = new Scene(
-                configurationWindowLayout,
-                DEFAULT_WIDTH,
-                DEFAULT_HEIGHT
-        );
+        Scene configurationWindowInterface = new Scene(configurationWindowLayout, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         configurationWindow.setTitle(TITLE);
         configurationWindow.setResizable(false);
@@ -89,10 +90,10 @@ class ConfigurationWindow {
     private TableView<Company> createTable() {
         companyTableView = new TableView<>();
 
-        companyTableView.setFixedCellSize(0.06 * DEFAULT_HEIGHT);
+        companyTableView.setFixedCellSize(40);
         companyTableView.setStyle("-fx-font-size: 16px;");
-        companyTableView.setMinHeight(0.8 * DEFAULT_HEIGHT);
-        AnchorPane.setBottomAnchor(companyTableView, 0.046 * DEFAULT_HEIGHT);
+        companyTableView.setPrefHeight(0.8 * DEFAULT_HEIGHT);
+        AnchorPane.setBottomAnchor(companyTableView, 50.0);
 
         companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
@@ -121,10 +122,10 @@ class ConfigurationWindow {
     private HBox createEditorBar() {
         HBox buttonBar = new HBox(10);
 
-        ConfigurationButton addButton = new ConfigurationButton("Добавить");
-        ConfigurationButton editButton = new ConfigurationButton("Изменить");
-        ConfigurationButton removeButton = new ConfigurationButton("Удалить");
-        ConfigurationButton removeAllButton = new ConfigurationButton("Удалить всё");
+        Button addButton = ConfigurationButtonFactory.createConfigurationButton("Добавить");
+        Button editButton = ConfigurationButtonFactory.createConfigurationButton("Изменить");
+        Button removeButton = ConfigurationButtonFactory.createConfigurationButton("Удалить");
+        Button removeAllButton = ConfigurationButtonFactory.createConfigurationButton("Удалить всё");
 
         buttonBar.getChildren().addAll(
                 addButton,
@@ -158,8 +159,8 @@ class ConfigurationWindow {
 
         buttonBar.setFocusTraversable(false);
 
-        AnchorPane.setTopAnchor(buttonBar, 0.01 * DEFAULT_HEIGHT);
-        AnchorPane.setLeftAnchor(buttonBar, 0.01 * DEFAULT_HEIGHT);
+        AnchorPane.setTopAnchor(buttonBar, 10.0);
+        AnchorPane.setLeftAnchor(buttonBar, 10.0);
         return buttonBar;
     }
 
@@ -171,14 +172,13 @@ class ConfigurationWindow {
     private Button createSaveButton() {
         Button saveButton = new Button("Сохранить");
 
-        saveButton.setMinSize(0.14 * DEFAULT_WIDTH, 0.08 * DEFAULT_HEIGHT);
+        saveButton.setMinSize(150, 75);
         saveButton.setFont(Font.font(17));
         saveButton.setStyle("-fx-base: #b6e7c9;");
-        saveButton.setLayoutX(0.287 * DEFAULT_WIDTH);
         saveButton.setOnAction(e -> saveConfigurations());
 
-        AnchorPane.setBottomAnchor(saveButton, 0.01 * DEFAULT_HEIGHT);
-        AnchorPane.setRightAnchor(saveButton, 0.01 * DEFAULT_HEIGHT);
+        AnchorPane.setBottomAnchor(saveButton, 10.0);
+        AnchorPane.setRightAnchor(saveButton, 10.0);
 
         return saveButton;
     }

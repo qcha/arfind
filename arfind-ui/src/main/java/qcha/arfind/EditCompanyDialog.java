@@ -1,6 +1,7 @@
 package qcha.arfind;
 
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -8,10 +9,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -24,24 +25,18 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
-import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
-
 /**
  * This class is responsible for creating dialog window
  */
 class EditCompanyDialog {
     private final String TITLE = "Редактирование";
-    private final double DEFAULT_WIDTH = 0.5 * DEFAULT_USER_RESOLUTION_WIDTH;
-    private final double DEFAULT_HEIGHT = 0.45 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
-    private final boolean isForEdit;
+    private boolean isForEdit;
 
     private Stage dialogWindow;
     private ConfigurationWindow parentWindow;
     private TextField companyName;
     private TextField filePath;
-    private Button loadFilePath;
     private Label nameErrorLabel;
     private Label fileErrorLabel;
     private Company company;
@@ -75,20 +70,18 @@ class EditCompanyDialog {
      */
     private void initEditDialog() {
         dialogWindow = new Stage();
-        AnchorPane dialogRootLayout = new AnchorPane();
+
+        VBox dialogRootLayout = new VBox();
+
         dialogRootLayout.getChildren().add(createDialogWindowInterface());
+        dialogRootLayout.setAlignment(Pos.CENTER);
 
         dialogWindow.setTitle(TITLE);
-        //making this window modal
         dialogWindow.initModality(Modality.WINDOW_MODAL);
         dialogWindow.initOwner(parentWindow.getCompanyTableView().getScene().getWindow());
         dialogWindow.setResizable(false);
 
-        Scene scene = new Scene(
-                dialogRootLayout,
-                DEFAULT_WIDTH,
-                DEFAULT_HEIGHT
-        );
+        Scene scene = new Scene(dialogRootLayout);
 
         dialogWindow.setScene(scene);
     }
@@ -109,20 +102,17 @@ class EditCompanyDialog {
                 or(filePath.textProperty().isEqualTo("")));
 
         saveButton.setOnAction(e -> saveAndClose());
-        saveButton.setMinWidth(0.15 * DEFAULT_WIDTH);
-        saveButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
+        saveButton.setMinWidth(125);
+        saveButton.setMinHeight(75);
         saveButton.setFont(Font.font(16));
 
         Button cancelButton = new Button("Отмена");
         cancelButton.setOnAction(e -> dialogWindow.close());
-        cancelButton.setMinWidth(0.15 * DEFAULT_WIDTH);
-        cancelButton.setMinHeight(0.075 * DEFAULT_HEIGHT);
+        cancelButton.setMinWidth(125);
+        cancelButton.setMinHeight(75);
         cancelButton.setFont(Font.font(16));
 
-
-        AnchorPane.setRightAnchor(cancelButton, 10.0);
-
-        buttonBarBox.setAlignment(Pos.BOTTOM_RIGHT);
+        buttonBarBox.setAlignment(Pos.BOTTOM_LEFT);
         buttonBarBox.getChildren().addAll(
                 saveButton,
                 cancelButton
@@ -155,26 +145,17 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
-        filePath.setMaxWidth(0);
-        filePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
-        filePath.setVisible(false);
-        filePath.setEditable(false);
-        loadFilePath = new Button("Просмотр");
-        loadFilePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
-        loadFilePath.setPrefWidth(0.625 * DEFAULT_WIDTH);
-
-        loadFilePath.setOnAction(e -> {
-            openFileChooser();
-            filePath.setMinWidth(550);
-            loadFilePath.setMaxWidth(100);
-            filePath.setVisible(true);
-        });
-        HBox.setHgrow(loadFilePath, Priority.ALWAYS);
+        filePath.setPrefSize(300, 35);
+        Button loadFilePath = new Button("Обзор...");
+        loadFilePath.setPrefSize(100, 35);
+        loadFilePath.setOnAction(e -> openFileChooser());
+        HBox.setHgrow(filePath, Priority.ALWAYS);
 
         filePathBox.getChildren().addAll(
                 filePath,
                 loadFilePath
         );
+
         return filePathBox;
     }
 
@@ -188,34 +169,34 @@ class EditCompanyDialog {
 
         dialogWindowLayout.setAlignment(Pos.CENTER);
         dialogWindowLayout.setHgap(35);
-        dialogWindowLayout.setVgap(50);
-        dialogWindowLayout.setPadding(new Insets(25, 25, 25, 25));
+        dialogWindowLayout.setVgap(30);
+        dialogWindowLayout.setPadding(new Insets(10, 10, 10, 10));
 
         Label companyNameInfo = new Label("Название фирмы:");
         companyNameInfo.setFont(Font.font(14));
-        dialogWindowLayout.add(companyNameInfo, 0, 1);
+        dialogWindowLayout.add(companyNameInfo, 0, 0);
 
         companyName = new TextField();
-        companyName.setMinWidth(550);
-        companyName.setMinHeight(0.07 * DEFAULT_HEIGHT);
-        dialogWindowLayout.add(companyName, 1, 1);
+        companyName.setPrefWidth(400);
+        companyName.setPrefHeight(35);
+        dialogWindowLayout.add(companyName, 1, 0);
 
         Label filePathInfo = new Label("Путь к файлу:");
         filePathInfo.setFont(Font.font(14));
-        dialogWindowLayout.add(filePathInfo, 0, 2);
+        dialogWindowLayout.add(filePathInfo, 0, 1);
 
-        dialogWindowLayout.add(createFinderLine(), 1, 2);
+        dialogWindowLayout.add(createFinderLine(), 1, 1);
 
         fileErrorLabel = createFileErrorLabel();
-        dialogWindowLayout.add(fileErrorLabel, 1, 4);
+        dialogWindowLayout.add(fileErrorLabel, 1, 2);
 
         nameErrorLabel = createNameErrorLabel();
-        dialogWindowLayout.add(nameErrorLabel, 1, 4);
+        dialogWindowLayout.add(nameErrorLabel, 1, 2);
 
 
-        dialogWindowLayout.add(createSeparatingLine(), 0, 5);
+        dialogWindowLayout.add(createSeparatingLine(), 0, 3);
 
-        dialogWindowLayout.add(createButtonBarBox(), 1, 6);
+        dialogWindowLayout.add(createButtonBarBox(), 1, 4);
 
         return dialogWindowLayout;
     }

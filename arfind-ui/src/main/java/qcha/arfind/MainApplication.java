@@ -29,7 +29,8 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 
 public class MainApplication extends Application {
     private final String TITLE = "Поисковик артикулов";
-    private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
+    //this window size occupies 70% of user's display width and 90% of display height
+    private final double DEFAULT_WIDTH = 0.7 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private Stage primaryStage;
@@ -98,10 +99,10 @@ public class MainApplication extends Application {
         searchLine.setFont(Font.font(18));
         searchLine.setAlignment(Pos.CENTER);
         searchLine.setFocusTraversable(false);
-        searchLine.setMinHeight(0.07 * DEFAULT_HEIGHT);
+        searchLine.setPrefHeight(75);
         HBox.setHgrow(searchLine, Priority.ALWAYS);
 
-        searcher.setMinHeight(0.07 * DEFAULT_HEIGHT);
+        searcher.setMinHeight(75);
 
         AnchorPane.setLeftAnchor(searcher, 0.0);
         AnchorPane.setBottomAnchor(searcher, 0.0);
@@ -114,8 +115,8 @@ public class MainApplication extends Application {
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
-        searchButton.setMinWidth(0.115 * DEFAULT_WIDTH);
+        searchButton.setMinHeight(75);
+        searchButton.setMinWidth(200);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
         //todo
@@ -177,11 +178,11 @@ public class MainApplication extends Application {
         companyListView = new ListView<>();
 
         companyListView.setStyle("-fx-font-size: 16px;");
-        companyListView.setPrefSize(0.3125 * DEFAULT_WIDTH, 0.42 * DEFAULT_HEIGHT);
         companyListView.setFocusTraversable(false);
         companyListView.setItems(companyNameList);
 
-        companyListView.setFixedCellSize(0.042 * DEFAULT_HEIGHT);
+        companyListView.setFixedCellSize(55);
+        companyListView.setPrefSize(440, 455);
 
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
@@ -192,8 +193,8 @@ public class MainApplication extends Application {
             return observable;
         }));
 
-        AnchorPane.setRightAnchor(companyListView, 0.25 * DEFAULT_WIDTH);
-        AnchorPane.setBottomAnchor(companyListView, 0.07 * DEFAULT_HEIGHT);
+        AnchorPane.setRightAnchor(companyListView, 175.0);
+        AnchorPane.setBottomAnchor(companyListView, 75.0);
         AnchorPane.setLeftAnchor(companyListView, 0.0);
         AnchorPane.setTopAnchor(companyListView, 0.0);
 
@@ -208,7 +209,8 @@ public class MainApplication extends Application {
     private TableView<String> createCompanyTableView() {
         companyTableView = new TableView<>();
 
-        companyTableView.setPrefSize(0.23 * DEFAULT_WIDTH, 0.42 * DEFAULT_HEIGHT);
+        companyTableView.setPrefSize(600, 455);
+
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
@@ -218,8 +220,8 @@ public class MainApplication extends Application {
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
-        AnchorPane.setLeftAnchor(companyTableView, 0.25 * DEFAULT_WIDTH);
-        AnchorPane.setBottomAnchor(companyTableView, 0.07 * DEFAULT_HEIGHT);
+        AnchorPane.setLeftAnchor(companyTableView, 175.0);
+        AnchorPane.setBottomAnchor(companyTableView, 75.0);
         AnchorPane.setRightAnchor(companyTableView, 0.0);
         AnchorPane.setTopAnchor(companyTableView, 0.0);
 
@@ -249,11 +251,10 @@ public class MainApplication extends Application {
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
+        searchButton.setMinHeight(50);
         searchButton.setMinWidth(DEFAULT_WIDTH);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
-        searchButton.setMinHeight(0.07 * DEFAULT_HEIGHT);
         AnchorPane.setLeftAnchor(searchButton, 0.0);
         AnchorPane.setBottomAnchor(searchButton, 0.0);
         AnchorPane.setRightAnchor(searchButton, 0.0);

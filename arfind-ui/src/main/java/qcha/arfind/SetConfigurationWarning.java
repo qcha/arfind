@@ -17,7 +17,8 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
  * This class is responsible for creating warning window and asks user to set configuration
  */
 class SetConfigurationWarning {
-    private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
+    //this window size occupies 70% of user's display width and 90% of display height
+    private final double DEFAULT_WIDTH = 0.7 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
     private Stage warningWindow;
     private MainApplication mainApplication;
@@ -54,11 +55,10 @@ class SetConfigurationWarning {
 
         warningButton.setText("Задайте список компаний и источников для поиска");
         warningButton.setFont(Font.font(28));
-        warningButton.setMinWidth(DEFAULT_WIDTH);
-        warningButton.setMinHeight(0.55 * DEFAULT_HEIGHT);
+        warningButton.setMinSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         warningButton.setAlignment(Pos.CENTER);
         warningButton.setTextAlignment(TextAlignment.CENTER);
-        AnchorPane.setTopAnchor(warningButton, 0.196 * DEFAULT_HEIGHT);
+        AnchorPane.setTopAnchor(warningButton, 200.0);
 
         warningButton.setOnAction(e -> {
             new ConfigurationWindow(mainApplication).show();
