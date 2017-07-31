@@ -8,7 +8,7 @@ import javafx.scene.text.Font;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
-public final class ErrorLabel {
+public final class ErrorLabelFactory {
     public static Label createErrorLabel(String text) {
         Label errorLabel = new Label(text);
         errorLabel.setVisible(false);

@@ -17,7 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
-import qcha.arfind.view.ErrorLabel;
+import qcha.arfind.view.ErrorLabelFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -187,10 +187,10 @@ class EditCompanyDialog {
 
         dialogWindowLayout.add(createFinderLine(), 1, 1);
 
-        fileErrorLabel = ErrorLabel.createErrorLabel("Неправильно указан путь к файлу");
+        fileErrorLabel = ErrorLabelFactory.createErrorLabel("Неправильно указан путь к файлу");
         dialogWindowLayout.add(fileErrorLabel, 1, 2);
 
-        nameErrorLabel = ErrorLabel.createErrorLabel("Такая компания уже существует");
+        nameErrorLabel = ErrorLabelFactory.createErrorLabel("Такая компания уже существует");
         dialogWindowLayout.add(nameErrorLabel, 1, 2);
 
         dialogWindowLayout.add(createSeparatingLine(), 0, 3);
