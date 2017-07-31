@@ -186,10 +186,10 @@ class EditCompanyDialog {
 
         dialogWindowLayout.add(createFinderLine(), 1, 1);
 
-        fileErrorLabel = createFileErrorLabel();
+        fileErrorLabel = new ErrorLabel("Неправильно указан путь к файлу");
         dialogWindowLayout.add(fileErrorLabel, 1, 2);
 
-        nameErrorLabel = createNameErrorLabel();
+        nameErrorLabel = new ErrorLabel("Такая компания уже существует");
         dialogWindowLayout.add(nameErrorLabel, 1, 2);
 
 
@@ -255,25 +255,4 @@ class EditCompanyDialog {
         }
         return true;
     }
-
-    /**
-     * Create error label which appears after wrong input to file path text field
-     *
-     * @return ErrorLabel with error message
-     * @see ErrorLabel
-     */
-    private Label createFileErrorLabel() {
-        return new ErrorLabel("Неправильно указан путь к файлу");
-    }
-
-    /**
-     * Create error label which appears after wrong input to company name text field
-     *
-     * @return ErrorLabel with error message
-     * @see ErrorLabel
-     */
-    private Label createNameErrorLabel() {
-        return new ErrorLabel("Такая компания уже существует");
-    }
-
 }
