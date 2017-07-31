@@ -47,17 +47,17 @@ public class MainApplication extends Application {
                 ConfigFileUtils.extractCompanyNames(ConfigFileUtils.readCompanies())
         );
 
-        initMainWindow(primaryStage);
-
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
             new SetConfigurationWarning(this);
+        } else {
+            initMainWindow(primaryStage);
         }
     }
 
     /**
      * Initialize main window.
      */
-    private void initMainWindow(Stage primaryStage) {
+    void initMainWindow(Stage primaryStage) {
         primaryStage.setTitle(TITLE);
 
         BorderPane rootLayout = new BorderPane();

@@ -7,7 +7,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
@@ -39,8 +38,7 @@ class SetConfigurationWarning {
         Scene mainScene = new Scene(layout);
         warningWindow.setScene(mainScene);
         warningWindow.setResizable(false);
-        warningWindow.initModality(Modality.WINDOW_MODAL);
-        warningWindow.initOwner(mainApplication.getPrimaryStage().getScene().getWindow());
+        warningWindow.setOnCloseRequest(e -> mainApplication.initMainWindow(mainApplication.getPrimaryStage()));
 
         warningWindow.show();
     }
@@ -61,6 +59,7 @@ class SetConfigurationWarning {
         AnchorPane.setTopAnchor(warningButton, 200.0);
 
         warningButton.setOnAction(e -> {
+            mainApplication.initMainWindow(mainApplication.getPrimaryStage());
             new ConfigurationWindow(mainApplication).show();
             warningWindow.close();
         });

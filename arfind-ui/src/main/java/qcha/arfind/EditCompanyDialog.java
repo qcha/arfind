@@ -101,16 +101,17 @@ class EditCompanyDialog {
                 or(filePath.textProperty().isEqualTo("")));
 
         saveButton.setOnAction(e -> saveAndClose());
-        saveButton.setMinWidth(125);
+        saveButton.setMinWidth(300);
         saveButton.setMinHeight(75);
         saveButton.setFont(Font.font(16));
 
         Button cancelButton = new Button("Отмена");
         cancelButton.setOnAction(e -> dialogWindow.close());
-        cancelButton.setMinWidth(125);
+        cancelButton.setMinWidth(300);
         cancelButton.setMinHeight(75);
         cancelButton.setFont(Font.font(16));
 
+        GridPane.setColumnSpan(buttonBarBox, 2);
         buttonBarBox.setAlignment(Pos.BOTTOM_LEFT);
         buttonBarBox.getChildren().addAll(
                 saveButton,
@@ -186,16 +187,15 @@ class EditCompanyDialog {
 
         dialogWindowLayout.add(createFinderLine(), 1, 1);
 
-        fileErrorLabel = new ErrorLabel("Неправильно указан путь к файлу");
+        fileErrorLabel = ErrorLabel.createErrorLabel("Неправильно указан путь к файлу");
         dialogWindowLayout.add(fileErrorLabel, 1, 2);
 
-        nameErrorLabel = new ErrorLabel("Такая компания уже существует");
+        nameErrorLabel = ErrorLabel.createErrorLabel("Такая компания уже существует");
         dialogWindowLayout.add(nameErrorLabel, 1, 2);
-
 
         dialogWindowLayout.add(createSeparatingLine(), 0, 3);
 
-        dialogWindowLayout.add(createButtonBarBox(), 1, 4);
+        dialogWindowLayout.add(createButtonBarBox(), 0, 4);
 
         return dialogWindowLayout;
     }
