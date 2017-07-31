@@ -41,19 +41,20 @@ public class VendorCodeExcelParser implements AutoCloseable {
         Verify.verify(Objects.nonNull(currentSheet), String.format("Need to set sheet name for %s", filename));
 
         List<Row> result = Lists.newArrayList();
+        String value;
 
         for (Row currentRow : currentSheet) {
             for (Cell currentCell : currentRow) {
                 switch (currentCell.getCellTypeEnum()) {
                     case STRING:
-                        String value = currentCell.getStringCellValue();
-                        if (value.contains(matchString)) {
+                        value = currentCell.getStringCellValue();
+                        if (value.toLowerCase().contains(matchString.toLowerCase())) {
                             result.add(currentRow);
                         } else {
                             //check on containing words in string
                             String[] words = matchString.split(DELIMITERS);
                             for (String word : words) {
-                                if (value.contains(word)) {
+                                if (value.toLowerCase().contains(word.toLowerCase())) {
                                     result.add(currentRow);
                                     break;
                                 }
@@ -64,7 +65,6 @@ public class VendorCodeExcelParser implements AutoCloseable {
                 }
             }
         }
-
         return result;
     }
 

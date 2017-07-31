@@ -6,12 +6,23 @@ import qchar.arfind.excel.VendorCodeExcelParser;
 
 public class VendorCodeExcelParserOnXlsTest {
     @Test
-    public void findAllMathesOfMatchString() throws Exception {
-        String matchString = "Вагонка";
-        VendorCodeExcelParser parser = new VendorCodeExcelParser("src/test/resources/prays.xls");
+    public void findAllMatchesOfMatchString() throws Exception {
+        VendorCodeExcelParser parser = new VendorCodeExcelParser("vendor-code-finder/src/test/resources/prays.xls");
         parser.workWithSheet("TDSheet");
 
-        Assert.assertEquals(false, parser.findMatches(matchString).isEmpty());
-        Assert.assertEquals(19, parser.findMatches(matchString).size());
+        String matchString = "ВАГОНКА";
+        Assert.assertEquals(20, parser.findMatches(matchString).size());
+
+        matchString = "вагонка";
+        Assert.assertEquals(20, parser.findMatches(matchString).size());
+
+        matchString = "Вагонка";
+        Assert.assertEquals(20, parser.findMatches(matchString).size());
+
+        matchString = "RAL3005";
+        Assert.assertEquals(22, parser.findMatches(matchString).size());
+
+        matchString = "Соединитель желоба";
+        Assert.assertEquals(4, parser.findMatches(matchString).size());
     }
 }
