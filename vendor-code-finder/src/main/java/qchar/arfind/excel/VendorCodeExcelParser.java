@@ -18,6 +18,8 @@ import java.util.Objects;
  * Basic class for parsing excel files with vendor codes.
  */
 public class VendorCodeExcelParser implements AutoCloseable {
+    private final static String DELIMITERS = "\\s+|,\\s*|\\.\\s*";
+
     private final String filename;
     private Workbook excelReader;
     private Sheet currentSheet;
@@ -35,7 +37,7 @@ public class VendorCodeExcelParser implements AutoCloseable {
         }
     }
 
-    public List<Row> findMatches(String matches) {
+    public List<Row> findMatches(String matchString) {
         Verify.verify(Objects.nonNull(currentSheet), String.format("Need to set sheet name for %s", filename));
 
         List<Row> result = Lists.newArrayList();
@@ -44,12 +46,19 @@ public class VendorCodeExcelParser implements AutoCloseable {
             for (Cell currentCell : currentRow) {
                 switch (currentCell.getCellTypeEnum()) {
                     case STRING:
-                        //todo it's only for test
                         String value = currentCell.getStringCellValue();
-                        if (value.contains(matches)) {
+                        if (value.contains(matchString)) {
                             result.add(currentRow);
+                        } else {
+                            //check on containing words in string
+                            String[] words = matchString.split(DELIMITERS);
+                            for (String word : words) {
+                                if (value.contains(word)) {
+                                    result.add(currentRow);
+                                    break;
+                                }
+                            }
                         }
-
                     default:
                         break;
                 }
