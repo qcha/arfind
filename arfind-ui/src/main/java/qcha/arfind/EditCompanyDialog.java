@@ -1,5 +1,6 @@
 package qcha.arfind;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
@@ -16,7 +17,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import qcha.arfind.model.Company;
-import qcha.arfind.utils.Constants;
 import qcha.arfind.view.ErrorLabel;
 
 import java.io.File;
@@ -24,9 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_HGAP;
-import static qcha.arfind.utils.Constants.GridPaneConstants.DEFAULT_VGAP;
-import static qcha.arfind.utils.Constants.PaddingConstants.DEFAULT_PADDING;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
@@ -44,6 +41,7 @@ class EditCompanyDialog {
     private ConfigurationWindow parentWindow;
     private TextField companyName;
     private TextField filePath;
+    private Button loadFilePath;
     private Label nameErrorLabel;
     private Label fileErrorLabel;
     private Company company;
@@ -68,7 +66,7 @@ class EditCompanyDialog {
         }
     }
 
-    public void show() {
+    void show() {
         dialogWindow.show();
     }
 
@@ -101,7 +99,7 @@ class EditCompanyDialog {
      * @return HBox
      */
     private HBox createButtonBarBox() {
-        HBox buttonBarBox = new HBox(Constants.HBoxConstants.DEFAULT_SPACING);
+        HBox buttonBarBox = new HBox(10);
 
         Button saveButton = new Button("Сохранить");
         saveButton.setDefaultButton(true);
@@ -157,19 +155,26 @@ class EditCompanyDialog {
         HBox filePathBox = new HBox();
 
         filePath = new TextField();
-        filePath.setMinWidth(0.625 * DEFAULT_WIDTH);
+        filePath.setMaxWidth(0);
         filePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
-        Button loadFilePath = new Button("Просмотр");
+        filePath.setVisible(false);
+        filePath.setEditable(false);
+        loadFilePath = new Button("Просмотр");
         loadFilePath.setMinHeight(0.067 * DEFAULT_HEIGHT);
-        loadFilePath.setMinWidth(0.075 * DEFAULT_WIDTH);
-        loadFilePath.setOnAction(e -> openFileChooser());
-        HBox.setHgrow(filePath, Priority.ALWAYS);
+        loadFilePath.setPrefWidth(0.625 * DEFAULT_WIDTH);
+
+        loadFilePath.setOnAction(e -> {
+            openFileChooser();
+            filePath.setMinWidth(550);
+            loadFilePath.setMaxWidth(100);
+            filePath.setVisible(true);
+        });
+        HBox.setHgrow(loadFilePath, Priority.ALWAYS);
 
         filePathBox.getChildren().addAll(
                 filePath,
                 loadFilePath
         );
-
         return filePathBox;
     }
 
@@ -182,16 +187,16 @@ class EditCompanyDialog {
         GridPane dialogWindowLayout = new GridPane();
 
         dialogWindowLayout.setAlignment(Pos.CENTER);
-        dialogWindowLayout.setHgap(DEFAULT_HGAP);
-        dialogWindowLayout.setVgap(DEFAULT_VGAP);
-        dialogWindowLayout.setPadding(DEFAULT_PADDING);
+        dialogWindowLayout.setHgap(35);
+        dialogWindowLayout.setVgap(50);
+        dialogWindowLayout.setPadding(new Insets(25, 25, 25, 25));
 
         Label companyNameInfo = new Label("Название фирмы:");
         companyNameInfo.setFont(Font.font(14));
         dialogWindowLayout.add(companyNameInfo, 0, 1);
 
         companyName = new TextField();
-        companyName.setMinWidth(0.625 * DEFAULT_WIDTH);
+        companyName.setMinWidth(550);
         companyName.setMinHeight(0.07 * DEFAULT_HEIGHT);
         dialogWindowLayout.add(companyName, 1, 1);
 
@@ -237,6 +242,9 @@ class EditCompanyDialog {
         }
     }
 
+    /**
+     * Opens file chooser to select path to company file
+     */
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
 

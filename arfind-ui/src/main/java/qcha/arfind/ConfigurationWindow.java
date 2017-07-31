@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static qcha.arfind.utils.ConfigFileUtils.readCompanies;
-import static qcha.arfind.utils.Constants.HBoxConstants.DEFAULT_SPACING;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
@@ -51,7 +50,7 @@ class ConfigurationWindow {
         createConfigurationWindow();
     }
 
-    public void show() {
+    void show() {
         configurationWindow.show();
     }
 
@@ -120,7 +119,7 @@ class ConfigurationWindow {
      * @see Company
      */
     private HBox createEditorBar() {
-        HBox buttonBar = new HBox(DEFAULT_SPACING);
+        HBox buttonBar = new HBox(10);
 
         ConfigurationButton addButton = new ConfigurationButton("Добавить");
         ConfigurationButton editButton = new ConfigurationButton("Изменить");
