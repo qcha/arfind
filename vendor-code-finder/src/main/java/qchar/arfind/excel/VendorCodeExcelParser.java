@@ -1,18 +1,14 @@
 package qchar.arfind.excel;
 
 import com.google.common.base.Verify;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -38,25 +34,38 @@ public class VendorCodeExcelParser implements AutoCloseable {
         }
     }
 
-    public List<Row> findMatches(String matchString) {
+    public Multimap<Integer, Row> findMatches(String matchString) {
         Verify.verify(Objects.nonNull(currentSheet), String.format("Need to set sheet name for %s", filename));
 
-        List<Row> result = Lists.newArrayList();
+        Multimap<Integer, Row> priorityMap = ArrayListMultimap.create();
         String value;
 
         for (Row currentRow : currentSheet) {
             for (Cell currentCell : currentRow) {
                 switch (currentCell.getCellTypeEnum()) {
+                    case NUMERIC:
+                        //bad casting but we have int value so it's ok
+                        int num = (int) currentCell.getNumericCellValue();
+                        if(String.valueOf(num).equals(matchString)) {
+                            priorityMap.put(0, currentRow);
+                        }
+                        break;
+
                     case STRING:
+                        if(matchString.toLowerCase().contains("ё")) {
+                            matchString = matchString.replace('ё', 'е');
+                        }
                         value = currentCell.getStringCellValue();
                         if (value.toLowerCase().contains(matchString.toLowerCase())) {
-                            result.add(currentRow);
+                            priorityMap.put(0, currentRow);
                         } else {
                             //check on containing words in string
                             String[] words = matchString.split(DELIMITERS);
                             for (String word : words) {
-                                if (value.toLowerCase().contains(word.toLowerCase())) {
-                                    result.add(currentRow);
+                                if (value.toLowerCase().contains(word.toLowerCase()) ||
+                                                value.toLowerCase().replace('е', 'ё').contains(word.toLowerCase()) ||
+                                                value.toLowerCase().replace('ё', 'е').contains(word.toLowerCase())) {
+                                    priorityMap.put(1, (currentRow));
                                     break;
                                 }
                             }
@@ -66,7 +75,7 @@ public class VendorCodeExcelParser implements AutoCloseable {
                 }
             }
         }
-        return result;
+        return priorityMap;
     }
 
     /**
