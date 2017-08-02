@@ -5,6 +5,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import qchar.arfind.excel.ExcelTextFinder;
+import qchar.arfind.excel.UnknownExcelExtensionException;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Objects;
 
 public class ExcelTextFinderOnXlsTest {
 
@@ -129,4 +135,10 @@ public class ExcelTextFinderOnXlsTest {
 
         Assert.assertEquals(1, parser.findMatches("трехраспорный").size());
     }
+
+    @Test
+    public void whiteSpacesTest() throws Exception {
+        Assert.assertEquals(1, parser.findMatches("Вагонка сорта В -2.1м").size());
+    }
+
 }
