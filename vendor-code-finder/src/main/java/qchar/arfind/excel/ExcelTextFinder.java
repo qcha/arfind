@@ -1,27 +1,30 @@
 package qchar.arfind.excel;
 
 import com.google.common.base.Verify;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Basic class for parsing excel files with vendor codes.
  */
-public class VendorCodeExcelParser implements AutoCloseable {
+public class ExcelTextFinder implements AutoCloseable {
     private final static String DELIMITERS = "\\s+|,\\s*|\\.\\s*";
 
     private final String filename;
     private Workbook excelReader;
     private Sheet currentSheet;
 
-    public VendorCodeExcelParser(String filename) throws IOException {
+    public ExcelTextFinder(String filename) throws IOException {
         this.filename = filename;
         switch (excelExtension(filename)) {
             case XLSX:
@@ -34,48 +37,34 @@ public class VendorCodeExcelParser implements AutoCloseable {
         }
     }
 
-    public Multimap<Integer, Row> findMatches(String matchString) {
+    public List<Row> findMatches(String matchString) {
         Verify.verify(Objects.nonNull(currentSheet), String.format("Need to set sheet name for %s", filename));
 
-        Multimap<Integer, Row> priorityMap = ArrayListMultimap.create();
+        matchString = matchString.toLowerCase();
+        List<Row> result = new ArrayList<>();
         String value;
 
         for (Row currentRow : currentSheet) {
             for (Cell currentCell : currentRow) {
                 switch (currentCell.getCellTypeEnum()) {
-                    case NUMERIC:
-                        //bad casting but we have int value so it's ok
-                        int num = (int) currentCell.getNumericCellValue();
-                        if(String.valueOf(num).equals(matchString)) {
-                            priorityMap.put(0, currentRow);
-                        }
-                        break;
-
                     case STRING:
-                        if(matchString.toLowerCase().contains("ё")) {
-                            matchString = matchString.replace('ё', 'е');
-                        }
-                        value = currentCell.getStringCellValue();
-                        if (value.toLowerCase().contains(matchString.toLowerCase())) {
-                            priorityMap.put(0, currentRow);
-                        } else {
-                            //check on containing words in string
-                            String[] words = matchString.split(DELIMITERS);
-                            for (String word : words) {
-                                if (value.toLowerCase().contains(word.toLowerCase()) ||
-                                                value.toLowerCase().replace('е', 'ё').contains(word.toLowerCase()) ||
-                                                value.toLowerCase().replace('ё', 'е').contains(word.toLowerCase())) {
-                                    priorityMap.put(1, (currentRow));
-                                    break;
-                                }
-                            }
+                        value = currentCell.getStringCellValue().toLowerCase();
+
+                        //for both strings replace difficult letter
+                        value = value.replace('ё', 'е');
+                        matchString = matchString.replace('ё', 'е');
+
+                        //needed when users add two whitespaces instead of one
+                        value = value.trim().replaceAll(" +", " ");
+                        if (value.contains(matchString)) {
+                            result.add(currentRow);
                         }
                     default:
                         break;
                 }
             }
         }
-        return priorityMap;
+        return result;
     }
 
     /**
@@ -114,4 +103,5 @@ public class VendorCodeExcelParser implements AutoCloseable {
         XLS,
         XLSX
     }
+
 }

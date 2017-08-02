@@ -4,16 +4,16 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import qchar.arfind.excel.VendorCodeExcelParser;
+import qchar.arfind.excel.ExcelTextFinder;
 
-public class VendorCodeExcelParserOnXlsTest {
+public class ExcelTextFinderOnXlsTest {
 
-    private VendorCodeExcelParser parser;
+    private ExcelTextFinder parser;
     private String matchString;
 
     @Before
     public void setUp() throws Exception {
-        parser = new VendorCodeExcelParser("src/test/resources/prays.xls");
+        parser = new ExcelTextFinder("src/test/resources/prays.xls");
         parser.workWithSheet("TDSheet");
     }
 
@@ -24,7 +24,7 @@ public class VendorCodeExcelParserOnXlsTest {
 
     @Test
     public void caseSensitivityTest() throws Exception {
-        String matchString = "ВАГОНКА";
+        matchString = "ВАГОНКА";
         Assert.assertEquals(20, parser.findMatches(matchString).size());
 
         matchString = "вагонка";
@@ -42,15 +42,69 @@ public class VendorCodeExcelParserOnXlsTest {
     }
 
     @Test
-    public void stringWithOneSpaceTest() throws Exception {
+    public void firstStringWithOneSpaceTest() throws Exception {
         matchString = "Соединитель желоба";
-        Assert.assertEquals(43, parser.findMatches(matchString).size());
+        Assert.assertEquals(4, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void firstStringWithTrimmedLastWord() throws Exception {
+        matchString = "Соединитель жел";
+        Assert.assertEquals(5, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void secondStringWithTrimmedLastWord() throws Exception {
+        matchString = "Соединитель ж";
+        Assert.assertEquals(5, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void secondStringWithOneTest() throws Exception {
+        matchString = "Труба водосточная";
+        Assert.assertEquals(14, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void thirdStringWithTrimmedLastWord() throws Exception {
+        matchString = "Труба водо";
+        Assert.assertEquals(14, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void fourthStringWithTrimmedLastWord() throws Exception {
+        matchString = "Труба в";
+        Assert.assertEquals(14, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void fifthStringWithTrimmedLastWord() throws Exception {
+        matchString = "Миксер для красок";
+        Assert.assertEquals(2, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void sixthStringWithTrimmedLastWord() throws Exception {
+        matchString = "Миксер для кр";
+        Assert.assertEquals(2, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void seventhStringWithTrimmedLastWord() throws Exception {
+        matchString = "Миксер для";
+        Assert.assertEquals(4, parser.findMatches(matchString).size());
     }
 
     @Test
     public void stringWithSeveralSpacesTest() throws Exception {
         matchString = "Держатель желоба на стену";
-        Assert.assertEquals(455, parser.findMatches(matchString).size());
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void fullNameTest() throws Exception {
+        matchString = "Прокладка из ДСП 3,5х1,75";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
     }
 
     @Test
@@ -90,35 +144,5 @@ public class VendorCodeExcelParserOnXlsTest {
 
         matchString = "трехраспорный";
         Assert.assertEquals(1, parser.findMatches(matchString).size());
-
-    }
-
-    /**
-     * Expected value - 1. Actual value - 1852.
-     * If we print our map, it is the only one value where key equals 0 and others are where key equals 1 - .
-     **/
-    @Test
-    public void priorityTesting() throws Exception {
-        matchString = "Вагонка сорта А -3.0м (Кострома)";
-        Assert.assertEquals(1, parser.findMatches(matchString).size());
-    }
-
-    @Test
-    public void numericCellTest() throws Exception {
-        matchString = "39082";
-        Assert.assertEquals(1, parser.findMatches(matchString).size());
-
-        matchString = "34651";
-        Assert.assertEquals(1, parser.findMatches(matchString).size());
-    }
-
-    /**
-     * Some bad stuff with excel file - when I search through excel "650.00 руб." it gives me 3 coincidences
-     * Here it also gives me three (if we print our map) full coincidences, but in excel file there are 6.
-     **/
-    @Test
-    public void priceCellTest() throws Exception {
-        matchString = "650,00 руб.";
-        Assert.assertEquals(3, parser.findMatches(matchString).size());
     }
 }

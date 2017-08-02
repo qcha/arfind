@@ -4,16 +4,16 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import qchar.arfind.excel.VendorCodeExcelParser;
+import qchar.arfind.excel.ExcelTextFinder;
 
-public class VendorCodeExcelParserOnXlsxTest {
+public class ExcelTextFinderOnXlsxTest {
 
-    private VendorCodeExcelParser parser;
+    private ExcelTextFinder parser;
     private String matchString;
 
     @Before
     public void setUp() throws Exception {
-        parser = new VendorCodeExcelParser("src/test/resources/Prays-list_santekhnika.xlsx");
+        parser = new ExcelTextFinder("src/test/resources/Prays-list_santekhnika.xlsx");
         parser.workWithSheet("TDSheet");
     }
 
@@ -42,9 +42,39 @@ public class VendorCodeExcelParserOnXlsxTest {
     }
 
     @Test
-    public void stringWithOneSpaceTest() throws Exception {
+    public void firstStringWithOneSpaceTest() throws Exception {
         matchString = "Груша сантехническая";
-        Assert.assertEquals(2, parser.findMatches(matchString).size());
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void firstStringWithTrimmedLastWord() throws Exception {
+        matchString = "Груша сантех";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void secondStringWithTrimmedLastWord() throws Exception {
+        matchString = "Груша сан";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void secondStringWithOneTest() throws Exception {
+        matchString = "Колонка боковая латунь";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void thirdStringWithTrimmedLastWord() throws Exception {
+        matchString = "Колонка боковая";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void fourthStringWithTrimmedLastWord() throws Exception {
+        matchString = "Колонка бок";
+        Assert.assertEquals(1, parser.findMatches(matchString).size());
     }
 
     @Test
@@ -63,28 +93,11 @@ public class VendorCodeExcelParserOnXlsxTest {
 
     }
 
-    /**
-     * Expected value - 1. Actual value - 760.
-     * If we print our map, it is the only one value where key equals 0 and others are where key equals 1 - .
-     **/
+
     @Test
     public void stringWithSeveralSpacesTest() throws Exception {
         matchString = "Ремкомплект ПСМ Имп 1/2 металл КРЕСТ";
-        Assert.assertEquals(760, parser.findMatches(matchString).size());
-    }
-
-    @Test
-    public void numericCellTest() throws Exception {
-        matchString = "17174";
-        Assert.assertEquals(1, parser.findMatches(matchString).size());
-
-        matchString = "15198";
         Assert.assertEquals(1, parser.findMatches(matchString).size());
     }
 
-    @Test
-    public void priceCellTest() throws Exception {
-        matchString = "179,30";
-        Assert.assertEquals(1, parser.findMatches(matchString).size());
-    }
 }
