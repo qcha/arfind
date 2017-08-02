@@ -1,64 +1,56 @@
 package qcha.arfind.excel.qcha.arfind;
 
-import org.junit.After;
+import com.google.common.base.VerifyException;
 import org.junit.Assert;
 import org.junit.Test;
 import qchar.arfind.excel.ExcelTextFinder;
+import qchar.arfind.excel.UnknownExcelExtensionException;
+
+import java.io.FileNotFoundException;
 
 public class ExcelTextFinderBoundaryCases {
 
     private ExcelTextFinder parser;
 
-    @After
-    public void tearDown() throws Exception {
-        parser.close();
-    }
-
-    @Test
+    @Test(expected = FileNotFoundException.class)
     public void noSuchFileTest() throws Exception {
-        //has to throw FileNotFoundException
         parser = new ExcelTextFinder("src/test/resources/pray.xls");
     }
 
-    @Test
-    public void firstWrongFileFormat() throws Exception {
-        //has to throw UnknownExcelExtensionException
+    @Test(expected = UnknownExcelExtensionException.class)
+    public void unknownExcelExceptionDueToTxtFileFormat()  throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.txt");
     }
 
-    @Test
-    public void secondWrongFileFormat() throws Exception {
-        //has to throw UnknownExcelExtensionException
+    @Test(expected = UnknownExcelExtensionException.class)
+    public void unknownExcelExceptionDueToCsvFileFormat() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.csv");
     }
 
-    @Test
-    public void firstOfficeFileFormat() throws Exception {
-        //Different files connected with excel(.doc), has to throw UnknownExcelExtensionException
+    @Test(expected = UnknownExcelExtensionException.class)
+    public void unknownExcelExceptionDueToOfficeDocFileFormat() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.doc");
     }
 
-    @Test
-    public void secondOfficeFileFormat() throws Exception {
-        //Different files connected with excel(.ppt), has to throw UnknownExcelExtensionException
+    @Test(expected = UnknownExcelExtensionException.class)
+    public void unknownExcelExceptionDueToOfficePptFileFormat() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.ppt");
     }
 
-    @Test
-    public void thirdOfficeFileFormat() throws Exception {
-        //Different files connected with excel(.accdb), has to throw UnknownExcelExtensionException
+    @Test(expected = UnknownExcelExtensionException.class)
+    public void unknownExcelExceptionDueToOfficeAccdbFileFormat() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.accdb");
     }
 
-    @Test
-    public void emptyXlsFileAndSheetTest() throws Exception {
+    @Test(expected = VerifyException.class)
+    public void verifyExceptionDueToNotSelectedSheetInEmptyXlsFile() throws Exception {
         //has to throw exception for user to select sheet for this file
         parser = new ExcelTextFinder("src/test/resources/empty.xls");
         Assert.assertEquals(0, parser.findMatches("").size());
     }
 
-    @Test
-    public void emptyXlsxFileAndSheetTest() throws Exception {
+    @Test(expected = VerifyException.class)
+    public void verifyExceptionDueToNotSelectedSheetInEmptyXlsxFile() throws Exception {
         //has to throw exception for user to select sheet for this file
         parser = new ExcelTextFinder("src/test/resources/empty.xlsx");
         Assert.assertEquals(0, parser.findMatches("").size());
