@@ -36,6 +36,18 @@ public class ExcelTextFinderOnXlsTest {
     }
 
     @Test
+    public void oneNotFullWordTest() throws Exception {
+        matchString = "Бр";
+        Assert.assertEquals(60, parser.findMatches(matchString).size());
+    }
+
+    @Test
+    public void anotherTest() {
+        matchString = "Вагонка сорта А";
+        Assert.assertEquals(7, parser.findMatches(matchString).size());
+    }
+
+    @Test
     public void stringWithoutSpacesTest() throws Exception {
         matchString = "RAL3005";
         Assert.assertEquals(22, parser.findMatches(matchString).size());
