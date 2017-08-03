@@ -38,6 +38,7 @@ public class MainApplication extends Application {
     private ListView<String> companyListView;
     private TableView<String> companyTableView;
     private TextField searchLine;
+    private List<String> toFind;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -187,7 +188,13 @@ public class MainApplication extends Application {
         companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) -> {
-                        //todo listener to search for needed data
+                        if (isNowSelected) {
+                            toFind.add(item);
+                        }
+
+                        if (wasSelected) {
+                            toFind.remove(item);
+                        }
                     }
             );
             return observable;
