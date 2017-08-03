@@ -5,7 +5,9 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,8 +18,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import qcha.arfind.model.Company;
-import qcha.arfind.utils.ConfigFileUtils;
+import qcha.arfind.model.SearchDetails;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,14 +40,24 @@ public class MainApplication extends Application {
     private TableView<String> companyTableView;
     private TextField searchLine;
     private List<String> toFind;
+    private ObservableMap<String, SearchDetails> companiesCache;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
+        this.companiesCache = SearchModelCache.getOrCreateCache();
 
-        companyNameList = FXCollections.observableArrayList(
-                ConfigFileUtils.extractCompanyNames(ConfigFileUtils.readCompanies())
-        );
+        companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
+
+        companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
+            if (change.wasRemoved()) {
+                companyNameList.remove(change.getKey());
+            }
+
+            if (change.wasAdded()) {
+                companyNameList.add(change.getKey());
+            }
+        });
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
             new SetConfigurationWarning(this);
@@ -175,7 +186,7 @@ public class MainApplication extends Application {
      *
      * @return ListView company names.
      */
-    private ListView createCompanyListView() {
+    private ListView<String> createCompanyListView() {
         companyListView = new ListView<>();
 
         companyListView.setStyle("-fx-font-size: 16px;");
@@ -298,12 +309,6 @@ public class MainApplication extends Application {
 
         getPrimaryStage().setScene(filteredScene);
         getPrimaryStage().show();
-    }
-
-    void updateCompaniesListView(List<Company> companies) {
-        companyListView.getItems().clear();
-        companyNameList.removeAll();
-        companyNameList.addAll(ConfigFileUtils.extractCompanyNames(companies));
     }
 
     Stage getPrimaryStage() {

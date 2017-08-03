@@ -2,7 +2,9 @@ package qcha.arfind;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,14 +16,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import qcha.arfind.model.Company;
-import qcha.arfind.utils.ConfigFileUtils;
+import qcha.arfind.model.SearchDetails;
 import qcha.arfind.view.ConfigurationButtonFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.stream.Collectors;
 
-import static qcha.arfind.utils.ConfigFileUtils.readCompanies;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
@@ -37,10 +36,11 @@ class ConfigurationWindow {
     private final double DEFAULT_HEIGHT = 0.7 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
     private MainApplication mainApplication;
-    private ObservableList<Company> companies;
+    private ObservableList<SearchDetails> companies;
     private Stage configurationWindow;
-    private TableView<Company> companyTableView;
-    private TableColumn<Company, String> companyColumn;
+    private TableView<SearchDetails> companyTableView;
+    private TableColumn<SearchDetails, String> companyColumn;
+    private ObservableMap<String, SearchDetails> companiesCache;
 
     /**
      * Class constructor.
@@ -48,7 +48,21 @@ class ConfigurationWindow {
     ConfigurationWindow(MainApplication mainApplication) {
         this.mainApplication = mainApplication;
         configurationWindow = new Stage();
-        companies = FXCollections.observableArrayList(readCompanies());
+
+        companiesCache = SearchModelCache.getOrCreateCache();
+
+        companies = FXCollections.observableArrayList(companiesCache.values());
+
+        companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
+            if (change.wasRemoved()) {
+                companies.remove(change.getValueRemoved());
+            }
+
+            if (change.wasAdded()) {
+                companies.add(change.getValueAdded());
+            }
+        });
+
         companyTableView = createTable();
         createConfigurationWindow();
     }
@@ -84,10 +98,10 @@ class ConfigurationWindow {
     /**
      * Create table of companies.
      *
-     * @return TableView<Company> with two columns - name and filepath.
-     * @see Company
+     * @return TableView<SearchDetails> with two columns - name and filepath.
+     * @see SearchDetails
      */
-    private TableView<Company> createTable() {
+    private TableView<SearchDetails> createTable() {
         companyTableView = new TableView<>();
 
         companyTableView.setFixedCellSize(40);
@@ -97,7 +111,7 @@ class ConfigurationWindow {
         AnchorPane.setBottomAnchor(companyTableView, 50.0);
 
         companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<Company, String> filePathColumn = new TableColumn<>("Путь к файлу");
+        TableColumn<SearchDetails, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
         //noinspection unchecked
         companyTableView.getColumns().addAll(
@@ -109,7 +123,7 @@ class ConfigurationWindow {
         companyTableView.setFocusTraversable(false);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        filePathColumn.setCellValueFactory(cellData -> cellData.getValue().pathToPriceProperty());
+        filePathColumn.setCellValueFactory(cellData -> cellData.getValue().pathToSourceProperty());
 
         return companyTableView;
     }
@@ -118,7 +132,7 @@ class ConfigurationWindow {
      * Create editor bar.
      *
      * @return HBox with buttons for edit company.
-     * @see Company
+     * @see SearchDetails
      */
     private HBox createEditorBar() {
         HBox buttonBar = new HBox(10);
@@ -135,33 +149,34 @@ class ConfigurationWindow {
                 removeAllButton
         );
 
-        addButton.setOnAction(e -> new EditCompanyDialog(this, null).show());
+        addButton.setOnAction(e -> new EditSearchMetaInfoDialog(this, null).show());
 
-        editButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
+        editButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
 
-        editButton.setOnAction(e -> new EditCompanyDialog(
+        editButton.setOnAction(e -> new EditSearchMetaInfoDialog(
                         this,
-                        getCompanyTableView()
+                        companyTableView
                                 .getSelectionModel()
                                 .getSelectedItem()
                 ).show()
         );
 
-        removeButton.disableProperty().bind(Bindings.isEmpty(getCompanyTableView().getSelectionModel().getSelectedItems()));
+        removeButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
 
         removeButton.setOnAction(e -> {
-            int selectedIndex = getCompanyTableView().getSelectionModel().getSelectedIndex();
+            int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                getCompanyTableView().getItems().remove(selectedIndex);
+                companiesCache.remove(companyTableView.getItems().get(selectedIndex).getName());
             }
         });
 
-        removeAllButton.setOnAction(e -> getCompanyTableView().getItems().clear());
+        removeAllButton.setOnAction(e -> companiesCache.clear());
 
         buttonBar.setFocusTraversable(false);
 
         AnchorPane.setTopAnchor(buttonBar, 10.0);
         AnchorPane.setLeftAnchor(buttonBar, 10.0);
+
         return buttonBar;
     }
 
@@ -188,26 +203,14 @@ class ConfigurationWindow {
      * Saves user configuration and shows it in the main window
      */
     private void saveConfigurations() {
-
-        ConfigFileUtils.saveCompanies(companies);
-        mainApplication.updateCompaniesListView(companies);
+        companiesCache.putAll(
+                companies.stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
+        );
 
         configurationWindow.close();
     }
 
-    ObservableList<Company> getCompanies() {
-        return companies;
-    }
-
-    TableView<Company> getCompanyTableView() {
-        return companyTableView;
-    }
-
-    List<String> getCompanyColumnData() {
-        List<String> companyColumnData = new ArrayList<>();
-        for (Company item : getCompanyTableView().getItems()) {
-            companyColumnData.add(companyColumn.getCellObservableValue(item).getValue());
-        }
-        return companyColumnData;
+    Stage getConfigurationWindow() {
+        return configurationWindow;
     }
 }

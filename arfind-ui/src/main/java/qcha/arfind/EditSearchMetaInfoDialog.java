@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import qcha.arfind.model.Company;
+import qcha.arfind.model.SearchDetails;
 import qcha.arfind.view.ErrorLabelFactory;
 
 import java.io.File;
@@ -27,35 +27,34 @@ import java.util.Objects;
 /**
  * This class is responsible for creating dialog window
  */
-class EditCompanyDialog {
+class EditSearchMetaInfoDialog {
     private final String TITLE = "Редактирование";
 
     private boolean isForEdit;
 
     private Stage dialogWindow;
     private ConfigurationWindow parentWindow;
-    private TextField companyName;
-    private TextField filePath;
+    private TextField companyNameTextField;
+    private TextField filePathTextField;
     private Label nameErrorLabel;
     private Label fileErrorLabel;
-    private Company company;
+    private SearchDetails searchDetails;
 
     /**
      * Class constructor.
      */
-    EditCompanyDialog(ConfigurationWindow parentWindow, Company company) {
+    EditSearchMetaInfoDialog(ConfigurationWindow parentWindow, SearchDetails searchDetails) {
         this.parentWindow = parentWindow;
-        this.company = company;
+        this.searchDetails = searchDetails;
         initEditDialog();
 
-        //is it company for edit?
-        if (Objects.nonNull(company)) {
-            companyName.setText(company.getName());
-            filePath.setText(company.getPath());
+        //is it searchDetails for edit?
+        if (Objects.nonNull(searchDetails)) {
+            companyNameTextField.setText(searchDetails.getName());
+            filePathTextField.setText(searchDetails.getPath());
             isForEdit = true;
         } else {
-            //is for adding new company
-            this.company = new Company();
+            //is for adding new searchDetails
             isForEdit = false;
         }
     }
@@ -65,7 +64,7 @@ class EditCompanyDialog {
     }
 
     /**
-     * Init dialog window for edit company.
+     * Init dialog window for edit searchDetails.
      */
     private void initEditDialog() {
         dialogWindow = new Stage();
@@ -77,7 +76,7 @@ class EditCompanyDialog {
 
         dialogWindow.setTitle(TITLE);
         dialogWindow.initModality(Modality.WINDOW_MODAL);
-        dialogWindow.initOwner(parentWindow.getCompanyTableView().getScene().getWindow());
+        dialogWindow.initOwner(parentWindow.getConfigurationWindow().getScene().getWindow());
         dialogWindow.setResizable(false);
 
         Scene scene = new Scene(dialogRootLayout);
@@ -97,8 +96,9 @@ class EditCompanyDialog {
         saveButton.setDefaultButton(true);
 
         //do not allow user to press the button when there is no input in text fields
-        saveButton.disableProperty().bind(companyName.textProperty().isEqualTo("").
-                or(filePath.textProperty().isEqualTo("")));
+        saveButton.disableProperty().bind(
+                companyNameTextField.textProperty().isEqualTo("").or(filePathTextField.textProperty().isEqualTo(""))
+        );
 
         saveButton.setOnAction(e -> saveAndClose());
         saveButton.setMinWidth(300);
@@ -144,15 +144,15 @@ class EditCompanyDialog {
     private HBox createFinderLine() {
         HBox filePathBox = new HBox();
 
-        filePath = new TextField();
-        filePath.setPrefSize(300, 35);
+        filePathTextField = new TextField();
+        filePathTextField.setPrefSize(300, 35);
         Button loadFilePath = new Button("Обзор...");
         loadFilePath.setPrefSize(100, 35);
         loadFilePath.setOnAction(e -> openFileChooser());
-        HBox.setHgrow(filePath, Priority.ALWAYS);
+        HBox.setHgrow(filePathTextField, Priority.ALWAYS);
 
         filePathBox.getChildren().addAll(
-                filePath,
+                filePathTextField,
                 loadFilePath
         );
 
@@ -176,10 +176,10 @@ class EditCompanyDialog {
         companyNameInfo.setFont(Font.font(14));
         dialogWindowLayout.add(companyNameInfo, 0, 0);
 
-        companyName = new TextField();
-        companyName.setPrefWidth(400);
-        companyName.setPrefHeight(35);
-        dialogWindowLayout.add(companyName, 1, 0);
+        companyNameTextField = new TextField();
+        companyNameTextField.setPrefWidth(400);
+        companyNameTextField.setPrefHeight(35);
+        dialogWindowLayout.add(companyNameTextField, 1, 0);
 
         Label filePathInfo = new Label("Путь к файлу:");
         filePathInfo.setFont(Font.font(14));
@@ -204,17 +204,23 @@ class EditCompanyDialog {
      * Saves configuration and closes the dialog window if input is correct
      */
     private void saveAndClose() {
-        if (Files.exists(Paths.get(filePath.getText())) && validateCompanyName()) {
-            company.setName(companyName.getText());
-            company.setPathToPrice(filePath.getText());
-
-            //if we edit existing company - don't add it again
-            if (!isForEdit) {
-                parentWindow.getCompanies().add(company);
+        if (Files.exists(Paths.get(filePathTextField.getText())) && validateCompanyName()) {
+            //if we edit - remove from cache and put it again
+            if (isForEdit) {
+                SearchModelCache.getOrCreateCache().remove(searchDetails.getName());
             }
+
+            SearchModelCache.getOrCreateCache().put(
+                    companyNameTextField.getText(),
+                    new SearchDetails(
+                            companyNameTextField.getText(),
+                            filePathTextField.getText()
+                    )
+            );
+
             dialogWindow.close();
         }
-        //if company with input name already exists
+        //if searchDetails with input name already exists
         if (!validateCompanyName()) {
             nameErrorLabel.setVisible(true);
         } else {
@@ -223,7 +229,7 @@ class EditCompanyDialog {
     }
 
     /**
-     * Opens file chooser to select path to company file
+     * Opens file chooser to select path to searchDetails file
      */
     private void openFileChooser() {
         FileChooser fileChooser = new FileChooser();
@@ -234,25 +240,22 @@ class EditCompanyDialog {
         fileChooser.getExtensionFilters().add(extensionFilter);
         File file = fileChooser.showOpenDialog(dialogWindow);
         if (Objects.isNull(file)) {
-            filePath.setText("");
+            filePathTextField.setText("");
         } else {
-            filePath.setText(file.getAbsolutePath());
+            filePathTextField.setText(file.getAbsolutePath());
         }
     }
 
     /**
      * Create error label which appears after wrong input to file path text field
      *
-     * @return false - if company name written in text field already exists in company table
+     * @return false - if searchDetails name written in text field already exists in searchDetails table
      * true - if does not exist
      */
-
     private boolean validateCompanyName() {
-        for (String item : parentWindow.getCompanyColumnData()) {
-            if (item.equals(companyName.getText())) {
-                return false;
-            }
-        }
-        return true;
+        return SearchModelCache.getOrCreateCache()
+                .keySet()
+                .stream()
+                .noneMatch(item -> item.equals(companyNameTextField.getText()));
     }
 }
