@@ -13,7 +13,6 @@ public class ExcelTextFinderOnXlsxTest {
     @Before
     public void setUp() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/Prays-list_santekhnika.xlsx");
-        parser.workWithSheet("TDSheet");
     }
 
     @After
@@ -88,7 +87,6 @@ public class ExcelTextFinderOnXlsxTest {
         Assert.assertEquals(6, parser.findMatches("Тететер").size());
 
     }
-
 
     @Test
     public void stringWithSeveralSpacesTest() throws Exception {

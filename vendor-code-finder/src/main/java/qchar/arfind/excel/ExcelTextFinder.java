@@ -32,9 +32,9 @@ public class ExcelTextFinder implements AutoCloseable {
         }
     }
 
-    public List<Row> findMatches(String matchString) {
+    public List<String> findMatches(String matchString) {
         matchString = matchString.toLowerCase();
-        List<Row> result = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         String value;
 
         for (Sheet sheet : excelReader) {
@@ -42,16 +42,13 @@ public class ExcelTextFinder implements AutoCloseable {
                 for (Cell currentCell : currentRow) {
                     switch (currentCell.getCellTypeEnum()) {
                         case STRING:
-                            value = currentCell.getStringCellValue().toLowerCase();
-
-                            //for both strings replace difficult letter
-                            value = value.replace('ё', 'е');
-                            matchString = matchString.replace('ё', 'е');
+                            value = currentCell.getStringCellValue();
 
                             //needed when users add two whitespaces instead of one
                             value = value.trim().replaceAll(" +", " ");
-                            if (value.contains(matchString)) {
-                                result.add(currentRow);
+                            if (value.toLowerCase().replace('ё', 'е').contains(
+                                    matchString.toLowerCase().replace('ё', 'е'))) {
+                                result.add(value);
                             }
                         default:
                             break;

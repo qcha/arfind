@@ -113,6 +113,11 @@ class ConfigurationWindow {
         companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<SearchDetails, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
+        companyColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.2));
+        filePathColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.8));
+        companyColumn.setResizable(false);
+        filePathColumn.setResizable(false);
+
         //noinspection unchecked
         companyTableView.getColumns().addAll(
                 companyColumn,

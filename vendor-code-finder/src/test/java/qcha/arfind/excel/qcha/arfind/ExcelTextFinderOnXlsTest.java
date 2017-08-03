@@ -5,12 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import qchar.arfind.excel.ExcelTextFinder;
-import qchar.arfind.excel.UnknownExcelExtensionException;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
 
 public class ExcelTextFinderOnXlsTest {
 
@@ -19,7 +13,6 @@ public class ExcelTextFinderOnXlsTest {
     @Before
     public void setUp() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/prays.xls");
-        parser.workWithSheet("TDSheet");
     }
 
     @After

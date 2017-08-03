@@ -1,6 +1,5 @@
 package qcha.arfind.excel.qcha.arfind;
 
-import com.google.common.base.VerifyException;
 import org.junit.Assert;
 import org.junit.Test;
 import qchar.arfind.excel.ExcelTextFinder;
@@ -42,16 +41,14 @@ public class ExcelTextFinderBoundaryCases {
         parser = new ExcelTextFinder("src/test/resources/prays.accdb");
     }
 
-    @Test(expected = VerifyException.class)
-    public void verifyExceptionDueToNotSelectedSheetInEmptyXlsFile() throws Exception {
-        //has to throw exception for user to select sheet for this file
+    @Test
+    public void notSelectedSheetInEmptyXlsFile() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/empty.xls");
         Assert.assertEquals(0, parser.findMatches("").size());
     }
 
-    @Test(expected = VerifyException.class)
-    public void verifyExceptionDueToNotSelectedSheetInEmptyXlsxFile() throws Exception {
-        //has to throw exception for user to select sheet for this file
+    @Test
+    public void notSelectedSheetInEmptyXlsxFile() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/empty.xlsx");
         Assert.assertEquals(0, parser.findMatches("").size());
     }
@@ -59,14 +56,12 @@ public class ExcelTextFinderBoundaryCases {
     @Test
     public void emptyXlsFileAndNotEmptySheetTest() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/empty.xls");
-        parser.workWithSheet("TDSheet");
         Assert.assertEquals(0, parser.findMatches("").size());
     }
 
     @Test
     public void emptyXlsxFileAndNotEmptySheetTest() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/empty.xlsx");
-        parser.workWithSheet("TDSheet");
         Assert.assertEquals(0, parser.findMatches("").size());
     }
 }
