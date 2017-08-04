@@ -50,14 +50,7 @@ public class MainApplication extends Application {
 
         companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try {
-                SearchModelCache.saveCacheToFile(companiesCache);
-                Thread.currentThread().join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException("", e);
-            }
-        }));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> SearchModelCache.saveCacheToFile(companiesCache)));
 
         companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
             if (change.wasRemoved()) {
