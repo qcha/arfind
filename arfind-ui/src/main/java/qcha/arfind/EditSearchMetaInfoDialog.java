@@ -222,9 +222,23 @@ class EditSearchMetaInfoDialog {
         }
         //if searchDetails with input name already exists
         if (!validateCompanyName()) {
-            nameErrorLabel.setVisible(true);
+            //if it is not for edit
+            if (!isForEdit) {
+                fileErrorLabel.setVisible(false);
+                nameErrorLabel.setVisible(true);
+            } else {
+                SearchModelCache.getOrCreateCache().put(
+                        companyNameTextField.getText(),
+                        new SearchDetails(
+                                companyNameTextField.getText(),
+                                filePathTextField.getText()
+                        )
+                );
+                dialogWindow.close();
+            }
         } else {
-            fileErrorLabel.setVisible(true);
+                nameErrorLabel.setVisible(false);
+                fileErrorLabel.setVisible(true);
         }
     }
 

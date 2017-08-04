@@ -235,6 +235,10 @@ public class MainApplication extends Application {
         TableColumn<String, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<String, String> filterResultColumn = new TableColumn<>("Результат поиска");
 
+        companyColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.2));
+        filterResultColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.8));
+        companyColumn.setResizable(false);
+        filterResultColumn.setResizable(false);
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
@@ -310,6 +314,8 @@ public class MainApplication extends Application {
         getPrimaryStage().setScene(filteredScene);
         getPrimaryStage().show();
     }
+
+
 
     Stage getPrimaryStage() {
         return primaryStage;

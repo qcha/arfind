@@ -45,7 +45,7 @@ class SearchModelCache {
                 );
             }
         } else {
-            return FXCollections.emptyObservableMap();
+            return FXCollections.observableHashMap();
         }
     }
 }
