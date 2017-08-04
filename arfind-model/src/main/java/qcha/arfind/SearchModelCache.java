@@ -21,10 +21,10 @@ import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.ConfigFileConstants.DEFAULT_CHARSET;
 import static qcha.arfind.utils.Constants.ConfigFileConstants.DEFAULT_FIELD_DELIMITER;
 
-class SearchModelCache {
+public class SearchModelCache {
     private static ObservableMap<String, SearchDetails> cache;
 
-    static synchronized ObservableMap<String, SearchDetails> getOrCreateCache() {
+    public static synchronized ObservableMap<String, SearchDetails> getOrCreateCache() {
         if (Objects.isNull(cache)) {
             cache = createNewCache();
         }
@@ -32,7 +32,7 @@ class SearchModelCache {
         return cache;
     }
 
-    static void saveCacheToFile(Map<String, SearchDetails> cache) {
+    public static void saveCacheToFile(Map<String, SearchDetails> cache) {
         try {
             FileUtils.writeLines(
                     new File(CONFIG_FILENAME),

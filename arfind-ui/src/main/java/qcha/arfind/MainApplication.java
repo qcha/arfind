@@ -20,9 +20,12 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import qcha.arfind.model.SearchDetails;
 import qcha.arfind.model.SearchResult;
+import qchar.arfind.excel.ExcelTextFinder;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
@@ -38,6 +41,7 @@ public class MainApplication extends Application {
     private Stage primaryStage;
     private ObservableList<String> companyNameList;
     private ListView<String> companyListView;
+    private ObservableList<SearchResult> searchResults;
     private TableView<SearchResult> companyTableView;
     private TextField searchLine;
     private List<String> toFind;
@@ -48,9 +52,24 @@ public class MainApplication extends Application {
         this.primaryStage = primaryStage;
         this.companiesCache = SearchModelCache.getOrCreateCache();
 
+        toFind = new ArrayList<>();
+
+        searchResults = FXCollections.observableArrayList();
+
         companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> SearchModelCache.saveCacheToFile(companiesCache)));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            if(!companiesCache.isEmpty()) {
+                SearchModelCache.saveCacheToFile(companiesCache);
+            }
+            else {
+                try {
+                    Files.deleteIfExists(Paths.get(CONFIG_FILENAME));
+                } catch (IOException e) {
+                    throw new RuntimeException("Cannot find file - config.csv", e);
+                }
+            }
+        }));
 
         companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
             if (change.wasRemoved()) {
@@ -134,7 +153,6 @@ public class MainApplication extends Application {
         searchButton.setMinWidth(200);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
-        //todo
         searchButton.setOnAction(e -> showFilteredData());
 
         searcher.getChildren().addAll(
@@ -230,6 +248,8 @@ public class MainApplication extends Application {
     private TableView<SearchResult> createCompanyTableView() {
         companyTableView = new TableView<>();
 
+        companyTableView.setStyle("-fx-font-size: 14px;");
+        companyTableView.setFixedCellSize(45);
         companyTableView.setPrefSize(600, 455);
 
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -247,6 +267,7 @@ public class MainApplication extends Application {
         filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().resultProperty());
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
+        companyTableView.setItems(searchResults);
 
         AnchorPane.setLeftAnchor(companyTableView, 175.0);
         AnchorPane.setBottomAnchor(companyTableView, 75.0);
@@ -258,6 +279,7 @@ public class MainApplication extends Application {
 
     /**
      * Creates informative window when clicking on "About" menu item
+     * @see #createMenuBar()
      */
     private void applicationInfo() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -275,7 +297,11 @@ public class MainApplication extends Application {
     private Button createNewSearchButton() {
         Button searchButton = new Button("Новый поиск");
 
-        searchButton.setOnAction(e -> initMainWindow(primaryStage));
+        searchButton.setOnAction(e -> {
+            searchResults.clear();
+            toFind.clear();
+            initMainWindow(primaryStage);
+        });
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
@@ -292,6 +318,7 @@ public class MainApplication extends Application {
 
     /**
      * New scene which shows filtered data after pressing the "search" button
+     * @see #createSearcher()
      */
 
     private void showFilteredData() {
@@ -317,11 +344,28 @@ public class MainApplication extends Application {
                 DEFAULT_HEIGHT
         );
 
-        getPrimaryStage().setScene(filteredScene);
-        getPrimaryStage().show();
+        loadFilteredData();
+
+        primaryStage.setScene(filteredScene);
+        primaryStage.show();
     }
 
-
+    /**
+     * Loads data to show it in a new scene {@link #showFilteredData}
+     */
+    private void loadFilteredData() {
+        for (String name : toFind) {
+            try {
+                ExcelTextFinder finder = new ExcelTextFinder(SearchModelCache.getOrCreateCache().get(name).getPath());
+                for(String matchString : finder.findMatches(searchLine.getText())) {
+                    searchResults.add(new SearchResult(name, matchString));
+                }
+                companyTableView.setItems(searchResults);
+            } catch (IOException e) {
+                throw new RuntimeException("Cannot load ExcelTextFinder", e);
+            }
+        }
+    }
 
     Stage getPrimaryStage() {
         return primaryStage;
