@@ -19,6 +19,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import qcha.arfind.model.SearchDetails;
+import qcha.arfind.model.SearchResult;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -37,7 +38,7 @@ public class MainApplication extends Application {
     private Stage primaryStage;
     private ObservableList<String> companyNameList;
     private ListView<String> companyListView;
-    private TableView<String> companyTableView;
+    private TableView<SearchResult> companyTableView;
     private TextField searchLine;
     private List<String> toFind;
     private ObservableMap<String, SearchDetails> companiesCache;
@@ -48,6 +49,15 @@ public class MainApplication extends Application {
         this.companiesCache = SearchModelCache.getOrCreateCache();
 
         companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                SearchModelCache.saveCacheToFile(companiesCache);
+                Thread.currentThread().join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException("", e);
+            }
+        }));
 
         companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
             if (change.wasRemoved()) {
@@ -224,7 +234,7 @@ public class MainApplication extends Application {
      *
      * @return TableView with 3 columns - company, item and price.
      */
-    private TableView<String> createCompanyTableView() {
+    private TableView<SearchResult> createCompanyTableView() {
         companyTableView = new TableView<>();
 
         companyTableView.setPrefSize(600, 455);
@@ -232,13 +242,16 @@ public class MainApplication extends Application {
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         companyTableView.setFocusTraversable(false);
 
-        TableColumn<String, String> companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<String, String> filterResultColumn = new TableColumn<>("Результат поиска");
+        TableColumn<SearchResult, String> companyColumn = new TableColumn<>("Название фирмы");
+        TableColumn<SearchResult, String> filterResultColumn = new TableColumn<>("Результат поиска");
 
         companyColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.2));
         filterResultColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.8));
         companyColumn.setResizable(false);
         filterResultColumn.setResizable(false);
+
+        companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().resultProperty());
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
 
@@ -273,7 +286,7 @@ public class MainApplication extends Application {
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(50);
+        searchButton.setMinHeight(75);
         searchButton.setMinWidth(DEFAULT_WIDTH);
         searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
 
