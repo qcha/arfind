@@ -11,5 +11,11 @@
 
     <artifactId>arfind-model</artifactId>
 
-
+    <dependencies>
+        <dependency>
+            <groupId>qcha.arfind</groupId>
+            <artifactId>arfind-commons</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>

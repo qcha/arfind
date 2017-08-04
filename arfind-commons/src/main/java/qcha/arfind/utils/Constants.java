@@ -9,8 +9,8 @@ public final class Constants {
 
     public static final class ConfigFileConstants {
         public static final String CONFIG_FILENAME = "config.csv";
-        static final String DEFAULT_CHARSET = "UTF-8";
-        static final String DEFAULT_FIELD_DELIMITER = ";";
+        public static final String DEFAULT_CHARSET = "UTF-8";
+        public static final String DEFAULT_FIELD_DELIMITER = ";";
 
         private ConfigFileConstants() {
             throw new AssertionError("Don't create instance of constant class");
