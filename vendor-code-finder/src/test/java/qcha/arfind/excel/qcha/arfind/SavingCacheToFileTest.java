@@ -19,8 +19,8 @@ public class SavingCacheToFileTest {
     @Before
     public void setUp() throws Exception {
         companiesCache = SearchModelCache.getOrCreateCache();
-        companiesCache.put(("Acer"), new SearchDetails("Acer", "C:\\JavaTest\\new year.xlsx"));
-        companiesCache.put(("Asus"), new SearchDetails("Asus", "C:\\JavaTest\\new year.xlsx"));
+        companiesCache.put(("Acer"), new SearchDetails("Acer", "empty.xls"));
+        companiesCache.put(("Asus"), new SearchDetails("Asus", "empty.xlsx"));
     }
 
     @Test
