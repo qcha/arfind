@@ -19,16 +19,20 @@ public class ExcelTextFinder implements AutoCloseable {
     private final String filename;
     private Workbook excelReader;
 
-    public ExcelTextFinder(String filename) throws IOException {
+    public ExcelTextFinder(String filename) {
         this.filename = filename;
-        switch (excelExtension(filename)) {
-            case XLSX:
-                excelReader = new XSSFWorkbook(new FileInputStream(filename));
-                break;
-            default:
-                //default - xls
-                excelReader = new HSSFWorkbook(new FileInputStream(filename));
-                break;
+        try {
+            switch (excelExtension(filename)) {
+                case XLSX:
+                    excelReader = new XSSFWorkbook(new FileInputStream(filename));
+                    break;
+                default:
+                    //default - xls
+                    excelReader = new HSSFWorkbook(new FileInputStream(filename));
+                    break;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(String.format("Can't work with file: %s, cause: %s", filename, e), e);
         }
     }
 

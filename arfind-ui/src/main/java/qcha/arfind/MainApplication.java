@@ -44,25 +44,23 @@ public class MainApplication extends Application {
     private ObservableList<SearchResult> searchResults;
     private TableView<SearchResult> companyTableView;
     private TextField searchLine;
-    private List<String> toFind;
+    private List<String> sourcesForSearch;
     private ObservableMap<String, SearchDetails> companiesCache;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.companiesCache = SearchModelCache.getOrCreateCache();
-
-        toFind = new ArrayList<>();
+        this.sourcesForSearch = new ArrayList<>();
 
         searchResults = FXCollections.observableArrayList();
 
         companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if(!companiesCache.isEmpty()) {
+            if (!companiesCache.isEmpty()) {
                 SearchModelCache.saveCacheToFile(companiesCache);
-            }
-            else {
+            } else {
                 try {
                     Files.deleteIfExists(Paths.get(CONFIG_FILENAME));
                 } catch (IOException e) {
@@ -221,11 +219,11 @@ public class MainApplication extends Application {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) -> {
                         if (isNowSelected) {
-                            toFind.add(item);
+                            sourcesForSearch.add(item);
                         }
 
                         if (wasSelected) {
-                            toFind.remove(item);
+                            sourcesForSearch.remove(item);
                         }
                     }
             );
@@ -278,18 +276,6 @@ public class MainApplication extends Application {
     }
 
     /**
-     * Creates informative window when clicking on "About" menu item
-     * @see #createMenuBar()
-     */
-    private void applicationInfo() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Информация о программе");
-        alert.setHeaderText(null);
-        alert.setContentText("Данная программа производит поиск товаров по артикулам из excel-файла.");
-        alert.showAndWait();
-    }
-
-    /**
      * Creates button to apply a new search
      *
      * @return Button which allows user to apply a new search
@@ -299,7 +285,7 @@ public class MainApplication extends Application {
 
         searchButton.setOnAction(e -> {
             searchResults.clear();
-            toFind.clear();
+            sourcesForSearch.clear();
             initMainWindow(primaryStage);
         });
 
@@ -318,6 +304,7 @@ public class MainApplication extends Application {
 
     /**
      * New scene which shows filtered data after pressing the "search" button
+     *
      * @see #createSearcher()
      */
 
@@ -354,17 +341,27 @@ public class MainApplication extends Application {
      * Loads data to show it in a new scene {@link #showFilteredData}
      */
     private void loadFilteredData() {
-        for (String name : toFind) {
-            try {
-                ExcelTextFinder finder = new ExcelTextFinder(SearchModelCache.getOrCreateCache().get(name).getPath());
-                for(String matchString : finder.findMatches(searchLine.getText())) {
-                    searchResults.add(new SearchResult(name, matchString));
-                }
-                companyTableView.setItems(searchResults);
-            } catch (IOException e) {
-                throw new RuntimeException("Cannot load ExcelTextFinder", e);
-            }
-        }
+        sourcesForSearch.forEach(source -> {
+            SearchDetails searchDetails = SearchModelCache.getOrCreateCache().get(source);
+            ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
+
+            finder.findMatches(searchLine.getText())
+                    .forEach(matchString ->
+                            searchResults.add(new SearchResult(source, matchString))
+                    );
+        });
+    }
+
+    /**
+     * Creates informative window when clicking on "About" menu item
+     *
+     * @see #createMenuBar()
+     */
+    private void applicationInfo() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Информация о программе");
+        alert.setContentText("Данная программа производит поиск строки в заданных excel-файлах.");
+        alert.showAndWait();
     }
 
     Stage getPrimaryStage() {
