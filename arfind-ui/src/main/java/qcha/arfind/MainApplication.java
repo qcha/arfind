@@ -2,6 +2,7 @@ package qcha.arfind;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -44,14 +45,15 @@ public class MainApplication extends Application {
     private ObservableList<SearchResult> searchResults;
     private TableView<SearchResult> companyTableView;
     private TextField searchLine;
-    private List<String> sourcesForSearch;
+    private ObservableList<String> sourcesForSearch;
     private ObservableMap<String, SearchDetails> companiesCache;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
         this.companiesCache = SearchModelCache.getOrCreateCache();
-        this.sourcesForSearch = new ArrayList<>();
+
+        sourcesForSearch = FXCollections.observableArrayList();
 
         searchResults = FXCollections.observableArrayList();
 
@@ -143,7 +145,8 @@ public class MainApplication extends Application {
 
         Button searchButton = new Button("Поиск");
 
-        searchButton.disableProperty().bind(searchLine.textProperty().isEqualTo(""));
+        searchButton.disableProperty().bind(searchLine.textProperty().isEqualTo("").or(
+                Bindings.size(sourcesForSearch).isEqualTo(0)));
 
         searchButton.setFocusTraversable(false);
         searchButton.setDefaultButton(true);
