@@ -90,35 +90,42 @@ class EditSearchMetaInfoDialog {
      * @return HBox
      */
     private HBox createButtonBarBox() {
-        HBox buttonBarBox = new HBox(10);
+        return new HBox(10) {
+            {
+                Button saveButton = new Button("Сохранить") {
+                    {
+                        setDefaultButton(true);
+                        //do not allow user to press the button when there is no input in text fields
+                        disableProperty().bind(
+                                companyNameTextField.textProperty()
+                                        .isEqualTo("")
+                                        .or(filePathTextField.textProperty()
+                                                .isEqualTo("")));
 
-        Button saveButton = new Button("Сохранить");
-        saveButton.setDefaultButton(true);
+                        setOnAction(e -> saveAndClose());
+                        setMinWidth(300);
+                        setMinHeight(75);
+                        setFont(Font.font(16));
+                    }
+                };
 
-        //do not allow user to press the button when there is no input in text fields
-        saveButton.disableProperty().bind(
-                companyNameTextField.textProperty().isEqualTo("").or(filePathTextField.textProperty().isEqualTo(""))
-        );
+                Button cancelButton = new Button("Отмена") {
+                    {
+                        setOnAction(e -> dialogWindow.close());
+                        setMinWidth(300);
+                        setMinHeight(75);
+                        setFont(Font.font(16));
+                    }
+                };
 
-        saveButton.setOnAction(e -> saveAndClose());
-        saveButton.setMinWidth(300);
-        saveButton.setMinHeight(75);
-        saveButton.setFont(Font.font(16));
-
-        Button cancelButton = new Button("Отмена");
-        cancelButton.setOnAction(e -> dialogWindow.close());
-        cancelButton.setMinWidth(300);
-        cancelButton.setMinHeight(75);
-        cancelButton.setFont(Font.font(16));
-
-        GridPane.setColumnSpan(buttonBarBox, 2);
-        buttonBarBox.setAlignment(Pos.BOTTOM_LEFT);
-        buttonBarBox.getChildren().addAll(
-                saveButton,
-                cancelButton
-        );
-
-        return buttonBarBox;
+                GridPane.setColumnSpan(this, 2);
+                setAlignment(Pos.BOTTOM_LEFT);
+                getChildren().addAll(
+                        saveButton,
+                        cancelButton
+                );
+            }
+        };
     }
 
     /**
@@ -237,8 +244,8 @@ class EditSearchMetaInfoDialog {
                 dialogWindow.close();
             }
         } else {
-                nameErrorLabel.setVisible(false);
-                fileErrorLabel.setVisible(true);
+            nameErrorLabel.setVisible(false);
+            fileErrorLabel.setVisible(true);
         }
     }
 

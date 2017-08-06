@@ -26,8 +26,6 @@ import qchar.arfind.excel.ExcelTextFinder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
@@ -54,9 +52,7 @@ public class MainApplication extends Application {
         this.companiesCache = SearchModelCache.getOrCreateCache();
 
         sourcesForSearch = FXCollections.observableArrayList();
-
         searchResults = FXCollections.observableArrayList();
-
         companyNameList = FXCollections.observableArrayList(companiesCache.keySet());
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -103,8 +99,8 @@ public class MainApplication extends Application {
 
         mainWindow.getChildren().addAll(
                 createSearcher(),
-                createCompanyListView(),
-                createCompanyTableView()
+                companyListView = createCompanyListView(),
+                companyTableView = createCompanyTableView()
         );
 
         Scene mainScene = new Scene(
@@ -127,13 +123,16 @@ public class MainApplication extends Application {
     private HBox createSearcher() {
         HBox searcher = new HBox();
 
-        searchLine = new TextField();
+        searchLine = new TextField() {
+            {
+                setPromptText("Введите текст для поиска");
+                setFont(Font.font(18));
+                setAlignment(Pos.CENTER);
+                setFocusTraversable(false);
+                setPrefHeight(75);
+            }
+        };
 
-        searchLine.setPromptText("Введите текст для поиска");
-        searchLine.setFont(Font.font(18));
-        searchLine.setAlignment(Pos.CENTER);
-        searchLine.setFocusTraversable(false);
-        searchLine.setPrefHeight(75);
         HBox.setHgrow(searchLine, Priority.ALWAYS);
 
         searcher.setMinHeight(75);
@@ -142,19 +141,18 @@ public class MainApplication extends Application {
         AnchorPane.setBottomAnchor(searcher, 0.0);
         AnchorPane.setRightAnchor(searcher, 0.0);
 
-
-        Button searchButton = new Button("Поиск");
-
-        searchButton.disableProperty().bind(searchLine.textProperty().isEqualTo("").or(
-                Bindings.size(sourcesForSearch).isEqualTo(0)));
-
-        searchButton.setFocusTraversable(false);
-        searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(75);
-        searchButton.setMinWidth(200);
-        searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
-
-        searchButton.setOnAction(e -> showFilteredData());
+        Button searchButton = new Button("Поиск") {
+            {
+                disableProperty().bind(searchLine.textProperty().isEqualTo("").or(
+                        Bindings.size(sourcesForSearch).isEqualTo(0)));
+                setFocusTraversable(false);
+                setDefaultButton(true);
+                setMinHeight(75);
+                setMinWidth(200);
+                setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+                setOnAction(e -> showFilteredData());
+            }
+        };
 
         searcher.getChildren().addAll(
                 searchLine,
@@ -209,29 +207,30 @@ public class MainApplication extends Application {
      * @return ListView company names.
      */
     private ListView<String> createCompanyListView() {
-        companyListView = new ListView<>();
+        ListView<String> companyListView = new ListView<String>() {
+            {
+                setStyle("-fx-font-size: 16px;");
+                setFocusTraversable(false);
+                setItems(companyNameList);
+                setFixedCellSize(55);
+                setPrefSize(440, 455);
 
-        companyListView.setStyle("-fx-font-size: 16px;");
-        companyListView.setFocusTraversable(false);
-        companyListView.setItems(companyNameList);
+                setCellFactory(CheckBoxListCell.forListView(item -> {
+                    BooleanProperty observable = new SimpleBooleanProperty();
+                    observable.addListener((obs, wasSelected, isNowSelected) -> {
+                                if (isNowSelected) {
+                                    sourcesForSearch.add(item);
+                                }
 
-        companyListView.setFixedCellSize(55);
-        companyListView.setPrefSize(440, 455);
-
-        companyListView.setCellFactory(CheckBoxListCell.forListView(item -> {
-            BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isNowSelected) -> {
-                        if (isNowSelected) {
-                            sourcesForSearch.add(item);
-                        }
-
-                        if (wasSelected) {
-                            sourcesForSearch.remove(item);
-                        }
-                    }
-            );
-            return observable;
-        }));
+                                if (wasSelected) {
+                                    sourcesForSearch.remove(item);
+                                }
+                            }
+                    );
+                    return observable;
+                }));
+            }
+        };
 
         AnchorPane.setRightAnchor(companyListView, 175.0);
         AnchorPane.setBottomAnchor(companyListView, 75.0);
@@ -247,14 +246,15 @@ public class MainApplication extends Application {
      * @return TableView with 3 columns - company, item and price.
      */
     private TableView<SearchResult> createCompanyTableView() {
-        companyTableView = new TableView<>();
-
-        companyTableView.setStyle("-fx-font-size: 14px;");
-        companyTableView.setFixedCellSize(45);
-        companyTableView.setPrefSize(600, 455);
-
-        companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        companyTableView.setFocusTraversable(false);
+        TableView<SearchResult> companyTableView = new TableView<SearchResult>() {
+            {
+                setStyle("-fx-font-size: 14px;");
+                setFixedCellSize(45);
+                setPrefSize(600, 455);
+                setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+                setFocusTraversable(false);
+            }
+        };
 
         TableColumn<SearchResult, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<SearchResult, String> filterResultColumn = new TableColumn<>("Результат поиска");
@@ -284,19 +284,21 @@ public class MainApplication extends Application {
      * @return Button which allows user to apply a new search
      */
     private Button createNewSearchButton() {
-        Button searchButton = new Button("Новый поиск");
+        Button searchButton = new Button("Новый поиск") {
+            {
+                setOnAction(e -> {
+                    searchResults.clear();
+                    sourcesForSearch.clear();
+                    initMainWindow(primaryStage);
+                });
 
-        searchButton.setOnAction(e -> {
-            searchResults.clear();
-            sourcesForSearch.clear();
-            initMainWindow(primaryStage);
-        });
-
-        searchButton.setFocusTraversable(false);
-        searchButton.setDefaultButton(true);
-        searchButton.setMinHeight(75);
-        searchButton.setMinWidth(DEFAULT_WIDTH);
-        searchButton.setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+                setFocusTraversable(false);
+                setDefaultButton(true);
+                setMinHeight(75);
+                setMinWidth(DEFAULT_WIDTH);
+                setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+            }
+        };
 
         AnchorPane.setLeftAnchor(searchButton, 0.0);
         AnchorPane.setBottomAnchor(searchButton, 0.0);
