@@ -42,7 +42,6 @@ public class MainApplication extends Application {
     private ListView<String> companyListView;
     private ObservableList<SearchResult> searchResults;
     private TableView<SearchResult> companyTableView;
-    private TextField searchLine;
     private ObservableList<String> sourcesForSearch;
     private ObservableMap<String, SearchDetails> companiesCache;
 
@@ -123,7 +122,7 @@ public class MainApplication extends Application {
     private HBox createSearcher() {
         HBox searcher = new HBox();
 
-        searchLine = new TextField() {
+        TextField searchLine = new TextField() {
             {
                 setPromptText("Введите текст для поиска");
                 setFont(Font.font(18));
@@ -150,7 +149,10 @@ public class MainApplication extends Application {
                 setMinHeight(75);
                 setMinWidth(200);
                 setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
-                setOnAction(e -> showFilteredData());
+                setOnAction(e -> {
+                    findMatchesInSources(searchLine.getText());
+                    showFilteredData();
+                });
             }
         };
 
@@ -336,8 +338,6 @@ public class MainApplication extends Application {
                 DEFAULT_HEIGHT
         );
 
-        loadFilteredData();
-
         primaryStage.setScene(filteredScene);
         primaryStage.show();
     }
@@ -345,12 +345,12 @@ public class MainApplication extends Application {
     /**
      * Loads data to show it in a new scene {@link #showFilteredData}
      */
-    private void loadFilteredData() {
+    private void findMatchesInSources(String match) {
         sourcesForSearch.forEach(source -> {
             SearchDetails searchDetails = SearchModelCache.getOrCreateCache().get(source);
             ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
 
-            finder.findMatches(searchLine.getText())
+            finder.findMatches(match)
                     .forEach(matchString ->
                             searchResults.add(new SearchResult(source, matchString))
                     );
