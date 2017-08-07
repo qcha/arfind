@@ -393,9 +393,7 @@ public class MainApplication extends Application {
             ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
 
             finder.findMatches(match)
-                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString
-                            )
-                    ));
+                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString)));
         });
     }
 
