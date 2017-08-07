@@ -275,7 +275,7 @@ public class MainApplication extends Application {
 
         filterResultColumn.setCellFactory( col -> {
             listView = new ListView<>();
-            listView.getStylesheets().add("qcha/arfind/view/cell-style.css");
+            listView.getStylesheets().add("/src/main/resources/cell-style.css");
             listView.setOrientation(Orientation.HORIZONTAL);
             listView.setCellFactory(lv -> new ListCell<String>() {
                 @Override
@@ -370,6 +370,8 @@ public class MainApplication extends Application {
                 DEFAULT_WIDTH,
                 DEFAULT_HEIGHT
         );
+
+        filteredScene.getStylesheets().add(getClass().getResource("/cell-style.css").toExternalForm());
 
         primaryStage.setScene(filteredScene);
         primaryStage.show();
