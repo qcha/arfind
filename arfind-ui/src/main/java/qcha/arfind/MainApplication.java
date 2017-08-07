@@ -41,7 +41,6 @@ public class MainApplication extends Application {
 
     private Stage primaryStage;
     private ObservableList<String> companyNameList;
-    private ListView<String> companyListView;
     private ObservableList<SearchResult> searchResults;
     private TableView<SearchResult> companyTableView;
     private ObservableList<String> sourcesForSearch;
@@ -101,7 +100,7 @@ public class MainApplication extends Application {
 
         mainWindow.getChildren().addAll(
                 createSearcher(),
-                companyListView = createCompanyListView(),
+                initCompanyListView(),
                 companyTableView = createCompanyTableView()
         );
 
@@ -211,7 +210,7 @@ public class MainApplication extends Application {
      *
      * @return ListView company names.
      */
-    private ListView<String> createCompanyListView() {
+    private ListView<String> initCompanyListView() {
         ListView<String> companyListView = new ListView<String>() {
             {
                 setStyle("-fx-font-size: 16px;");
