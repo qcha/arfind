@@ -19,15 +19,18 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import qcha.arfind.model.SearchDetails;
 import qcha.arfind.model.SearchResult;
 import qchar.arfind.excel.ExcelTextFinder;
 
+import javax.print.DocFlavor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Objects;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
@@ -46,7 +49,6 @@ public class MainApplication extends Application {
     private TableView<SearchResult> companyTableView;
     private ObservableList<String> sourcesForSearch;
     private ObservableMap<String, SearchDetails> companiesCache;
-    private ListView<String> listView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -217,7 +219,7 @@ public class MainApplication extends Application {
                 setStyle("-fx-font-size: 16px;");
                 setFocusTraversable(false);
                 setItems(companyNameList);
-                setFixedCellSize(55);
+                setFixedCellSize(65);
                 setPrefSize(440, 455);
 
                 setCellFactory(CheckBoxListCell.forListView(item -> {
@@ -254,7 +256,7 @@ public class MainApplication extends Application {
         TableView<SearchResult> companyTableView = new TableView<SearchResult>() {
             {
                 setStyle("-fx-font-size: 14px;");
-                setFixedCellSize(45);
+                setFixedCellSize(55);
                 setPrefSize(600, 455);
                 setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
                 setFocusTraversable(false);
@@ -273,26 +275,31 @@ public class MainApplication extends Application {
 
         filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().resultProperty());
 
-        filterResultColumn.setCellFactory( col -> {
-            listView = new ListView<>();
-            listView.getStylesheets().add("qcha/arfind/view/cell-style.css");
+        filterResultColumn.setCellFactory(col -> {
+            ListView<String> listView = new ListView<>();
             listView.setOrientation(Orientation.HORIZONTAL);
-            listView.setCellFactory(lv -> new ListCell<String>() {
-                @Override
-                public void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if(!empty) {
-                        setText(item);
-                    }
-                }
-            });
+
             return new TableCell<SearchResult, List<String>>() {
                 @Override
-                    public void updateItem(List<String> data, boolean empty) {
+                public void updateItem(List<String> data, boolean empty) {
+                    listView.setCellFactory(param -> new ListCell<String>() {
+                        {
+                            prefWidthProperty().bind(listView.widthProperty().divide(data.size()));
+                            setMaxWidth(Control.USE_PREF_SIZE);
+                        }
+                        @Override
+                        protected void updateItem(String item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (Objects.nonNull(item) && !empty) {
+                                setText(item);
+                            } else {
+                                setText(null);
+                            }
+                        }
+                    });
                     super.updateItem(data, empty);
-                    if (!empty) {
-                        //noinspection unchecked
-                        listView.getItems().setAll(data);
+                    if (Objects.nonNull(data) && !empty ) {
+                        listView.setItems(FXCollections.observableArrayList(data));
                         setGraphic(listView);
                     } else {
                         setGraphic(null);
@@ -371,6 +378,8 @@ public class MainApplication extends Application {
                 DEFAULT_HEIGHT
         );
 
+        filteredScene.getStylesheets().add(getClass().getResource("/cell-style.css").toExternalForm());
+
         primaryStage.setScene(filteredScene);
         primaryStage.show();
     }
@@ -384,9 +393,9 @@ public class MainApplication extends Application {
             ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
 
             finder.findMatches(match)
-                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString)
+                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString
                             )
-                    );
+                    ));
         });
     }
 
