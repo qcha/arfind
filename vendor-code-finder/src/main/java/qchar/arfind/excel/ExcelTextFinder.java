@@ -1,10 +1,7 @@
 package qchar.arfind.excel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileInputStream;
@@ -36,9 +33,9 @@ public class ExcelTextFinder implements AutoCloseable {
         }
     }
 
-    public List<String> findMatches(String matchString) {
+    public List<List<String>> findMatches(String matchString) {
         matchString = matchString.toLowerCase();
-        List<String> result = new ArrayList<>();
+        List<List<String>> result = new ArrayList<>();
         String value;
 
         for (Sheet sheet : excelReader) {
@@ -47,20 +44,19 @@ public class ExcelTextFinder implements AutoCloseable {
                     switch (currentCell.getCellTypeEnum()) {
                         case STRING:
                             value = currentCell.getStringCellValue();
-
                             //needed when users add two whitespaces instead of one
                             value = value.trim().replaceAll(" +", " ");
                             if (value.toLowerCase().replace('ё', 'е').contains(
                                     matchString.toLowerCase().replace('ё', 'е'))) {
-                                result.add(value);
+                                result.add(convertRowDataToStringRepresentation(currentRow));
                             }
+                            break;
                         default:
                             break;
                     }
                 }
             }
         }
-
         return result;
     }
 
@@ -92,4 +88,12 @@ public class ExcelTextFinder implements AutoCloseable {
         XLSX
     }
 
+    private static List<String> convertRowDataToStringRepresentation(Row row) {
+        DataFormatter dataFormatter = new DataFormatter();
+        List<String> rowData = new ArrayList<>();
+        for(Cell cell : row) {
+            rowData.add(dataFormatter.formatCellValue(cell));
+        }
+        return rowData;
+    }
 }

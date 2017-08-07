@@ -1,15 +1,19 @@
 package qcha.arfind.model;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.List;
+
 public class SearchResult {
     private StringProperty name;
-    private StringProperty result;
+    private ObjectProperty<List<String>> result;
 
-    public SearchResult(String name, String result) {
+    public SearchResult(String name, List<String> result) {
         this.name = new SimpleStringProperty(name);
-        this.result = new SimpleStringProperty(result);
+        this.result = new SimpleObjectProperty<>(result);
     }
 
     public String getName() {
@@ -24,15 +28,15 @@ public class SearchResult {
         return name;
     }
 
-    public String getResult() {
+    public List<String> getResult() {
         return result.get();
     }
 
-    public void setResult(String result) {
+    public void setResult(List<String> result) {
         this.result.set(result);
     }
 
-    public StringProperty resultProperty() {
+    public ObjectProperty<List<String>> resultProperty() {
         return result;
     }
 }

@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -26,6 +27,7 @@ import qchar.arfind.excel.ExcelTextFinder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
@@ -44,6 +46,7 @@ public class MainApplication extends Application {
     private TableView<SearchResult> companyTableView;
     private ObservableList<String> sourcesForSearch;
     private ObservableMap<String, SearchDetails> companiesCache;
+    private ListView<String> listView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -259,7 +262,7 @@ public class MainApplication extends Application {
         };
 
         TableColumn<SearchResult, String> companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<SearchResult, String> filterResultColumn = new TableColumn<>("Результат поиска");
+        TableColumn<SearchResult, List<String>> filterResultColumn = new TableColumn<>("Результат поиска");
 
         companyColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.2));
         filterResultColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.8));
@@ -267,7 +270,37 @@ public class MainApplication extends Application {
         filterResultColumn.setResizable(false);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+
         filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().resultProperty());
+
+        filterResultColumn.setCellFactory( col -> {
+            listView = new ListView<>();
+            listView.getStylesheets().add("qcha/arfind/view/cell-style.css");
+            listView.setOrientation(Orientation.HORIZONTAL);
+            listView.setCellFactory(lv -> new ListCell<String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(!empty) {
+                        setText(item);
+                    }
+                }
+            });
+            return new TableCell<SearchResult, List<String>>() {
+                @Override
+                    public void updateItem(List<String> data, boolean empty) {
+                    super.updateItem(data, empty);
+                    if (!empty) {
+                        //noinspection unchecked
+                        listView.getItems().setAll(data);
+                        setGraphic(listView);
+                    } else {
+                        setGraphic(null);
+                    }
+                }
+            };
+        });
+
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
         companyTableView.setItems(searchResults);
@@ -351,8 +384,8 @@ public class MainApplication extends Application {
             ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
 
             finder.findMatches(match)
-                    .forEach(matchString ->
-                            searchResults.add(new SearchResult(source, matchString))
+                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString)
+                            )
                     );
         });
     }
