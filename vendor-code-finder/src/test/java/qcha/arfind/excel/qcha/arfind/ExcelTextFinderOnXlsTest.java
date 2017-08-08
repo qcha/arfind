@@ -134,4 +134,24 @@ public class ExcelTextFinderOnXlsTest {
         Assert.assertEquals(1, parser.findMatches("Вагонка сорта В -2.1м").size());
     }
 
+    @Test
+    public void strangeBehaviourWithCustomCellOne() throws Exception {
+        parser = new ExcelTextFinder("src/test/resources/test.xls");
+        Assert.assertEquals(2, parser.findMatches("руб").size());
+
+    }
+
+    @Test
+    public void strangeBehaviourWithCustomCellTwo() throws Exception {
+        parser = new ExcelTextFinder("src/test/resources/test.xls");
+        Assert.assertEquals(1, parser.findMatches("650").size());
+
+    }
+
+    @Test
+    public void strangeBehaviourWithCustomCellThree() throws Exception {
+        parser = new ExcelTextFinder("src/test/resources/test.xls");
+        Assert.assertEquals(1, parser.findMatches("510").size());
+
+    }
 }
