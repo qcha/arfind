@@ -4,14 +4,13 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-
-import java.util.List;
+import javafx.scene.control.ListView;
 
 public class SearchResult {
     private StringProperty name;
-    private ObjectProperty<List<String>> result;
+    private ObjectProperty<ListView<String>> result;
 
-    public SearchResult(String name, List<String> result) {
+    public SearchResult(String name, ListView<String> result) {
         this.name = new SimpleStringProperty(name);
         this.result = new SimpleObjectProperty<>(result);
     }
@@ -28,15 +27,15 @@ public class SearchResult {
         return name;
     }
 
-    public List<String> getResult() {
+    public ListView<String> getResult() {
         return result.get();
     }
 
-    public void setResult(List<String> result) {
+    public void setResult(ListView<String> result) {
         this.result.set(result);
     }
 
-    public ObjectProperty<List<String>> resultProperty() {
+    public ObjectProperty<ListView<String>> resultProperty() {
         return result;
     }
 }

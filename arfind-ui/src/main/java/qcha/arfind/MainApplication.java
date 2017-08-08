@@ -19,13 +19,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import qcha.arfind.model.SearchDetails;
 import qcha.arfind.model.SearchResult;
+import qcha.arfind.view.ListViewConfiguration;
 import qchar.arfind.excel.ExcelTextFinder;
 
-import javax.print.DocFlavor;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -255,7 +254,7 @@ public class MainApplication extends Application {
     private TableView<SearchResult> createCompanyTableView() {
         TableView<SearchResult> companyTableView = new TableView<SearchResult>() {
             {
-                setStyle("-fx-font-size: 14px;");
+                setStyle("-fx-font-size: 16px;");
                 setFixedCellSize(55);
                 setPrefSize(600, 455);
                 setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -264,49 +263,17 @@ public class MainApplication extends Application {
         };
 
         TableColumn<SearchResult, String> companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<SearchResult, List<String>> filterResultColumn = new TableColumn<>("Результат поиска");
+        TableColumn<SearchResult, ListView<String>> filterResultColumn = new TableColumn<>("Результат поиска");
 
         companyColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.2));
         filterResultColumn.prefWidthProperty().bind(companyTableView.widthProperty().multiply(0.8));
+
         companyColumn.setResizable(false);
         filterResultColumn.setResizable(false);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().resultProperty());
-
-        filterResultColumn.setCellFactory(col -> {
-            ListView<String> listView = new ListView<>();
-            listView.setOrientation(Orientation.HORIZONTAL);
-
-            return new TableCell<SearchResult, List<String>>() {
-                @Override
-                public void updateItem(List<String> data, boolean empty) {
-                    listView.setCellFactory(param -> new ListCell<String>() {
-                        {
-                            prefWidthProperty().bind(listView.widthProperty().divide(data.size()));
-                            setMaxWidth(Control.USE_PREF_SIZE);
-                        }
-                        @Override
-                        protected void updateItem(String item, boolean empty) {
-                            super.updateItem(item, empty);
-                            if (Objects.nonNull(item) && !empty) {
-                                setText(item);
-                            } else {
-                                setText(null);
-                            }
-                        }
-                    });
-                    super.updateItem(data, empty);
-                    if (Objects.nonNull(data) && !empty ) {
-                        listView.setItems(FXCollections.observableArrayList(data));
-                        setGraphic(listView);
-                    } else {
-                        setGraphic(null);
-                    }
-                }
-            };
-        });
 
         //noinspection unchecked
         companyTableView.getColumns().addAll(companyColumn, filterResultColumn);
@@ -393,9 +360,10 @@ public class MainApplication extends Application {
             ExcelTextFinder finder = new ExcelTextFinder(searchDetails.getPath());
 
             finder.findMatches(match)
-                    .forEach(matchString -> searchResults.add(new SearchResult(source, matchString
-                            )
-                    ));
+                    .forEach(matchString -> searchResults.add(new SearchResult(
+                            source,
+                            new ListViewConfiguration().listViewConfiguration(matchString)))
+                    );
         });
     }
 
