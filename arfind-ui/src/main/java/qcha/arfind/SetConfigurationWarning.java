@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
+//todo rewrite it
 /**
  * This class is responsible for creating warning window and asks user to set configuration
  */
@@ -20,13 +21,13 @@ class SetConfigurationWarning {
     private final double DEFAULT_WIDTH = 0.7 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
     private Stage warningWindow;
-    private MainApplication mainApplication;
+//    private MainApplication mainApplication;
 
     /**
      * Class constructor.
      */
-    SetConfigurationWarning(MainApplication mainApplication) {
-        this.mainApplication = mainApplication;
+    SetConfigurationWarning() {
+//        this.mainApplication = mainApplication;
 
         warningWindow = new Stage();
 
@@ -38,7 +39,7 @@ class SetConfigurationWarning {
         Scene mainScene = new Scene(layout);
         warningWindow.setScene(mainScene);
         warningWindow.setResizable(false);
-        warningWindow.setOnCloseRequest(e -> mainApplication.initMainWindow(mainApplication.getPrimaryStage()));
+//        warningWindow.setOnCloseRequest(e -> mainApplication.initMainWindow(mainApplication.getPrimaryStage()));
 
         warningWindow.show();
     }
@@ -59,8 +60,8 @@ class SetConfigurationWarning {
         AnchorPane.setTopAnchor(warningButton, 200.0);
 
         warningButton.setOnAction(e -> {
-            mainApplication.initMainWindow(mainApplication.getPrimaryStage());
-            new ConfigurationWindow(mainApplication).show();
+//            mainApplication.initMainWindow(mainApplication.getPrimaryStage());
+//            new ConfigurationWindow(mainApplication).show();
             warningWindow.close();
         });
 

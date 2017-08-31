@@ -1,4 +1,4 @@
-package qcha.arfind;
+package qcha.arfind.view;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,8 +16,8 @@ import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
-import qcha.arfind.view.ErrorLabelFactory;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -27,13 +27,13 @@ import java.util.Objects;
 /**
  * This class is responsible for creating dialog window
  */
-class EditSearchMetaInfoDialog {
+class EditSearchMetaInfoView {
     private final String TITLE = "Редактирование";
 
     private boolean isForEdit;
 
     private Stage dialogWindow;
-    private ConfigurationWindow parentWindow;
+    private ApplicationConfigurationView parentWindow;
     private TextField companyNameTextField;
     private TextField filePathTextField;
     private Label nameErrorLabel;
@@ -43,7 +43,7 @@ class EditSearchMetaInfoDialog {
     /**
      * Class constructor.
      */
-    EditSearchMetaInfoDialog(ConfigurationWindow parentWindow, SearchDetails searchDetails) {
+    EditSearchMetaInfoView(ApplicationConfigurationView parentWindow, SearchDetails searchDetails) {
         this.parentWindow = parentWindow;
         this.searchDetails = searchDetails;
         initEditDialog();

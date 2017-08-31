@@ -2,8 +2,8 @@ package qcha.arfind.excel.qcha.arfind;
 
 import org.junit.Assert;
 import org.junit.Test;
-import qchar.arfind.excel.ExcelTextFinder;
-import qchar.arfind.excel.UnknownExcelExtensionException;
+import qcha.arfind.excel.ExcelTextFinder;
+import qcha.arfind.excel.UnknownExcelExtensionException;
 
 import java.io.FileNotFoundException;
 

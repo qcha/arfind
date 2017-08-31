@@ -13,13 +13,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
-import static qcha.arfind.utils.Constants.ConfigFileConstants.DEFAULT_CHARSET;
-import static qcha.arfind.utils.Constants.ConfigFileConstants.DEFAULT_FIELD_DELIMITER;
+import static qcha.arfind.utils.Constants.ConfigFileConstants.*;
 
 public class SearchModelCache {
     private static ObservableMap<String, SearchDetails> cache;
@@ -32,7 +29,7 @@ public class SearchModelCache {
         return cache;
     }
 
-    public static void saveCacheToFile(Map<String, SearchDetails> cache) {
+    public static void saveCacheToFile() {
         try {
             FileUtils.writeLines(
                     new File(CONFIG_FILENAME),

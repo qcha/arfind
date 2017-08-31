@@ -1,4 +1,4 @@
-package qcha.arfind;
+package qcha.arfind.view;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -16,8 +16,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
-import qcha.arfind.view.ConfigurationButtonFactory;
 
 import java.util.stream.Collectors;
 
@@ -27,7 +28,7 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 /**
  * This class is responsible for working with companies(adding, editing, etc).
  */
-class ConfigurationWindow {
+class ApplicationConfigurationView {
 
     private final String TITLE = "Настройки конфигурации";
 
@@ -35,7 +36,6 @@ class ConfigurationWindow {
     private final double DEFAULT_WIDTH = 0.65 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.7 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
-    private MainApplication mainApplication;
     private ObservableList<SearchDetails> companies;
     private Stage configurationWindow;
     private TableView<SearchDetails> companyTableView;
@@ -45,12 +45,10 @@ class ConfigurationWindow {
     /**
      * Class constructor.
      */
-    ConfigurationWindow(MainApplication mainApplication) {
-        this.mainApplication = mainApplication;
+    ApplicationConfigurationView() {
         configurationWindow = new Stage();
 
         companiesCache = SearchModelCache.getOrCreateCache();
-
         companies = FXCollections.observableArrayList(companiesCache.values());
 
         companiesCache.addListener((MapChangeListener<String, SearchDetails>) change -> {
@@ -90,9 +88,11 @@ class ConfigurationWindow {
         configurationWindow.setTitle(TITLE);
         configurationWindow.setResizable(false);
         configurationWindow.setScene(configurationWindowInterface);
-        configurationWindow.initModality(Modality.WINDOW_MODAL);
-        configurationWindow.initOwner(mainApplication.getPrimaryStage().getScene().getWindow());
+    }
 
+    void setOwnerWindow (Window owner) {
+        configurationWindow.initModality(Modality.WINDOW_MODAL);
+        configurationWindow.initOwner(owner);
     }
 
     /**
@@ -154,11 +154,11 @@ class ConfigurationWindow {
                 removeAllButton
         );
 
-        addButton.setOnAction(e -> new EditSearchMetaInfoDialog(this, null).show());
+        addButton.setOnAction(e -> new EditSearchMetaInfoView(this, null).show());
 
         editButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
 
-        editButton.setOnAction(e -> new EditSearchMetaInfoDialog(
+        editButton.setOnAction(e -> new EditSearchMetaInfoView(
                         this,
                         companyTableView
                                 .getSelectionModel()

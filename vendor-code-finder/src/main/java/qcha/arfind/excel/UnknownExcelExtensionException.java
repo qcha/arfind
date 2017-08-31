@@ -1,4 +1,4 @@
-package qchar.arfind.excel;
+package qcha.arfind.excel;
 
 public class UnknownExcelExtensionException extends RuntimeException {
     private String filename;
