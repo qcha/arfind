@@ -24,7 +24,6 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (!SearchModelCache.getOrCreateCache().isEmpty()) {
                 SearchModelCache.saveCacheToFile();
@@ -47,6 +46,7 @@ public class MainApplication extends Application {
         );
 
         primaryStage.setScene(mainScene);
+        primaryStage.setTitle(TITLE);
         primaryStage.show();
     }
 }

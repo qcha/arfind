@@ -42,9 +42,6 @@ class ApplicationConfigurationView {
     private TableColumn<SearchDetails, String> companyColumn;
     private ObservableMap<String, SearchDetails> companiesCache;
 
-    /**
-     * Class constructor.
-     */
     ApplicationConfigurationView() {
         configurationWindow = new Stage();
 
@@ -65,8 +62,8 @@ class ApplicationConfigurationView {
         createConfigurationWindow();
     }
 
-    void show() {
-        configurationWindow.show();
+    void showAndWait() {
+        configurationWindow.showAndWait();
     }
 
     /**
@@ -88,11 +85,7 @@ class ApplicationConfigurationView {
         configurationWindow.setTitle(TITLE);
         configurationWindow.setResizable(false);
         configurationWindow.setScene(configurationWindowInterface);
-    }
-
-    void setOwnerWindow (Window owner) {
         configurationWindow.initModality(Modality.WINDOW_MODAL);
-        configurationWindow.initOwner(owner);
     }
 
     /**
@@ -142,10 +135,10 @@ class ApplicationConfigurationView {
     private HBox createEditorBar() {
         HBox buttonBar = new HBox(10);
 
-        Button addButton = ConfigurationButtonFactory.createConfigurationButton("Добавить");
-        Button editButton = ConfigurationButtonFactory.createConfigurationButton("Изменить");
-        Button removeButton = ConfigurationButtonFactory.createConfigurationButton("Удалить");
-        Button removeAllButton = ConfigurationButtonFactory.createConfigurationButton("Удалить всё");
+        Button addButton = createConfigurationButton("Добавить");
+        Button editButton = createConfigurationButton("Изменить");
+        Button removeButton = createConfigurationButton("Удалить");
+        Button removeAllButton = createConfigurationButton("Удалить всё");
 
         buttonBar.getChildren().addAll(
                 addButton,
@@ -217,5 +210,12 @@ class ApplicationConfigurationView {
 
     Stage getConfigurationWindow() {
         return configurationWindow;
+    }
+
+    private Button createConfigurationButton(String text) {
+        Button configButton = new Button(text);
+        configButton.setMinSize(100, 50);
+        configButton.setFont(Font.font(14));
+        return configButton;
     }
 }

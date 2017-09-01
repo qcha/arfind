@@ -113,39 +113,6 @@ public class SearchPaneView extends BorderPane {
 
         HBox.setHgrow(textSearchLine, Priority.ALWAYS);
 
-        searchPanel.getChildren().addAll(
-                textSearchLine,
-                createSearchButton()
-        );
-    }
-
-    private void initNewSearchPanel() {
-        Button prepareToSearchBtn = new Button("Новый поиск") {
-            {
-                setMaxWidth(Double.MAX_VALUE);
-                setMinHeight(75);
-                setFocusTraversable(false);
-                setDefaultButton(true);
-                setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
-            }
-        };
-
-        prepareToSearchBtn.setOnAction(e -> {
-            viewModel.getResults().clear();
-            viewModel.getSourcesForSearch().clear();
-            this.setBottom(searchPanel);
-        });
-
-        newSearchPanel = new HBox() {
-            {
-                getChildren().add(prepareToSearchBtn);
-            }
-        };
-
-        HBox.setHgrow(prepareToSearchBtn, Priority.ALWAYS);
-    }
-
-    private Button createSearchButton() {
         Button btnSearch = new Button("Поиск") {
             {
                 disableProperty().bind(textSearchLine.textProperty().isEqualTo("").or(
@@ -171,7 +138,36 @@ public class SearchPaneView extends BorderPane {
             this.setBottom(newSearchPanel);
         });
 
-        return btnSearch;
+        searchPanel.getChildren().addAll(
+                textSearchLine,
+                btnSearch
+        );
+    }
+
+    private void initNewSearchPanel() {
+        Button prepareToSearchBtn = new Button("Новый поиск") {
+            {
+                setMaxWidth(Double.MAX_VALUE);
+                setMinHeight(75);
+                setFocusTraversable(false);
+                setDefaultButton(true);
+                setStyle("-fx-font: 18 arial; -fx-base: #b6e7c9;");
+            }
+        };
+
+        prepareToSearchBtn.setOnAction(e -> {
+            viewModel.getResults().clear();
+            textSearchLine.clear();
+            this.setBottom(searchPanel);
+        });
+
+        newSearchPanel = new HBox() {
+            {
+                getChildren().add(prepareToSearchBtn);
+            }
+        };
+
+        HBox.setHgrow(prepareToSearchBtn, Priority.ALWAYS);
     }
 
     private void initCompanyTableView() {
@@ -230,9 +226,7 @@ public class SearchPaneView extends BorderPane {
                 MenuItem configuration = new MenuItem("Конфигурация");
                 configuration.setOnAction(event -> new ApplicationConfigurationView() {
                     {
-                        //todo set modal window
-                        //setOwnerWindow();
-                        show();
+                        showAndWait();
                     }
                 });
 
