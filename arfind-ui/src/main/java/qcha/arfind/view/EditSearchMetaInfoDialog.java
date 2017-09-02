@@ -60,13 +60,13 @@ public class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
 
         setTitle("Редактирование");
         setResultConverter(this::formResult);
-
+        ButtonType saveBtnType = new ButtonType("Сохранить", ButtonBar.ButtonData.OK_DONE);
         dp.getButtonTypes().addAll(
-                new ButtonType("Сохранить", ButtonBar.ButtonData.OK_DONE),
+                saveBtnType,
                 new ButtonType("Отменить", ButtonBar.ButtonData.CANCEL_CLOSE)
         );
 
-        Button btnOk = (Button) getDialogPane().lookupButton(ButtonType.OK);
+        Button btnOk = (Button) getDialogPane().lookupButton(saveBtnType);
         btnOk.disableProperty().bind(tfName.textProperty()
                 .isEqualTo("")
                 .or(tfPath.textProperty()
@@ -88,7 +88,7 @@ public class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
             }
 
             //if it's no visible warnings - consume
-            if (!nameErrorLabel.isVisible() && !fileErrorLabel.isVisible()) {
+            if (nameErrorLabel.isVisible() || fileErrorLabel.isVisible()) {
                 event.consume();
             }
         });

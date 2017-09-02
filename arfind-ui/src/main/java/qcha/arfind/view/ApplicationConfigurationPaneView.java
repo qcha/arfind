@@ -13,7 +13,6 @@ import qcha.arfind.model.SearchDetails;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-//todo - need to test it
 public class ApplicationConfigurationPaneView extends BorderPane {
     private TableView<SearchDetails> companyTableView;
     private HBox controls;
