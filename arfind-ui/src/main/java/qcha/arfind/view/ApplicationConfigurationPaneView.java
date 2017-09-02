@@ -7,9 +7,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
+import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
 
-//todo
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+//todo - need to test it
 public class ApplicationConfigurationPaneView extends BorderPane {
     private TableView<SearchDetails> companyTableView;
     private HBox controls;
@@ -74,7 +78,26 @@ public class ApplicationConfigurationPaneView extends BorderPane {
 
         removeAllButton.setOnAction(e -> modelView.removeAll());
 
-//        addButton.setOnAction(e -> );
+        addButton.setOnAction(e -> {
+            Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(null).showAndWait();
+            searchDetails.ifPresent(details -> SearchModelCache.getOrCreateCache().put(details.getName(), details));
+        });
+
+        editButton.setOnAction(e -> {
+            int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
+            SearchDetails forEdit = companyTableView.getItems().get(selectedIndex);
+            Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(forEdit).showAndWait();
+            searchDetails.ifPresent(details -> {
+                SearchModelCache.getOrCreateCache().remove(forEdit.getName());
+                SearchModelCache.getOrCreateCache().put(details.getName(), details);
+            });
+        });
+
+        saveButton.setOnAction(e -> {
+            SearchModelCache.getOrCreateCache().putAll(
+                    modelView.getCompanies().stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
+            );
+        });
 
         controls.getChildren().addAll(
                 addButton,
