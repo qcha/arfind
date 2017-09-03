@@ -224,7 +224,7 @@ public class SearchPaneView extends BorderPane {
             //init configuration menu
             {
                 MenuItem configuration = new MenuItem("Конфигурация");
-                configuration.setOnAction(event -> new ApplicationConfigurationView() {
+                configuration.setOnAction(event -> new ApplicationConfigurationWindow() {
                     {
                         showAndWait();
                     }
