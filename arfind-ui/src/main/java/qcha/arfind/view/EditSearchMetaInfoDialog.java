@@ -19,14 +19,14 @@ import java.util.Objects;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
-public class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
+class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
     private final Button btnChoose;
 
-    public EditSearchMetaInfoDialog(SearchDetails searchDetails) {
+    EditSearchMetaInfoDialog(SearchDetails searchDetails) {
         Label nameErrorLabel = createErrorLabel("Такое имя уже существует");
-        Label fileErrorLabel = createErrorLabel("Такая фирма уже существует");
+        Label fileErrorLabel = createErrorLabel("По указанному пути файла не существует");
         Label filePathLabel = new Label("Полный путь");
         Label nameLabel = new Label("Название источника");
 

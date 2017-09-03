@@ -6,6 +6,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
@@ -13,12 +14,12 @@ import qcha.arfind.model.SearchDetails;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ApplicationConfigurationPaneView extends BorderPane {
+class ApplicationConfigurationPaneView extends BorderPane {
     private TableView<SearchDetails> companyTableView;
     private HBox controls;
     private ApplicationConfigurationModelView modelView;
 
-    public ApplicationConfigurationPaneView() {
+    ApplicationConfigurationPaneView() {
         modelView = new ApplicationConfigurationModelView();
 
         initTable();
@@ -39,9 +40,6 @@ public class ApplicationConfigurationPaneView extends BorderPane {
         TableColumn<SearchDetails, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<SearchDetails, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
-        companyColumn.setResizable(false);
-        filePathColumn.setResizable(false);
-
         //noinspection unchecked
         companyTableView.getColumns().addAll(
                 companyColumn,
@@ -49,25 +47,22 @@ public class ApplicationConfigurationPaneView extends BorderPane {
         );
 
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        companyTableView.setFocusTraversable(false);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         filePathColumn.setCellValueFactory(cellData -> cellData.getValue().pathToSourceProperty());
     }
 
     private void initControlPanel() {
-        controls = new HBox(10);
-        Button addButton = createConfigurationButton("Добавить");
-        Button editButton = createConfigurationButton("Изменить");
-        Button removeButton = createConfigurationButton("Удалить");
-        Button removeAllButton = createConfigurationButton("Удалить всё");
-        Button saveButton = new Button("Сохранить") {
-            {
-                setMinSize(150, 75);
-                setFont(Font.font(17));
-                setStyle("-fx-base: #b6e7c9;");
-            }
-        };
+        controls = new HBox();
+
+        Button addButton = createButtonWithPreferenceSizeAndFont("Добавить");
+        Button editButton = createButtonWithPreferenceSizeAndFont("Изменить");
+        Button removeButton = createButtonWithPreferenceSizeAndFont("Удалить");
+        Button removeAllButton = createButtonWithPreferenceSizeAndFont("Удалить всё");
+
+        //save button with different color
+        Button saveButton = createButtonWithPreferenceSizeAndFont("Сохранить");
+        saveButton.setStyle("-fx-base: #b6e7c9;");
 
         removeButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
         removeButton.setOnAction(e -> {
@@ -108,13 +103,25 @@ public class ApplicationConfigurationPaneView extends BorderPane {
 
         editButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
 
-        controls.setFocusTraversable(false);
+        HBox.setHgrow(saveButton, Priority.ALWAYS);
+        HBox.setHgrow(addButton, Priority.ALWAYS);
+        HBox.setHgrow(editButton, Priority.ALWAYS);
+        HBox.setHgrow(removeButton, Priority.ALWAYS);
+        HBox.setHgrow(removeAllButton, Priority.ALWAYS);
+
+        saveButton.setMaxWidth(Double.MAX_VALUE);
+        addButton.setMaxWidth(Double.MAX_VALUE);
+        editButton.setMaxWidth(Double.MAX_VALUE);
+        removeButton.setMaxWidth(Double.MAX_VALUE);
+        removeAllButton.setMaxWidth(Double.MAX_VALUE);
     }
 
-    private Button createConfigurationButton(String text) {
-        Button configButton = new Button(text);
-        configButton.setMinSize(100, 50);
-        configButton.setFont(Font.font(14));
-        return configButton;
+    private Button createButtonWithPreferenceSizeAndFont(String text) {
+        return new Button(text) {
+            {
+                setMinSize(150, 75);
+                setFont(Font.font(17));
+            }
+        };
     }
 }
