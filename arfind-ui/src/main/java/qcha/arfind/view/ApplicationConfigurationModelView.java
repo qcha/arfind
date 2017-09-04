@@ -8,9 +8,11 @@ import lombok.Getter;
 import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
 
-//todo
-@Getter
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 class ApplicationConfigurationModelView {
+    @Getter
     private final ObservableList<SearchDetails> companies;
     private final Stage stage;
 
@@ -29,10 +31,33 @@ class ApplicationConfigurationModelView {
     }
 
     void remove(SearchDetails details) {
-        SearchModelCache.getOrCreateCache().remove(details.getName());
+        companies.remove(details);
     }
 
     void removeAll() {
+        companies.clear();
+    }
+
+    void save() {
         SearchModelCache.getOrCreateCache().clear();
+        SearchModelCache.getOrCreateCache().putAll(
+                companies.stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
+        );
+
+        stage.close();
+    }
+
+    void showDialogForEditSearchDetails(SearchDetails forEdit) {
+        Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(forEdit).showAndWait();
+        searchDetails.ifPresent(details -> {
+            //need to update
+            companies.remove(forEdit);
+            companies.add(details);
+        });
+    }
+
+    void showDialogForAddingSource() {
+        Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(null).showAndWait();
+        searchDetails.ifPresent(companies::add);
     }
 }

@@ -8,15 +8,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
-import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
 
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 class ApplicationConfigurationView extends BorderPane {
-    private TableView<SearchDetails> companyTableView;
     private HBox controls;
+    private TableView<SearchDetails> companyTableView;
     private ApplicationConfigurationModelView viewModel;
 
     ApplicationConfigurationView(ApplicationConfigurationModelView viewModel) {
@@ -73,28 +69,16 @@ class ApplicationConfigurationView extends BorderPane {
         removeAllButton.setOnAction(e -> viewModel.removeAll());
 
         addButton.setOnAction(e -> {
-            Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(null).showAndWait();
-            searchDetails.ifPresent(details -> viewModel.getCompanies().add(details));
+            viewModel.showDialogForAddingSource();
         });
 
         editButton.setOnAction(e -> {
             int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
-            SearchDetails forEdit = companyTableView.getItems().get(selectedIndex);
-            Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(forEdit).showAndWait();
-            searchDetails.ifPresent(details -> {
-                //need to update
-                viewModel.getCompanies().remove(forEdit);
-                viewModel.getCompanies().remove(details);
-            });
+            viewModel.showDialogForEditSearchDetails(companyTableView.getItems().get(selectedIndex));
         });
 
         saveButton.setOnAction(e -> {
-            SearchModelCache.getOrCreateCache().clear();
-            SearchModelCache.getOrCreateCache().putAll(
-                    viewModel.getCompanies().stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
-            );
-
-            viewModel.getStage().close();
+            viewModel.save();
         });
 
         controls.getChildren().addAll(
