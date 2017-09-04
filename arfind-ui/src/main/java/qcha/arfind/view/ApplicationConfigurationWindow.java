@@ -16,7 +16,7 @@ class ApplicationConfigurationWindow {
         configurationWindow = new Stage() {
             {
                 setTitle(TITLE);
-                setScene(new Scene(new ApplicationConfigurationPaneView()));
+                setScene(new Scene(new ApplicationConfigurationView(new ApplicationConfigurationModelView(this))));
             }
         };
     }

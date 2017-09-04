@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -49,7 +50,7 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
                 tfName,
                 nameErrorLabel,
                 filePathLabel,
-                tfPath,
+                new HBox(tfPath, btnChoose),
                 fileErrorLabel
         );
 

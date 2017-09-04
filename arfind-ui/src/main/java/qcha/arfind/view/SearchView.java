@@ -15,12 +15,13 @@ import qcha.arfind.SearchModelCache;
 import qcha.arfind.excel.TextCrawler;
 import qcha.arfind.model.SearchDetails;
 import qcha.arfind.model.SearchResult;
+import qcha.arfind.view.SearchViewModel.SearchResultModelDto;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SearchPaneView extends BorderPane {
+public class SearchView extends BorderPane {
     private HBox searchPanel;
     private HBox newSearchPanel;
     private TextField textSearchLine;
@@ -28,9 +29,9 @@ public class SearchPaneView extends BorderPane {
     //left view for companies
     private ListView<SearchDetails> lstCompanies;
     //table for results
-    private TableView<SearchResultModel> resultTableView;
+    private TableView<SearchResultModelDto> resultTableView;
 
-    public SearchPaneView() {
+    public SearchView() {
         viewModel = new SearchViewModel();
 
         //list view with companies names
@@ -130,7 +131,7 @@ public class SearchPaneView extends BorderPane {
             viewModel.getResults().addAll(
                     anyMatches.stream()
                             .map(result ->
-                                    new SearchResultModel(
+                                    new SearchResultModelDto(
                                             result.getName(),
                                             result.getResult())
                             )
@@ -171,14 +172,14 @@ public class SearchPaneView extends BorderPane {
     }
 
     private void initCompanyTableView() {
-        resultTableView = new TableView<SearchResultModel>() {
+        resultTableView = new TableView<SearchResultModelDto>() {
             {
                 setStyle("-fx-font-size: 16px;");
                 setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
                 setFocusTraversable(false);
 
-                TableColumn<SearchResultModel, String> companyColumn = new TableColumn<>("Название фирмы");
-                TableColumn<SearchResultModel, ListView<String>> filterResultColumn = new TableColumn<>("Результат поиска");
+                TableColumn<SearchResultModelDto, String> companyColumn = new TableColumn<>("Название фирмы");
+                TableColumn<SearchResultModelDto, ListView<String>> filterResultColumn = new TableColumn<>("Результат поиска");
 
                 companyColumn.prefWidthProperty().bind(widthProperty().multiply(0.2));
                 filterResultColumn.prefWidthProperty().bind(widthProperty().multiply(0.8));

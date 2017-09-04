@@ -3,7 +3,7 @@ package qcha.arfind;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import qcha.arfind.view.SearchPaneView;
+import qcha.arfind.view.SearchView;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +20,7 @@ public class MainApplication extends Application {
     private final double DEFAULT_WIDTH = 0.7 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.9 * DEFAULT_USER_RESOLUTION_HEIGHT;
     private Scene mainScene;
-    private SearchPaneView searchPaneView;
+    private SearchView searchView;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -37,10 +37,10 @@ public class MainApplication extends Application {
         }));
 
         //init search view
-        searchPaneView = new SearchPaneView();
+        searchView = new SearchView();
 
         mainScene = new Scene(
-                searchPaneView,
+                searchView,
                 DEFAULT_WIDTH,
                 DEFAULT_HEIGHT
         );

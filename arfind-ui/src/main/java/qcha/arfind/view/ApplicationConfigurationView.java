@@ -14,16 +14,16 @@ import qcha.arfind.model.SearchDetails;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ApplicationConfigurationPaneView extends BorderPane {
+class ApplicationConfigurationView extends BorderPane {
     private TableView<SearchDetails> companyTableView;
     private HBox controls;
-    private ApplicationConfigurationModelView modelView;
+    private ApplicationConfigurationModelView viewModel;
 
-    ApplicationConfigurationPaneView() {
-        modelView = new ApplicationConfigurationModelView();
+    ApplicationConfigurationView(ApplicationConfigurationModelView viewModel) {
+        this.viewModel = viewModel;
 
         initTable();
-        companyTableView.setItems(modelView.getCompanies());
+        companyTableView.setItems(this.viewModel.getCompanies());
 
         initControlPanel();
 
@@ -67,14 +67,14 @@ class ApplicationConfigurationPaneView extends BorderPane {
         removeButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
         removeButton.setOnAction(e -> {
             int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
-            modelView.remove(companyTableView.getItems().get(selectedIndex).getName());
+            viewModel.remove(companyTableView.getItems().get(selectedIndex));
         });
 
-        removeAllButton.setOnAction(e -> modelView.removeAll());
+        removeAllButton.setOnAction(e -> viewModel.removeAll());
 
         addButton.setOnAction(e -> {
             Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(null).showAndWait();
-            searchDetails.ifPresent(details -> SearchModelCache.getOrCreateCache().put(details.getName(), details));
+            searchDetails.ifPresent(details -> viewModel.getCompanies().add(details));
         });
 
         editButton.setOnAction(e -> {
@@ -82,15 +82,19 @@ class ApplicationConfigurationPaneView extends BorderPane {
             SearchDetails forEdit = companyTableView.getItems().get(selectedIndex);
             Optional<SearchDetails> searchDetails = new EditSearchMetaInfoDialog(forEdit).showAndWait();
             searchDetails.ifPresent(details -> {
-                SearchModelCache.getOrCreateCache().remove(forEdit.getName());
-                SearchModelCache.getOrCreateCache().put(details.getName(), details);
+                //need to update
+                viewModel.getCompanies().remove(forEdit);
+                viewModel.getCompanies().remove(details);
             });
         });
 
         saveButton.setOnAction(e -> {
+            SearchModelCache.getOrCreateCache().clear();
             SearchModelCache.getOrCreateCache().putAll(
-                    modelView.getCompanies().stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
+                    viewModel.getCompanies().stream().collect(Collectors.toMap(SearchDetails::getName, v -> v))
             );
+
+            viewModel.getStage().close();
         });
 
         controls.getChildren().addAll(
