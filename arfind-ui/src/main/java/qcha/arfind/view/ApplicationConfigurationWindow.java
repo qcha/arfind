@@ -12,10 +12,11 @@ class ApplicationConfigurationWindow {
 
     private Stage configurationWindow;
 
-    ApplicationConfigurationWindow() {
+    ApplicationConfigurationWindow(Stage owner) {
         configurationWindow = new Stage() {
             {
                 setTitle(TITLE);
+                initOwner(owner);
                 setScene(new Scene(new ApplicationConfigurationView(new ApplicationConfigurationModelView(this))));
             }
         };

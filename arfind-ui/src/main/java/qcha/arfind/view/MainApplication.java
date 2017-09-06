@@ -1,9 +1,9 @@
-package qcha.arfind;
+package qcha.arfind.view;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import qcha.arfind.view.SearchView;
+import qcha.arfind.SearchModelCache;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -37,7 +37,7 @@ public class MainApplication extends Application {
         }));
 
         //init search view
-        searchView = new SearchView();
+        searchView = new SearchView(new SearchViewModel(primaryStage));
 
         mainScene = new Scene(
                 searchView,

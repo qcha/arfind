@@ -9,6 +9,7 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Orientation;
 import javafx.scene.control.ListView;
+import javafx.stage.Stage;
 import lombok.Getter;
 import qcha.arfind.SearchModelCache;
 import qcha.arfind.model.SearchDetails;
@@ -17,11 +18,14 @@ import java.util.List;
 
 @Getter
 class SearchViewModel {
-    private ObservableList<SearchResultModelDto> results;
-    private ObservableList<SearchDetails> companies;
-    private ObservableList<SearchDetails> sourcesForSearch;
+    private final ObservableList<SearchResultModelDto> results;
+    private final ObservableList<SearchDetails> companies;
+    private final ObservableList<SearchDetails> sourcesForSearch;
+    private final Stage stage;
 
-    SearchViewModel() {
+    SearchViewModel(Stage stage) {
+        this.stage = stage;
+
         //init companies
         companies = FXCollections.observableArrayList(SearchModelCache.getOrCreateCache().values());
         results = FXCollections.observableArrayList();
@@ -49,6 +53,7 @@ class SearchViewModel {
             this.result = new SimpleObjectProperty<>(new ListView<String>(FXCollections.observableArrayList(result)) {
                 {
                     setOrientation(Orientation.HORIZONTAL);
+                    setPrefHeight(35);
                 }
             });
         }

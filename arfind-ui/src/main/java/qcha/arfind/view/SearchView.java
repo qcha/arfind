@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class SearchView extends BorderPane {
+class SearchView extends BorderPane {
     private HBox searchPanel;
     private HBox newSearchPanel;
     private TextField textSearchLine;
@@ -31,8 +31,8 @@ public class SearchView extends BorderPane {
     //table for results
     private TableView<SearchResultModelDto> resultTableView;
 
-    public SearchView() {
-        viewModel = new SearchViewModel();
+    SearchView(SearchViewModel viewModel) {
+        this.viewModel = viewModel;
 
         //list view with companies names
         initCompaniesListView();
@@ -212,7 +212,7 @@ public class SearchView extends BorderPane {
             //init configuration menu
             {
                 MenuItem configuration = new MenuItem("Конфигурация");
-                configuration.setOnAction(event -> new ApplicationConfigurationWindow() {
+                configuration.setOnAction(event -> new ApplicationConfigurationWindow(viewModel.getStage()) {
                     {
                         showAndWait();
                     }
