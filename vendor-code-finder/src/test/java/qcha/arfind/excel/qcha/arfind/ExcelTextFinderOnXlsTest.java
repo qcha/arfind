@@ -6,6 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 import qcha.arfind.excel.ExcelTextFinder;
 
+import java.util.List;
+
 public class ExcelTextFinderOnXlsTest {
 
     private ExcelTextFinder parser;
@@ -134,6 +136,7 @@ public class ExcelTextFinderOnXlsTest {
         Assert.assertEquals(1, parser.findMatches("Вагонка сорта В -2.1м").size());
     }
 
+    //todo
     @Test
     public void strangeBehaviourWithCustomCellOne() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/test.xls");
@@ -141,17 +144,26 @@ public class ExcelTextFinderOnXlsTest {
 
     }
 
+    //todo
     @Test
     public void strangeBehaviourWithCustomCellTwo() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/test.xls");
         Assert.assertEquals(1, parser.findMatches("650").size());
-
     }
 
+    //todo
     @Test
     public void strangeBehaviourWithCustomCellThree() throws Exception {
         parser = new ExcelTextFinder("src/test/resources/test.xls");
         Assert.assertEquals(1, parser.findMatches("510").size());
+    }
 
+    @Test
+    public void getPriceOfFirstMatch() throws Exception {
+        parser = new ExcelTextFinder("src/test/resources/test.xls");
+        List<List<String>> result = parser.findMatches("Киров");
+        Assert.assertEquals(2, result.size());
+        //get price
+        Assert.assertEquals("650,00 руб.", result.get(0).get(2));
     }
 }

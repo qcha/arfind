@@ -7,6 +7,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
+import javafx.geometry.Orientation;
 import javafx.scene.control.ListView;
 import lombok.Getter;
 import qcha.arfind.SearchModelCache;
@@ -45,7 +46,11 @@ class SearchViewModel {
 
         SearchResultModelDto(String name, List<String> result) {
             this.name = new SimpleStringProperty(name);
-            this.result = new SimpleObjectProperty<>(new ListView<>(FXCollections.observableArrayList(result)));
+            this.result = new SimpleObjectProperty<>(new ListView<String>(FXCollections.observableArrayList(result)) {
+                {
+                    setOrientation(Orientation.HORIZONTAL);
+                }
+            });
         }
     }
 }

@@ -130,11 +130,7 @@ public class SearchView extends BorderPane {
             List<SearchResult> anyMatches = TextCrawler.findAnyMatches(textSearchLine.getText(), viewModel.getSourcesForSearch());
             viewModel.getResults().addAll(
                     anyMatches.stream()
-                            .map(result ->
-                                    new SearchResultModelDto(
-                                            result.getName(),
-                                            result.getResult())
-                            )
+                            .map(result -> new SearchResultModelDto(result.getName(), result.getResult()))
                             .collect(Collectors.toList()));
             this.setBottom(newSearchPanel);
         });
@@ -174,21 +170,12 @@ public class SearchView extends BorderPane {
     private void initCompanyTableView() {
         resultTableView = new TableView<SearchResultModelDto>() {
             {
-                setStyle("-fx-font-size: 16px;");
                 setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-                setFocusTraversable(false);
 
                 TableColumn<SearchResultModelDto, String> companyColumn = new TableColumn<>("Название фирмы");
                 TableColumn<SearchResultModelDto, ListView<String>> filterResultColumn = new TableColumn<>("Результат поиска");
 
-                companyColumn.prefWidthProperty().bind(widthProperty().multiply(0.2));
-                filterResultColumn.prefWidthProperty().bind(widthProperty().multiply(0.8));
-
-//                companyColumn.setResizable(false);
-//                filterResultColumn.setResizable(false);
-
                 companyColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
-
                 filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().getResult());
 
                 //noinspection unchecked

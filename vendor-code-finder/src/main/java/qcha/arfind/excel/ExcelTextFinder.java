@@ -34,7 +34,9 @@ public class ExcelTextFinder implements AutoCloseable {
     }
 
     public List<List<String>> findMatches(String matchString) {
-        matchString = matchString.toLowerCase();
+        //modify for search
+        matchString = matchString.toLowerCase().replace('ё', 'е');
+
         List<List<String>> result = new ArrayList<>();
         String value;
 
@@ -43,13 +45,20 @@ public class ExcelTextFinder implements AutoCloseable {
                 for (Cell currentCell : currentRow) {
                     switch (currentCell.getCellTypeEnum()) {
                         case STRING:
+                            //plain value
                             value = currentCell.getStringCellValue();
-                            //needed when users add two whitespaces instead of one
-                            value = value.trim().replaceAll(" +", " ");
-                            if (value.toLowerCase().replace('ё', 'е').contains(
-                                    matchString.toLowerCase().replace('ё', 'е'))) {
+
+                            //modify for search
+                            //trim, delete redundant spaces, replace chars and lower case for compare
+                            value = value.trim()
+                                    .replaceAll(" +", " ")
+                                    .toLowerCase()
+                                    .replace('ё', 'е');
+
+                            if (value.contains(matchString)) {
                                 result.add(convertRowDataToStringRepresentation(currentRow));
                             }
+
                             break;
                         default:
                             break;
@@ -57,6 +66,7 @@ public class ExcelTextFinder implements AutoCloseable {
                 }
             }
         }
+
         return result;
     }
 
@@ -91,7 +101,7 @@ public class ExcelTextFinder implements AutoCloseable {
     private static List<String> convertRowDataToStringRepresentation(Row row) {
         DataFormatter dataFormatter = new DataFormatter();
         List<String> rowData = new ArrayList<>();
-        for(Cell cell : row) {
+        for (Cell cell : row) {
             rowData.add(dataFormatter.formatCellValue(cell));
         }
         return rowData;

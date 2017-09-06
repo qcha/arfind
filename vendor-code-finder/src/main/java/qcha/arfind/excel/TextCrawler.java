@@ -14,8 +14,13 @@ public final class TextCrawler {
         List<SearchResult> results = Lists.newArrayList();
 
         sources.forEach(source -> {
-            ExcelTextFinder finder = new ExcelTextFinder(source.getPath());
-            finder.findMatches(match).forEach(row -> results.add(new SearchResult(source.getName(), row)));
+            try(ExcelTextFinder finder = new ExcelTextFinder(source.getPath())) {
+                finder.findMatches(match).forEach(row -> results.add(new SearchResult(source.getName(), row)));
+            } catch (Exception e) {
+                //todo add logger
+                System.err.println("Can't close resource.");
+            }
+
         });
 
         return results;

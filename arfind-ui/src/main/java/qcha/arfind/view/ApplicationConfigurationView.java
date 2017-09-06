@@ -62,8 +62,7 @@ class ApplicationConfigurationView extends BorderPane {
 
         removeButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
         removeButton.setOnAction(e -> {
-            int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
-            viewModel.remove(companyTableView.getItems().get(selectedIndex));
+            viewModel.remove(companyTableView.getSelectionModel().getSelectedItem());
         });
 
         removeAllButton.setOnAction(e -> viewModel.removeAll());
@@ -73,8 +72,7 @@ class ApplicationConfigurationView extends BorderPane {
         });
 
         editButton.setOnAction(e -> {
-            int selectedIndex = companyTableView.getSelectionModel().getSelectedIndex();
-            viewModel.showDialogForEditSearchDetails(companyTableView.getItems().get(selectedIndex));
+            viewModel.showDialogForEditSearchDetails(companyTableView.getSelectionModel().getSelectedItem());
         });
 
         saveButton.setOnAction(e -> {
