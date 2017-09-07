@@ -9,6 +9,7 @@ import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import qcha.arfind.SearchModelCache;
@@ -130,6 +131,7 @@ class SearchView extends BorderPane {
             List<SearchResult> anyMatches = TextCrawler.findAnyMatches(textSearchLine.getText(), viewModel.getSourcesForSearch());
             viewModel.getResults().addAll(
                     anyMatches.stream()
+                            .filter(result -> result.getResult().size() > 1)
                             .map(result -> new SearchResultModelDto(result.getName(), result.getResult()))
                             .collect(Collectors.toList()));
             this.setBottom(newSearchPanel);
@@ -173,7 +175,7 @@ class SearchView extends BorderPane {
                 setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
                 TableColumn<SearchResultModelDto, String> companyColumn = new TableColumn<>("Название фирмы");
-                TableColumn<SearchResultModelDto, ListView<String>> filterResultColumn = new TableColumn<>("Результат поиска");
+                TableColumn<SearchResultModelDto, VBox> filterResultColumn = new TableColumn<>("Результат поиска");
 
                 companyColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
                 filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().getResult());

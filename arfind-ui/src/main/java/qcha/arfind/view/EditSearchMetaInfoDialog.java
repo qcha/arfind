@@ -24,6 +24,7 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
     private final Button btnChoose;
+    private boolean isForEdit;
 
     EditSearchMetaInfoDialog(SearchDetails searchDetails) {
         Label nameErrorLabel = createErrorLabel("Такое имя уже существует");
@@ -74,11 +75,13 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
                         .isEqualTo("")));
 
         btnOk.addEventFilter(ActionEvent.ACTION, event -> {
-            //duplicate name
-            if (!validateCompanyName(tfName.getText())) {
-                nameErrorLabel.setVisible(true);
-            } else {
-                nameErrorLabel.setVisible(false);
+            if (!isForEdit) {
+                //check for duplicate name
+                if (!validateCompanyName(tfName.getText())) {
+                    nameErrorLabel.setVisible(true);
+                } else {
+                    nameErrorLabel.setVisible(false);
+                }
             }
 
             //invalid path
@@ -104,6 +107,7 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
         if (details != null) {
             tfName.setText(details.getName());
             tfPath.setText(details.getPath());
+            isForEdit = true;
         }
     }
 
