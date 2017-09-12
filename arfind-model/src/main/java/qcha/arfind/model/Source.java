@@ -3,11 +3,11 @@ package qcha.arfind.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class SearchDetails {
+public class Source {
     private StringProperty name;
     private StringProperty pathToSource;
 
-    public SearchDetails(String name, String pathToSource) {
+    public Source(String name, String pathToSource) {
         this.name = new SimpleStringProperty(name);
         this.pathToSource = new SimpleStringProperty(pathToSource);
     }

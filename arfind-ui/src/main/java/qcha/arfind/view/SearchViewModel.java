@@ -14,28 +14,28 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Getter;
-import qcha.arfind.SearchModelCache;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.Sources;
+import qcha.arfind.model.Source;
 
 import java.util.List;
 
 @Getter
 class SearchViewModel {
     private final ObservableList<SearchResultModelDto> results;
-    private final ObservableList<SearchDetails> companies;
-    private final ObservableList<SearchDetails> sourcesForSearch;
+    private final ObservableList<Source> companies;
+    private final ObservableList<Source> sourcesForSearch;
     private final Stage stage;
 
     SearchViewModel(Stage stage) {
         this.stage = stage;
 
         //init companies
-        companies = FXCollections.observableArrayList(SearchModelCache.getOrCreateCache().values());
+        companies = FXCollections.observableArrayList(Sources.getOrCreate().values());
         results = FXCollections.observableArrayList();
         sourcesForSearch = FXCollections.observableArrayList();
 
         //add listener for updates
-        SearchModelCache.getOrCreateCache().addListener((MapChangeListener<String, SearchDetails>) change -> {
+        Sources.getOrCreate().addListener((MapChangeListener<String, Source>) change -> {
             if (change.wasRemoved()) {
                 companies.remove(change.getValueRemoved());
             }
@@ -70,6 +70,7 @@ class SearchViewModel {
         }
     }
 
+    //fixme - width and height size
     private static class CustomListCell extends ListCell<String> {
 
         CustomListCell(ListView<String> listView) {

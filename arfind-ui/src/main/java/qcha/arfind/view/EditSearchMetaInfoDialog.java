@@ -9,8 +9,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import qcha.arfind.SearchModelCache;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.Sources;
+import qcha.arfind.model.Source;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -20,13 +20,13 @@ import java.util.Objects;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
-class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
+class EditSearchMetaInfoDialog extends Dialog<Source> {
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
     private final Button btnChoose;
     private boolean isForEdit;
 
-    EditSearchMetaInfoDialog(SearchDetails searchDetails) {
+    EditSearchMetaInfoDialog(Source source) {
         Label nameErrorLabel = createErrorLabel("Такое имя уже существует");
         Label fileErrorLabel = createErrorLabel("По указанному пути файла не существует");
         Label filePathLabel = new Label("Полный путь");
@@ -100,10 +100,10 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
 
         dp.setContent(vbox);
 
-        init(searchDetails);
+        init(source);
     }
 
-    private void init(SearchDetails details) {
+    private void init(Source details) {
         if (details != null) {
             tfName.setText(details.getName());
             tfPath.setText(details.getPath());
@@ -111,9 +111,9 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
         }
     }
 
-    private SearchDetails formResult(ButtonType bt) {
+    private Source formResult(ButtonType bt) {
         if (bt.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-            return new SearchDetails(
+            return new Source(
                     tfName.getText(), tfPath.getText());
         }
 
@@ -132,7 +132,7 @@ class EditSearchMetaInfoDialog extends Dialog<SearchDetails> {
     }
 
     private boolean validateCompanyName(String name) {
-        return SearchModelCache.getOrCreateCache()
+        return Sources.getOrCreate()
                 .keySet()
                 .stream()
                 .noneMatch(item -> item.equals(name));

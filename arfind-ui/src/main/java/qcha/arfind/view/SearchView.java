@@ -12,9 +12,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
-import qcha.arfind.SearchModelCache;
+import qcha.arfind.Sources;
 import qcha.arfind.excel.TextCrawler;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.model.Source;
 import qcha.arfind.model.SearchResult;
 import qcha.arfind.view.SearchViewModel.SearchResultModelDto;
 
@@ -28,7 +28,7 @@ class SearchView extends BorderPane {
     private TextField textSearchLine;
     private SearchViewModel viewModel;
     //left view for companies
-    private ListView<SearchDetails> lstCompanies;
+    private ListView<Source> lstCompanies;
     //table for results
     private TableView<SearchResultModelDto> resultTableView;
 
@@ -64,10 +64,9 @@ class SearchView extends BorderPane {
     private void initCompaniesListView() {
         //list of companies for search
         lstCompanies = new ListView<>(viewModel.getCompanies());
-        lstCompanies.setCellFactory(l -> new ListCell<SearchDetails>() {
-
+        lstCompanies.setCellFactory(l -> new ListCell<Source>() {
             @Override
-            protected void updateItem(SearchDetails item, boolean empty) {
+            protected void updateItem(Source item, boolean empty) {
                 if (Objects.nonNull(item)) {
                     setText(item.getName());
                 }
@@ -87,15 +86,15 @@ class SearchView extends BorderPane {
                         }
                 );
             }
-        }, new StringConverter<SearchDetails>() {
+        }, new StringConverter<Source>() {
             @Override
-            public String toString(SearchDetails details) {
+            public String toString(Source details) {
                 return details.getName();
             }
 
             @Override
-            public SearchDetails fromString(String name) {
-                return SearchModelCache.getOrCreateCache().get(name);
+            public Source fromString(String name) {
+                return Sources.getOrCreate().get(name);
             }
         }));
     }

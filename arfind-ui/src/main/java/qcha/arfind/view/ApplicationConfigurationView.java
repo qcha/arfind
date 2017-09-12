@@ -8,11 +8,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.model.Source;
 
 class ApplicationConfigurationView extends BorderPane {
     private HBox controls;
-    private TableView<SearchDetails> companyTableView;
+    private TableView<Source> companyTableView;
     private ApplicationConfigurationModelView viewModel;
 
     ApplicationConfigurationView(ApplicationConfigurationModelView viewModel) {
@@ -33,8 +33,8 @@ class ApplicationConfigurationView extends BorderPane {
         companyTableView.setFixedCellSize(40);
         companyTableView.setStyle("-fx-font-size: 16px;");
 
-        TableColumn<SearchDetails, String> companyColumn = new TableColumn<>("Название фирмы");
-        TableColumn<SearchDetails, String> filePathColumn = new TableColumn<>("Путь к файлу");
+        TableColumn<Source, String> companyColumn = new TableColumn<>("Название фирмы");
+        TableColumn<Source, String> filePathColumn = new TableColumn<>("Путь к файлу");
 
         //noinspection unchecked
         companyTableView.getColumns().addAll(

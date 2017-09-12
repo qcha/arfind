@@ -3,7 +3,7 @@ package qcha.arfind.view;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import qcha.arfind.SearchModelCache;
+import qcha.arfind.Sources;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,8 +25,8 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (!SearchModelCache.getOrCreateCache().isEmpty()) {
-                SearchModelCache.saveCacheToFile();
+            if (!Sources.getOrCreate().isEmpty()) {
+                Sources.saveCacheToFile();
             } else {
                 try {
                     Files.deleteIfExists(Paths.get(CONFIG_FILENAME));

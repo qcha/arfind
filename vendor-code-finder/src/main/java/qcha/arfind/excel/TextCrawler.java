@@ -1,7 +1,7 @@
 package qcha.arfind.excel;
 
 import com.google.common.collect.Lists;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.model.Source;
 import qcha.arfind.model.SearchResult;
 
 import java.util.List;
@@ -10,7 +10,7 @@ public final class TextCrawler {
     private TextCrawler() {
     }
 
-    public static List<SearchResult> findAnyMatches(String match, List<SearchDetails> sources) {
+    public static List<SearchResult> findAnyMatches(String match, List<Source> sources) {
         List<SearchResult> results = Lists.newArrayList();
 
         sources.forEach(source -> {

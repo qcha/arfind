@@ -5,8 +5,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import qcha.arfind.SearchModelCache;
-import qcha.arfind.model.SearchDetails;
+import qcha.arfind.Sources;
+import qcha.arfind.model.Source;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -17,13 +17,13 @@ import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 //todo rewrite
 @Ignore
 public class SavingCacheToFileTest {
-    private ObservableMap<String, SearchDetails> companiesCache;
+    private ObservableMap<String, Source> companiesCache;
 
     @Before
     public void setUp() throws Exception {
-        companiesCache = SearchModelCache.getOrCreateCache();
-        companiesCache.put(("Acer"), new SearchDetails("Acer", "empty.xls"));
-        companiesCache.put(("Asus"), new SearchDetails("Asus", "empty.xlsx"));
+        companiesCache = Sources.getOrCreate();
+        companiesCache.put(("Acer"), new Source("Acer", "empty.xls"));
+        companiesCache.put(("Asus"), new Source("Asus", "empty.xlsx"));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class SavingCacheToFileTest {
 
     @Test
     public void savingDetailsFromCacheToFileTest() throws Exception {
-//        SearchModelCache.saveCacheToFile(companiesCache);
+//        Sources.saveCacheToFile(companiesCache);
         Assert.assertTrue(new File(CONFIG_FILENAME).exists());
         Assert.assertEquals(2, Files.readAllLines(Paths.get(CONFIG_FILENAME)).size());
     }
