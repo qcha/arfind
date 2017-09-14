@@ -13,11 +13,9 @@ import java.util.List;
  * Basic class for parsing excel files with vendor codes.
  */
 public class ExcelTextFinder implements AutoCloseable {
-    private final String filename;
     private Workbook excelReader;
 
     public ExcelTextFinder(String filename) {
-        this.filename = filename;
         try {
             switch (excelExtension(filename)) {
                 case XLSX:
@@ -35,39 +33,46 @@ public class ExcelTextFinder implements AutoCloseable {
 
     public List<List<String>> findMatches(String matchString) {
         //modify for search
-        matchString = matchString.toLowerCase().replace('ё', 'е');
-
+        //trim, replace chars and lower case for compare
+        matchString = matchString.trim().toLowerCase().replace('ё', 'е');
         List<List<String>> result = new ArrayList<>();
-        String value;
 
         for (Sheet sheet : excelReader) {
             for (Row currentRow : sheet) {
-                for (Cell currentCell : currentRow) {
-                    switch (currentCell.getCellTypeEnum()) {
-                        case STRING:
-                            //plain value
-                            value = currentCell.getStringCellValue();
-
-                            //modify for search
-                            //trim, delete redundant spaces, replace chars and lower case for compare
-                            value = value.trim()
-                                    .replaceAll(" +", " ")
-                                    .toLowerCase()
-                                    .replace('ё', 'е');
-
-                            if (value.contains(matchString)) {
-                                result.add(convertRowDataToStringRepresentation(currentRow));
-                            }
-
-                            break;
-                        default:
-                            break;
-                    }
+                if (isMatched(currentRow, matchString)) {
+                    result.add(convertRowDataToStringRepresentation(currentRow));
                 }
             }
         }
 
         return result;
+    }
+
+    private boolean isMatched(Row row, String matchString) {
+        for (Cell currentCell : row) {
+            switch (currentCell.getCellTypeEnum()) {
+                case STRING:
+                    //plain value
+                    String value = currentCell.getStringCellValue();
+
+                    //modify for search
+                    //trim, delete redundant spaces, replace chars and lower case for compare
+                    value = value.trim()
+                            .replaceAll(" +", " ")
+                            .toLowerCase()
+                            .replace('ё', 'е');
+
+                    if (value.contains(matchString)) {
+                        return true;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -93,17 +98,18 @@ public class ExcelTextFinder implements AutoCloseable {
         excelReader.close();
     }
 
-    private enum ExcelExtension {
-        XLS,
-        XLSX
-    }
-
     private static List<String> convertRowDataToStringRepresentation(Row row) {
         DataFormatter dataFormatter = new DataFormatter();
         List<String> rowData = new ArrayList<>();
         for (Cell cell : row) {
             rowData.add(dataFormatter.formatCellValue(cell));
         }
+
         return rowData;
+    }
+
+    private enum ExcelExtension {
+        XLS,
+        XLSX
     }
 }

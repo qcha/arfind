@@ -44,28 +44,24 @@ public class Sources {
         return FXCollections.observableMap(getAll());
     }
 
-    //todo rewrite it
     private static ObservableMap<String, Source> getAll() {
+        ObservableMap<String, Source> cache = FXCollections.observableHashMap();
+
         if (Files.exists(Paths.get(CONFIG_FILENAME))) {
-            ObservableMap<String, Source> cache = FXCollections.observableHashMap();
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(CONFIG_FILENAME));
-                String line;
-                while ((Objects.nonNull(line = br.readLine()))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(CONFIG_FILENAME))) {
+                br.lines().forEach(line -> {
                     String[] fields = line.split(DEFAULT_FIELD_DELIMITER);
                     Source source = new Source(fields[0], fields[1]);
                     cache.put(source.getName(), source);
-                }
+                });
+
                 return cache;
-            } catch (IOException exception) {
-                throw new RuntimeException(
-                        String.format("Cannot read file - %s", CONFIG_FILENAME),
-                        exception
-                );
+            } catch (IOException e) {
+                throw new InitConfigurationException(String.format("Cannot read file - %s", CONFIG_FILENAME), e);
             }
-        } else {
-            return FXCollections.observableHashMap();
         }
+
+        return cache;
     }
 
     private static List<String> cacheToLines() {
