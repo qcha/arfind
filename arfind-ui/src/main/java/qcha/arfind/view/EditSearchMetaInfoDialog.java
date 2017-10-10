@@ -1,5 +1,6 @@
 package qcha.arfind.view;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -9,7 +10,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import qcha.arfind.Sources;
 import qcha.arfind.model.Source;
 
 import java.io.File;
@@ -23,16 +23,17 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 class EditSearchMetaInfoDialog extends Dialog<Source> {
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
-    private final Button btnChoose;
     private boolean isForEdit;
+    private ObservableList<Source> existingCompanies;
 
-    EditSearchMetaInfoDialog(Source source) {
+    EditSearchMetaInfoDialog(ObservableList<Source> existingCompanies, Source source) {
+        this.existingCompanies = existingCompanies;
         Label nameErrorLabel = createErrorLabel("Такое имя уже существует");
         Label fileErrorLabel = createErrorLabel("По указанному пути файла не существует");
         Label filePathLabel = new Label("Полный путь");
         Label nameLabel = new Label("Название источника");
 
-        btnChoose = new Button("Выбрать");
+        Button btnChoose = new Button("Выбрать");
         btnChoose.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
 
@@ -132,10 +133,9 @@ class EditSearchMetaInfoDialog extends Dialog<Source> {
     }
 
     private boolean validateCompanyName(String name) {
-        return Sources.getOrCreate()
-                .keySet()
+        return existingCompanies
                 .stream()
-                .noneMatch(item -> item.equals(name));
+                .noneMatch(item -> item.getName().equals(name));
     }
 
     private boolean validatePath(String path) {

@@ -38,7 +38,7 @@ class ApplicationConfigurationModelView {
     }
 
     void showDialogForEditSearchDetails(Source forEdit) {
-        Optional<Source> searchDetails = new EditSearchMetaInfoDialog(forEdit).showAndWait();
+        Optional<Source> searchDetails = new EditSearchMetaInfoDialog(companies, forEdit).showAndWait();
         searchDetails.ifPresent(details -> {
             //need to update
             companies.remove(forEdit);
@@ -47,7 +47,7 @@ class ApplicationConfigurationModelView {
     }
 
     void showDialogForAddingSource() {
-        Optional<Source> searchDetails = new EditSearchMetaInfoDialog(null).showAndWait();
+        Optional<Source> searchDetails = new EditSearchMetaInfoDialog(companies, null).showAndWait();
         searchDetails.ifPresent(companies::add);
     }
 }
