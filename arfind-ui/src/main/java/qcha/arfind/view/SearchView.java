@@ -31,6 +31,7 @@ class SearchView extends BorderPane {
     private ListView<Source> lstCompanies;
     //table for results
     private TableView<SearchResultModelDto> resultTableView;
+    private SplitPane body;
 
     SearchView(SearchViewModel viewModel) {
         this.viewModel = viewModel;
@@ -49,7 +50,7 @@ class SearchView extends BorderPane {
         initNewSearchPanel();
 
         //init body
-        SplitPane body = new SplitPane();
+        body = new SplitPane();
         body.getItems().addAll(
                 lstCompanies,
                 resultTableView
@@ -134,6 +135,7 @@ class SearchView extends BorderPane {
                             .map(result -> new SearchResultModelDto(result.getName(), result.getResult()))
                             .collect(Collectors.toList()));
             this.setBottom(newSearchPanel);
+            body.getItems().remove(lstCompanies);
         });
 
         searchPanel.getChildren().addAll(
@@ -157,6 +159,7 @@ class SearchView extends BorderPane {
             viewModel.getResults().clear();
             textSearchLine.clear();
             this.setBottom(searchPanel);
+            body.getItems().add(0, lstCompanies);
         });
 
         newSearchPanel = new HBox() {
