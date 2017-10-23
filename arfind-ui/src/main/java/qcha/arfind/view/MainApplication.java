@@ -31,10 +31,17 @@ public class MainApplication extends Application {
                 try {
                     Files.deleteIfExists(Paths.get(CONFIG_FILENAME));
                 } catch (IOException e) {
+                    //todo replace error message
                     throw new RuntimeException("Cannot find file - config.csv", e);
                 }
             }
         }));
+
+        ConfigurationWarningWindow configurationWarningWindow = new ConfigurationWarningWindow(primaryStage);
+        //todo remove hardcode config name
+        if (!Files.exists(Paths.get("config.csv"))) {
+            configurationWarningWindow.showAndWait();
+        }
 
         //init search view
         searchView = new SearchView(new SearchViewModel(primaryStage));
