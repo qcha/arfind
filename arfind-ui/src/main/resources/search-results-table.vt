@@ -1,0 +1,23 @@
+<html>
+    <style type="text/css">
+      #include("arfind-ui/src/main/resources/search-view-table.css")
+    </style>
+
+    <body>
+        <table>
+            #foreach( $row in $rows )
+                <tr>
+                <td>
+                $row.getName()
+                </td>
+                    #foreach( $td in $row.getResult() )
+                        <td>
+                            $td
+                        </td>
+                    #end
+                </tr>
+            #end
+        </table>
+    </body>
+
+</html>

@@ -9,15 +9,19 @@ import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.util.StringConverter;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 import qcha.arfind.Sources;
 import qcha.arfind.excel.TextCrawler;
-import qcha.arfind.model.Source;
 import qcha.arfind.model.SearchResult;
-import qcha.arfind.view.SearchViewModel.SearchResultModelDto;
+import qcha.arfind.model.Source;
 
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -29,19 +33,15 @@ class SearchView extends BorderPane {
     private SearchViewModel viewModel;
     //left view for companies
     private ListView<Source> lstCompanies;
-    //table for results
-    private TableView<SearchResultModelDto> resultTableView;
+    private WebView resultView;
     private SplitPane body;
 
     SearchView(SearchViewModel viewModel) {
         this.viewModel = viewModel;
+        resultView = new WebView();
 
         //list view with companies names
         initCompaniesListView();
-
-        //table view
-        initCompanyTableView();
-        resultTableView.setItems(viewModel.getResults());
 
         //search panel
         initSearchPanel();
@@ -53,7 +53,7 @@ class SearchView extends BorderPane {
         body = new SplitPane();
         body.getItems().addAll(
                 lstCompanies,
-                resultTableView
+                resultView
         );
 
         //init pane
@@ -129,11 +129,26 @@ class SearchView extends BorderPane {
 
         btnSearch.setOnAction(e -> {
             List<SearchResult> anyMatches = TextCrawler.findAnyMatches(textSearchLine.getText(), viewModel.getSourcesForSearch());
-            viewModel.getResults().addAll(
-                    anyMatches.stream()
+            WebEngine engine = resultView.getEngine();
+
+            VelocityEngine ve = new VelocityEngine();
+            ve.init();
+
+            Template t = ve.getTemplate("arfind-ui/src/main/resources/search-results-table.vt");
+            VelocityContext context = new VelocityContext();
+
+            context.put("rows",
+                    anyMatches
+                            .stream()
                             .filter(result -> result.getResult().size() > 1)
-                            .map(result -> new SearchResultModelDto(result.getName(), result.getResult()))
-                            .collect(Collectors.toList()));
+                            .collect(Collectors.toList())
+            );
+
+            StringWriter writer = new StringWriter();
+            t.merge(context, writer);
+
+            engine.loadContent(writer.toString());
+
             this.setBottom(newSearchPanel);
             body.getItems().remove(lstCompanies);
         });
@@ -169,23 +184,6 @@ class SearchView extends BorderPane {
         };
 
         HBox.setHgrow(prepareToSearchBtn, Priority.ALWAYS);
-    }
-
-    private void initCompanyTableView() {
-        resultTableView = new TableView<SearchResultModelDto>() {
-            {
-                setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-                TableColumn<SearchResultModelDto, String> companyColumn = new TableColumn<>("Название фирмы");
-                TableColumn<SearchResultModelDto, VBox> filterResultColumn = new TableColumn<>("Результат поиска");
-
-                companyColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
-                filterResultColumn.setCellValueFactory(cellData -> cellData.getValue().getResult());
-
-                //noinspection unchecked
-                getColumns().addAll(companyColumn, filterResultColumn);
-            }
-        };
     }
 
     /**
