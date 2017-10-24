@@ -171,7 +171,6 @@ class SearchView extends BorderPane {
         };
 
         prepareToSearchBtn.setOnAction(e -> {
-            viewModel.getResults().clear();
             textSearchLine.clear();
             this.setBottom(searchPanel);
             body.getItems().add(0, lstCompanies);
