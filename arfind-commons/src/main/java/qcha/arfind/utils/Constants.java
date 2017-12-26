@@ -1,9 +1,14 @@
 package qcha.arfind.utils;
 
 import javafx.stage.Screen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class Constants {
+    private final static Logger logger = LoggerFactory.getLogger(Constants.class);
+
     private Constants() {
+        logger.error("Try to create instance of constant class.");
         throw new AssertionError("Don't create instance of constant class");
     }
 
@@ -13,6 +18,7 @@ public final class Constants {
         public static final String DEFAULT_FIELD_DELIMITER = ";";
 
         private ConfigFileConstants() {
+            logger.error("Try to create instance of constant class.");
             throw new AssertionError("Don't create instance of constant class");
         }
     }

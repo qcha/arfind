@@ -7,6 +7,8 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,19 +20,24 @@ import java.util.List;
  * Basic class for finding matches in excel file.
  */
 public class ExcelCrawler implements AutoCloseable {
+    private final static Logger logger = LoggerFactory.getLogger(ExcelCrawler.class);
+
     private final Workbook excelReader;
 
     public ExcelCrawler(String filename) {
         try {
             switch (excelExtension(filename)) {
                 case XLSX:
+                    logger.debug("Working with file: {} as XLSX.", filename);
                     excelReader = new XSSFWorkbook(new FileInputStream(filename));
                     break;
                 default:
                     //default - xls
+                    logger.debug("Working with file: {} as XLS.", filename);
                     excelReader = new HSSFWorkbook(new FileInputStream(filename));
             }
         } catch (IOException e) {
+            logger.error("An error occurred while processing file: {}, cause: {}.", filename, e);
             throw new UncheckedIOException(String.format("Can't work with file: %s, cause: %s", filename, e), e);
         }
     }
@@ -42,11 +49,14 @@ public class ExcelCrawler implements AutoCloseable {
         final List<List<String>> result = Lists.newArrayList();
 
         excelReader.forEach(sheet -> sheet.forEach(row -> {
+            logger.debug("Searching in {}", sheet.getSheetName());
             if (isMatched(row, prepared)) {
+                logger.debug("Match {} in {}.", sheet.getSheetName());
                 result.add(convertRowDataToStringRepresentation(row));
             }
         }));
 
+        logger.info("Search complete, found: {} matches", result.size());
         return result;
     }
 
@@ -66,9 +76,13 @@ public class ExcelCrawler implements AutoCloseable {
                             .replace('ё', 'е');
 
                     if (value.contains(match)) {
+                        logger.debug("Match was found: {} in {}", match, value);
                         return true;
                     }
 
+                    break;
+                default:
+                    logger.warn("Not supported cell type in {}, row: {}.", currentCell.getSheet().getSheetName(), currentCell.getRowIndex());
                     break;
             }
         }
@@ -85,12 +99,15 @@ public class ExcelCrawler implements AutoCloseable {
      */
     private ExcelExtension excelExtension(String name) {
         if (name.endsWith("xls")) {
+            logger.debug("File {} was marked as xls", name);
             return ExcelExtension.XLS;
 
         } else if (name.endsWith("xlsx")) {
+            logger.debug("File {} was marked as xlsx.", name);
             return ExcelExtension.XLSX;
         }
 
+        logger.error("Unknown excel extension for file {}.", name);
         throw new UnknownExcelExtensionException(name);
     }
 

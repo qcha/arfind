@@ -10,6 +10,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import qcha.arfind.model.Source;
 
 import java.io.File;
@@ -21,6 +23,8 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 class EditSearchMetaInfoDialog extends Dialog<Source> {
+    private final static Logger logger = LoggerFactory.getLogger(EditSearchMetaInfoDialog.class);
+
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
     private boolean isForEdit;
@@ -44,6 +48,7 @@ class EditSearchMetaInfoDialog extends Dialog<Source> {
             File file = fileChooser.showOpenDialog(this.getOwner());
             if (Objects.nonNull(file)) {
                 tfPath.setText(file.getAbsolutePath());
+                logger.info("Working with file: {}.", file.getAbsolutePath());
             }
         });
 
@@ -80,6 +85,7 @@ class EditSearchMetaInfoDialog extends Dialog<Source> {
                 //check for duplicate name
                 if (!validateCompanyName(tfName.getText())) {
                     nameErrorLabel.setVisible(true);
+                    logger.warn("Name: {} was duplicated.", tfName.getText());
                 } else {
                     nameErrorLabel.setVisible(false);
                 }
@@ -88,6 +94,7 @@ class EditSearchMetaInfoDialog extends Dialog<Source> {
             //invalid path
             if (!validatePath(tfPath.getText())) {
                 fileErrorLabel.setVisible(true);
+                logger.warn("Path: {} is invalid", tfPath.getText());
             } else {
                 fileErrorLabel.setVisible(false);
             }
