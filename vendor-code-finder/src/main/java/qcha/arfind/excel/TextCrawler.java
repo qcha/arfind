@@ -14,7 +14,7 @@ public final class TextCrawler {
         List<SearchResult> results = Lists.newArrayList();
 
         sources.forEach(source -> {
-            try(ExcelTextFinder finder = new ExcelTextFinder(source.getPath())) {
+            try(ExcelCrawler finder = new ExcelCrawler(source.getPath())) {
                 finder.findMatches(match).forEach(row -> results.add(new SearchResult(source.getName(), row)));
             } catch (Exception e) {
                 //todo add logger

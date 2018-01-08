@@ -4,17 +4,16 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import qcha.arfind.excel.ExcelTextFinder;
+import qcha.arfind.excel.ExcelCrawler;
 
 import java.util.List;
 
-public class ExcelTextFinderOnXlsTest {
-
-    private ExcelTextFinder parser;
+public class ExcelCrawlerOnXlsTest {
+    private ExcelCrawler parser;
 
     @Before
-    public void setUp() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/prays.xls");
+    public void setUp() {
+        parser = new ExcelCrawler("src/test/resources/prays.xls");
     }
 
     @After
@@ -23,18 +22,17 @@ public class ExcelTextFinderOnXlsTest {
     }
 
     @Test
-    public void caseSensitivityTest() throws Exception {
+    public void caseSensitivityTest() {
         //upper case
         Assert.assertEquals(20, parser.findMatches("ВАГОНКА").size());
         //lower case
         Assert.assertEquals(20, parser.findMatches("вагонка").size());
         //default
         Assert.assertEquals(20, parser.findMatches("Вагонка").size());
-
     }
 
     @Test
-    public void oneNotFullWordTest() throws Exception {
+    public void oneNotFullWordTest() {
         Assert.assertEquals(60, parser.findMatches("Бр").size());
     }
 
@@ -45,67 +43,67 @@ public class ExcelTextFinderOnXlsTest {
     }
 
     @Test
-    public void stringWithoutSpacesTest() throws Exception {
+    public void stringWithoutSpacesTest() {
         Assert.assertEquals(22, parser.findMatches("RAL3005").size());
     }
 
     @Test
-    public void firstStringWithOneSpaceTest() throws Exception {
+    public void firstStringWithOneSpaceTest() {
         Assert.assertEquals(4, parser.findMatches("Соединитель желоба").size());
     }
 
     @Test
-    public void firstStringWithTrimmedLastWord() throws Exception {
+    public void firstStringWithTrimmedLastWord() {
         Assert.assertEquals(5, parser.findMatches("Соединитель жел").size());
     }
 
     @Test
-    public void secondStringWithTrimmedLastWord() throws Exception {
+    public void secondStringWithTrimmedLastWord() {
         Assert.assertEquals(5, parser.findMatches("Соединитель ж").size());
     }
 
     @Test
-    public void secondStringWithOneTest() throws Exception {
+    public void secondStringWithOneTest() {
         Assert.assertEquals(14, parser.findMatches("Труба водосточная").size());
     }
 
     @Test
-    public void thirdStringWithTrimmedLastWord() throws Exception {
+    public void thirdStringWithTrimmedLastWord() {
         Assert.assertEquals(14, parser.findMatches("Труба водо").size());
     }
 
     @Test
-    public void fourthStringWithTrimmedLastWord() throws Exception {
+    public void fourthStringWithTrimmedLastWord() {
         Assert.assertEquals(14, parser.findMatches("Труба в").size());
     }
 
     @Test
-    public void fifthStringWithTrimmedLastWord() throws Exception {
+    public void fifthStringWithTrimmedLastWord() {
         Assert.assertEquals(2, parser.findMatches("Миксер для красок").size());
     }
 
     @Test
-    public void sixthStringWithTrimmedLastWord() throws Exception {
+    public void sixthStringWithTrimmedLastWord() {
         Assert.assertEquals(2, parser.findMatches("Миксер для кр").size());
     }
 
     @Test
-    public void seventhStringWithTrimmedLastWord() throws Exception {
+    public void seventhStringWithTrimmedLastWord() {
         Assert.assertEquals(4, parser.findMatches("Миксер для").size());
     }
 
     @Test
-    public void stringWithSeveralSpacesTest() throws Exception {
+    public void stringWithSeveralSpacesTest() {
         Assert.assertEquals(1, parser.findMatches("Держатель желоба на стену").size());
     }
 
     @Test
-    public void fullNameTest() throws Exception {
+    public void fullNameTest() {
         Assert.assertEquals(1, parser.findMatches("Прокладка из ДСП 3,5х1,75").size());
     }
 
     @Test
-    public void stringWithDifficultLetters() throws Exception {
+    public void stringWithDifficultLetters() {
         Assert.assertEquals(45, parser.findMatches("Жёлоб").size());
 
         Assert.assertEquals(45, parser.findMatches("Желоб").size());
@@ -132,35 +130,35 @@ public class ExcelTextFinderOnXlsTest {
     }
 
     @Test
-    public void whiteSpacesTest() throws Exception {
+    public void whiteSpacesTest() {
         Assert.assertEquals(1, parser.findMatches("Вагонка сорта В -2.1м").size());
     }
 
     //todo
     @Test
-    public void strangeBehaviourWithCustomCellOne() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xls");
+    public void strangeBehaviourWithCustomCellOne() {
+        parser = new ExcelCrawler("src/test/resources/test.xls");
         Assert.assertEquals(2, parser.findMatches("руб").size());
 
     }
 
     //todo
     @Test
-    public void strangeBehaviourWithCustomCellTwo() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xls");
+    public void strangeBehaviourWithCustomCellTwo() {
+        parser = new ExcelCrawler("src/test/resources/test.xls");
         Assert.assertEquals(1, parser.findMatches("650").size());
     }
 
     //todo
     @Test
-    public void strangeBehaviourWithCustomCellThree() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xls");
+    public void strangeBehaviourWithCustomCellThree() {
+        parser = new ExcelCrawler("src/test/resources/test.xls");
         Assert.assertEquals(1, parser.findMatches("510").size());
     }
 
     @Test
-    public void getPriceOfFirstMatch() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xls");
+    public void getPriceOfFirstMatch() {
+        parser = new ExcelCrawler("src/test/resources/test.xls");
         List<List<String>> result = parser.findMatches("Киров");
         Assert.assertEquals(2, result.size());
         //get price
