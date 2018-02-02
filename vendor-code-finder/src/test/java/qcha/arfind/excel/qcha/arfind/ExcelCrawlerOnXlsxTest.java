@@ -4,15 +4,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import qcha.arfind.excel.ExcelTextFinder;
+import qcha.arfind.excel.ExcelCrawler;
 
-public class ExcelTextFinderOnXlsxTest {
+public class ExcelCrawlerOnXlsxTest {
 
-    private ExcelTextFinder parser;
+    private ExcelCrawler parser;
 
     @Before
     public void setUp() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/Prays-list_santekhnika.xlsx");
+        parser = new ExcelCrawler("src/test/resources/Prays-list_santekhnika.xlsx");
     }
 
     @After
@@ -95,21 +95,21 @@ public class ExcelTextFinderOnXlsxTest {
 
     @Test
     public void strangeBehaviourWithCustomCellOne() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xlsx");
+        parser = new ExcelCrawler("src/test/resources/test.xlsx");
         Assert.assertEquals(2, parser.findMatches("руб").size());
 
     }
 
     @Test
     public void strangeBehaviourWithCustomCellTwo() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xlsx");
+        parser = new ExcelCrawler("src/test/resources/test.xlsx");
         Assert.assertEquals(1, parser.findMatches("650").size());
 
     }
 
     @Test
     public void strangeBehaviourWithCustomCellThree() throws Exception {
-        parser = new ExcelTextFinder("src/test/resources/test.xlsx");
+        parser = new ExcelCrawler("src/test/resources/test.xlsx");
         Assert.assertEquals(1, parser.findMatches("510").size());
 
     }

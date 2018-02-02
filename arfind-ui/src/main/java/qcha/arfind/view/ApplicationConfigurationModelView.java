@@ -20,8 +20,7 @@ class ApplicationConfigurationModelView {
         companies = FXCollections.observableArrayList(Sources.getOrCreate().values());
     }
 
-    void remove(Source details) {
-        companies.remove(details);
+    void remove(Source details) { companies.remove(details);
     }
 
     void removeAll() {

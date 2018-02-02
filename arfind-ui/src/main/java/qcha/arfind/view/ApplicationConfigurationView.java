@@ -8,9 +8,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import qcha.arfind.model.Source;
 
+import java.util.Objects;
+
 class ApplicationConfigurationView extends BorderPane {
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationConfigurationView.class);
+
     private HBox controls;
     private TableView<Source> companyTableView;
     private ApplicationConfigurationModelView viewModel;
@@ -62,21 +68,31 @@ class ApplicationConfigurationView extends BorderPane {
 
         removeButton.disableProperty().bind(Bindings.isEmpty(companyTableView.getSelectionModel().getSelectedItems()));
         removeButton.setOnAction(e -> {
+            String company = companyTableView.getSelectionModel().getSelectedItem().getName();
             viewModel.remove(companyTableView.getSelectionModel().getSelectedItem());
+            logger.debug("Company: {} was successfully removed.", company);
         });
 
-        removeAllButton.setOnAction(e -> viewModel.removeAll());
+        removeAllButton.setOnAction(e -> {
+            viewModel.removeAll();
+            logger.debug("All companies were removed.");
+        });
 
         addButton.setOnAction(e -> {
+            logger.debug("Opening dialog for adding new company.");
             viewModel.showDialogForAddingSource();
         });
 
         editButton.setOnAction(e -> {
+            String company = companyTableView.getSelectionModel().getSelectedItem().getName();
             viewModel.showDialogForEditSearchDetails(companyTableView.getSelectionModel().getSelectedItem());
+            logger.debug("Company: {} was successfully edited.", company);
+
         });
 
         saveButton.setOnAction(e -> {
             viewModel.save();
+            logger.info("Configuration was successfully updated.");
         });
 
         controls.getChildren().addAll(

@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+//todo add logger
 class SearchView extends BorderPane {
     private HBox searchPanel;
     private HBox newSearchPanel;
