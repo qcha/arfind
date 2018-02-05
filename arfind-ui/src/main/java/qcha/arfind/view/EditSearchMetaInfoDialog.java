@@ -22,7 +22,7 @@ import java.util.Objects;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
-class EditSearchMetaInfoDialog extends Dialog<Source> {
+final class EditSearchMetaInfoDialog extends Dialog<Source> {
     private final static Logger logger = LoggerFactory.getLogger(EditSearchMetaInfoDialog.class);
 
     private final TextField tfName = new TextField();

@@ -14,7 +14,7 @@ import qcha.arfind.model.Source;
 
 import java.util.Objects;
 
-class ApplicationConfigurationView extends BorderPane {
+final class ApplicationConfigurationView extends BorderPane {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationConfigurationView.class);
 
     private HBox controls;

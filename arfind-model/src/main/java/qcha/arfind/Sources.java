@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static qcha.arfind.utils.Constants.ConfigFileConstants.*;
 
-public class Sources {
+public final class Sources {
     private final static Logger logger = LoggerFactory.getLogger(Sources.class);
     private static ObservableMap<String, Source> cache;
 

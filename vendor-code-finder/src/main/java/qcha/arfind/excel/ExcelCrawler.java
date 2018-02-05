@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Basic class for finding matches in excel file.
  */
-public class ExcelCrawler implements AutoCloseable {
+public final class ExcelCrawler implements AutoCloseable {
     private final static Logger logger = LoggerFactory.getLogger(ExcelCrawler.class);
 
     private final Workbook excelReader;
