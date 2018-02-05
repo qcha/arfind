@@ -15,7 +15,7 @@ import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
-public class MainApplication extends Application {
+public final class MainApplication extends Application {
     private final static Logger logger = LoggerFactory.getLogger(MainApplication.class);
     private final String TITLE = "Поисковик артикулов";
 
