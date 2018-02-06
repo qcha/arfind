@@ -41,14 +41,14 @@ public final class MainApplication extends Application {
                 } catch (IOException e) {
                     //todo replace error message
                     logger.error("Cannot find file {}, cause: {}.", CONFIG_FILENAME, e);
-                    throw new RuntimeException("Cannot find file - config.csv", e);
+                    throw new RuntimeException("Cannot find file - " + CONFIG_FILENAME, e);
                 }
             }
         }));
 
         ConfigurationWarningWindow configurationWarningWindow = new ConfigurationWarningWindow(primaryStage);
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            logger.info("Working with config {}.", CONFIG_FILENAME);
+            logger.info("Working with config file {}.", CONFIG_FILENAME);
             configurationWarningWindow.showAndWait();
         }
 
