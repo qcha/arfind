@@ -1,6 +1,7 @@
 package qcha.arfind.excel;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -31,10 +32,13 @@ public final class ExcelCrawler implements AutoCloseable {
                     logger.debug("Working with file: {} as XLSX.", filename);
                     excelReader = new XSSFWorkbook(new FileInputStream(filename));
                     break;
-                default:
-                    //default - xls
+                case XLS:
                     logger.debug("Working with file: {} as XLS.", filename);
                     excelReader = new HSSFWorkbook(new FileInputStream(filename));
+                    break;
+                default:
+                    logger.error("The file {} is damaged", filename);
+                    throw new UnknownExcelExtensionException("Unsupported type of excel file");
             }
         } catch (IOException e) {
             logger.error("An error occurred while processing file: {}, cause: {}.", filename, e);
@@ -98,11 +102,11 @@ public final class ExcelCrawler implements AutoCloseable {
      * @throws UnknownExcelExtensionException if can't understand extension of file.
      */
     private ExcelExtension excelExtension(String name) {
-        if (name.endsWith("xls")) {
+        if (FilenameUtils.isExtension(name, "xls")) {
             logger.debug("File {} was marked as xls", name);
             return ExcelExtension.XLS;
 
-        } else if (name.endsWith("xlsx")) {
+        } else if (FilenameUtils.isExtension(name, "xlsx")) {
             logger.debug("File {} was marked as xlsx.", name);
             return ExcelExtension.XLSX;
         }
