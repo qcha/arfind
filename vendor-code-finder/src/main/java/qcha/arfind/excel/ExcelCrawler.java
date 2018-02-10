@@ -37,7 +37,7 @@ public final class ExcelCrawler implements AutoCloseable {
                     excelReader = new HSSFWorkbook(new FileInputStream(filename));
                     break;
                 default:
-                    logger.error("The file {} is damaged", filename);
+                    logger.error("The file {} has unknown extension and can't be processed", filename);
                     throw new UnknownExcelExtensionException("Unsupported type of excel file");
             }
         } catch (IOException e) {
