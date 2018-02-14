@@ -12,13 +12,13 @@ import java.util.Properties;
 public final class Constants {
     private final static Logger logger = LoggerFactory.getLogger(Constants.class);
 
+    private static final String DEFAULT_PROPERTY_FILE = "config.properties";
+
     private Constants() {
         throw new AssertionError("Don't create instance of constant class");
     }
 
     public static final class ConfigFileConstants {
-        private static final String PATH_TO_PROPERTIES = "../../../config.properties";
-
         public static final String CONFIG_FILENAME;
         public static final String DEFAULT_CHARSET;
         public static final String DEFAULT_FIELD_DELIMITER;
@@ -26,7 +26,7 @@ public final class Constants {
         static {
             //init out file
             Properties props = new Properties();
-            try (FileInputStream input = new FileInputStream(PATH_TO_PROPERTIES)) {
+            try (FileInputStream input = new FileInputStream(DEFAULT_PROPERTY_FILE)) {
                 props.load(input);
 
                 CONFIG_FILENAME = props.getProperty("CONFIG_FILENAME");
@@ -39,8 +39,8 @@ public final class Constants {
                 logger.debug("Constant DEFAULT_FIELD_DELIMITER was initialized as {}", DEFAULT_FIELD_DELIMITER);
 
             } catch (IOException e) {
-                logger.error("Error while working with file {}, cause: {}.", PATH_TO_PROPERTIES, e);
-                throw new UncheckedIOException("Error while working with file - " + PATH_TO_PROPERTIES, e);
+                logger.error("Error while working with file {}, cause: {}.", DEFAULT_PROPERTY_FILE, e);
+                throw new UncheckedIOException("Error while working with file - " + DEFAULT_PROPERTY_FILE, e);
             }
         }
 
