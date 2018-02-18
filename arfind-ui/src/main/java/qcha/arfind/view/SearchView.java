@@ -85,7 +85,6 @@ final class SearchView extends BorderPane {
                             }
 
                             if (wasSelected) {
-                                viewModel.getSourcesForSearch().remove(source);
                                 logger.debug("Remove source: {} from search.", source);
                                 source.setForSearch(false);
                             }
