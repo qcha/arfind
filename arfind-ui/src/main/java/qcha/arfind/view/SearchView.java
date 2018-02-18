@@ -16,24 +16,27 @@ import javafx.util.StringConverter;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import qcha.arfind.Sources;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import qcha.arfind.excel.TextCrawler;
 import qcha.arfind.model.SearchResult;
-import qcha.arfind.model.Source;
 
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-//todo add logger
 final class SearchView extends BorderPane {
+    private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
+
     private HBox searchPanel;
     private HBox newSearchPanel;
     private TextField textSearchLine;
     private SearchViewModel viewModel;
+
     //left view for companies
-    private ListView<Source> lstCompanies;
+    private ListView<SearchViewModel.SearchSource> lstCompanies;
     private WebView resultView;
     private SplitPane body;
 
@@ -43,10 +46,8 @@ final class SearchView extends BorderPane {
 
         //list view with companies names
         initCompaniesListView();
-
         //search panel
         initSearchPanel();
-
         //init new search panel
         initNewSearchPanel();
 
@@ -65,10 +66,10 @@ final class SearchView extends BorderPane {
 
     private void initCompaniesListView() {
         //list of companies for search
-        lstCompanies = new ListView<>(viewModel.getCompanies());
-        lstCompanies.setCellFactory(l -> new ListCell<Source>() {
+        lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
+        lstCompanies.setCellFactory(l -> new ListCell<SearchViewModel.SearchSource>() {
             @Override
-            protected void updateItem(Source item, boolean empty) {
+            protected void updateItem(SearchViewModel.SearchSource item, boolean empty) {
                 if (Objects.nonNull(item)) {
                     setText(item.getName());
                 }
@@ -79,24 +80,38 @@ final class SearchView extends BorderPane {
             {
                 addListener((obs, wasSelected, isNowSelected) -> {
                             if (isNowSelected) {
-                                viewModel.getSourcesForSearch().add(source);
+                                logger.debug("Select source: {} for search.", source);
+                                source.setForSearch(true);
                             }
 
                             if (wasSelected) {
                                 viewModel.getSourcesForSearch().remove(source);
+                                logger.debug("Remove source: {} from search.", source);
+                                source.setForSearch(false);
                             }
                         }
                 );
             }
-        }, new StringConverter<Source>() {
+        }, new StringConverter<SearchViewModel.SearchSource>() {
             @Override
-            public String toString(Source details) {
+            public String toString(SearchViewModel.SearchSource details) {
                 return details.getName();
             }
 
             @Override
-            public Source fromString(String name) {
-                return Sources.getOrCreate().get(name);
+            public SearchViewModel.SearchSource fromString(String name) {
+
+                Optional<SearchViewModel.SearchSource> searchSource = viewModel.getSourcesForSearch().stream()
+                        .filter(s -> s.getName().equals(name))
+                        .findFirst();
+
+                // it should be always present value
+                if (!searchSource.isPresent()) {
+                    logger.error("Can't find search source by name: {}.", name);
+                    return null;
+                }
+
+                return searchSource.get();
             }
         }));
     }
@@ -120,6 +135,7 @@ final class SearchView extends BorderPane {
             {
                 disableProperty().bind(textSearchLine.textProperty().isEqualTo("").or(
                         Bindings.size(viewModel.getSourcesForSearch()).isEqualTo(0)));
+
                 setFocusTraversable(false);
                 setDefaultButton(true);
                 setMinHeight(75);
@@ -129,23 +145,28 @@ final class SearchView extends BorderPane {
         };
 
         btnSearch.setOnAction(e -> {
-            List<SearchResult> anyMatches = TextCrawler.findAnyMatches(textSearchLine.getText(), viewModel.getSourcesForSearch());
-            WebEngine engine = resultView.getEngine();
-
-            VelocityEngine ve = new VelocityEngine();
-            ve.init();
-
-            Template t = ve.getTemplate("arfind-ui/src/main/resources/search-results-table.vt");
-            VelocityContext context = new VelocityContext();
-
-            context.put("rows",
-                    anyMatches
+            final List<SearchResult> anyMatches = TextCrawler.findAnyMatches(
+                    textSearchLine.getText(),
+                    viewModel.getSourcesForSearch()
                             .stream()
-                            .filter(result -> result.getResult().size() > 1)
+                            .filter(SearchViewModel.SearchSource::isForSearch)
                             .collect(Collectors.toList())
             );
 
-            StringWriter writer = new StringWriter();
+            final WebEngine engine = resultView.getEngine();
+            final VelocityEngine ve = new VelocityEngine();
+            ve.init();
+
+            final Template t = ve.getTemplate("arfind-ui/src/main/resources/search-results-table.vt");
+            final VelocityContext context = new VelocityContext();
+
+            context.put("rows", anyMatches
+                    .stream()
+                    .filter(result -> result.getResult().size() > 1)
+                    .collect(Collectors.toList())
+            );
+
+            final StringWriter writer = new StringWriter();
             t.merge(context, writer);
 
             engine.loadContent(writer.toString());

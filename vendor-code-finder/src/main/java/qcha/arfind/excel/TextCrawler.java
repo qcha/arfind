@@ -14,7 +14,7 @@ public final class TextCrawler {
     private TextCrawler() {
     }
 
-    public static List<SearchResult> findAnyMatches(String match, List<Source> sources) {
+    public static List<SearchResult> findAnyMatches(String match, List<? extends Source> sources) {
         List<SearchResult> results = Lists.newArrayList();
 
         sources.forEach(source -> {

@@ -2,7 +2,9 @@ package qcha.arfind.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import lombok.ToString;
 
+@ToString
 public class Source {
     private StringProperty name;
     private StringProperty pathToSource;
