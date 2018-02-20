@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -55,7 +55,7 @@ public final class ExcelCrawler implements AutoCloseable {
         excelReader.forEach(sheet -> sheet.forEach(row -> {
             logger.debug("Searching in {}", sheet.getSheetName());
             if (isMatched(row, prepared)) {
-                logger.debug("Match {} in {}.", sheet.getSheetName());
+                logger.debug("Match {} in {}.", match, sheet.getSheetName());
                 result.add(convertRowDataToStringRepresentation(row));
             }
         }));
@@ -74,19 +74,30 @@ public final class ExcelCrawler implements AutoCloseable {
                     //modify for search
                     //trim, delete redundant spaces, replace chars and lower case for compare
                     value = value.trim()
-                            .trim()
                             .toLowerCase()
                             //only for russian search
                             .replace('ё', 'е');
 
                     if (value.contains(match)) {
-                        logger.debug("Match was found: {} in {}", match, value);
+                        logger.debug("Match was found: {} in: {} case: {}", match, value, currentCell.getCellTypeEnum());
+                        return true;
+                    }
+
+                    break;
+                case NUMERIC:
+                    value = NumberToTextConverter.toText(currentCell.getNumericCellValue());
+
+                    value = value.trim()
+                            .replace('.', ',');
+
+                    if (value.contains(match)) {
+                        logger.debug("Match was found: {} in: {} case: {}", match, value, currentCell.getCellTypeEnum());
                         return true;
                     }
 
                     break;
                 default:
-                    logger.warn("Not supported cell type in {}, row: {}.", currentCell.getSheet().getSheetName(), currentCell.getRowIndex());
+                    logger.warn("Not supported cell type {} in {}, row: {}.", currentCell.getCellTypeEnum(), currentCell.getSheet().getSheetName(), currentCell.getRowIndex());
                     break;
             }
         }
