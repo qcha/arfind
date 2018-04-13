@@ -52,6 +52,10 @@ public final class Constants {
     public static final class UserResolutionConstants {
         public static final double DEFAULT_USER_RESOLUTION_WIDTH = Screen.getPrimary().getVisualBounds().getWidth();
         public static final double DEFAULT_USER_RESOLUTION_HEIGHT = Screen.getPrimary().getVisualBounds().getHeight();
+
+        private UserResolutionConstants() {
+            throw new AssertionError("Don't create instance of constant class");
+        }
     }
 
 }
