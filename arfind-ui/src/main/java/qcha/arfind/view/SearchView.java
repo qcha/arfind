@@ -34,38 +34,43 @@ final class SearchView extends BorderPane {
     private HBox newSearchPanel;
     private TextField textSearchLine;
     private SearchViewModel viewModel;
-
-    //left view for companies
-    private ListView<SearchViewModel.SearchSource> lstCompanies;
-    private WebView resultView;
     private SplitPane body;
+
+    // left view for companies
+    private ListView<SearchViewModel.SearchSource> lstCompanies;
+
+    // right view for results
+    private WebView resultView;
+
 
     SearchView(SearchViewModel viewModel) {
         this.viewModel = viewModel;
         resultView = new WebView();
 
-        //list view with companies names
+        // list view with companies names
         initCompaniesListView();
-        //search panel
+
+        // search panel
         initSearchPanel();
-        //init new search panel
+
+        // init new search panel
         initNewSearchPanel();
 
-        //init body
+        // init body
         body = new SplitPane();
         body.getItems().addAll(
                 lstCompanies,
                 resultView
         );
 
-        //init pane
+        // init pane
         setTop(createMenuBar());
         setCenter(body);
         setBottom(searchPanel);
     }
 
     private void initCompaniesListView() {
-        //list of companies for search
+        // list of companies for search
         lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
         lstCompanies.setCellFactory(l -> new ListCell<SearchViewModel.SearchSource>() {
             @Override
@@ -104,7 +109,7 @@ final class SearchView extends BorderPane {
                         .filter(s -> s.getName().equals(name))
                         .findFirst();
 
-                // it should be always present value
+                //  it should be always present value
                 if (!searchSource.isPresent()) {
                     logger.error("Can't find search source by name: {}.", name);
                     return null;
@@ -214,7 +219,7 @@ final class SearchView extends BorderPane {
     private MenuBar createMenuBar() {
         MenuBar menuBar = new MenuBar();
 
-        //init option menu
+        // Main menu
         Menu file = new Menu("Файл") {
             {
                 MenuItem exit = new MenuItem("Выход") {
@@ -230,8 +235,8 @@ final class SearchView extends BorderPane {
             }
         };
 
+        // Configuration menu
         Menu options = new Menu("Настройки") {
-            //init configuration menu
             {
                 MenuItem configuration = new MenuItem("Конфигурация");
                 configuration.setOnAction(event -> new ApplicationConfigurationWindow(viewModel.getStage()) {
@@ -245,8 +250,8 @@ final class SearchView extends BorderPane {
         };
 
 
+        // Help menu
         Menu help = new Menu("Помощь") {
-            //init help menu
             {
                 getItems().add(
                         new MenuItem("О программе") {
