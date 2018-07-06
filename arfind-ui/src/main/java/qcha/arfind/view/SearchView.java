@@ -2,13 +2,14 @@ package qcha.arfind.view;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -23,7 +24,6 @@ import qcha.arfind.model.SearchResult;
 
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -34,6 +34,8 @@ final class SearchView extends BorderPane {
     private HBox newSearchPanel;
     private TextField textSearchLine;
     private SearchViewModel viewModel;
+    private VBox companiesVBox;
+    private CheckBox selectAll;
     private SplitPane body;
 
     // left view for companies
@@ -42,10 +44,10 @@ final class SearchView extends BorderPane {
     // right view for results
     private WebView resultView;
 
-
     SearchView(SearchViewModel viewModel) {
         this.viewModel = viewModel;
         resultView = new WebView();
+        companiesVBox = new VBox();
 
         // list view with companies names
         initCompaniesListView();
@@ -58,8 +60,12 @@ final class SearchView extends BorderPane {
 
         // init body
         body = new SplitPane();
+
+        companiesVBox.getChildren().addAll(selectAll, lstCompanies);
+        VBox.setVgrow(lstCompanies, Priority.ALWAYS);
+
         body.getItems().addAll(
-                lstCompanies,
+                companiesVBox,
                 resultView
         );
 
@@ -72,31 +78,7 @@ final class SearchView extends BorderPane {
     private void initCompaniesListView() {
         // list of companies for search
         lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
-        lstCompanies.setCellFactory(l -> new ListCell<SearchViewModel.SearchSource>() {
-            @Override
-            protected void updateItem(SearchViewModel.SearchSource item, boolean empty) {
-                if (Objects.nonNull(item)) {
-                    setText(item.getName());
-                }
-            }
-        });
-
-        lstCompanies.setCellFactory(CheckBoxListCell.forListView(source -> new SimpleBooleanProperty() {
-            {
-                addListener((obs, wasSelected, isNowSelected) -> {
-                            if (isNowSelected) {
-                                logger.debug("Select source: {} for search.", source);
-                                source.setForSearch(true);
-                            }
-
-                            if (wasSelected) {
-                                logger.debug("Remove source: {} from search.", source);
-                                source.setForSearch(false);
-                            }
-                        }
-                );
-            }
-        }, new StringConverter<SearchViewModel.SearchSource>() {
+        lstCompanies.setCellFactory(CheckBoxListCell.forListView(SearchViewModel.SearchSource::selectedProperty, new StringConverter<SearchViewModel.SearchSource>() {
             @Override
             public String toString(SearchViewModel.SearchSource details) {
                 return details.getName();
@@ -118,6 +100,17 @@ final class SearchView extends BorderPane {
                 return searchSource.get();
             }
         }));
+
+
+        selectAll = new CheckBox() {
+            {
+                setPadding(new Insets(8));
+            }
+        };
+        selectAll.selectedProperty().addListener(
+                (observable, oldValue, newValue) ->
+                        lstCompanies.getItems().forEach(searchSource -> searchSource.setSelected(newValue))
+        );
     }
 
     private void initSearchPanel() {
@@ -153,7 +146,7 @@ final class SearchView extends BorderPane {
                     textSearchLine.getText(),
                     viewModel.getSourcesForSearch()
                             .stream()
-                            .filter(SearchViewModel.SearchSource::isForSearch)
+                            .filter(SearchViewModel.SearchSource::isSelected)
                             .collect(Collectors.toList())
             );
 
@@ -176,7 +169,7 @@ final class SearchView extends BorderPane {
             engine.loadContent(writer.toString());
 
             this.setBottom(newSearchPanel);
-            body.getItems().remove(lstCompanies);
+            body.getItems().remove(companiesVBox);
         });
 
         searchPanel.getChildren().addAll(
@@ -199,7 +192,7 @@ final class SearchView extends BorderPane {
         prepareToSearchBtn.setOnAction(e -> {
             textSearchLine.clear();
             this.setBottom(searchPanel);
-            body.getItems().add(0, lstCompanies);
+            body.getItems().add(0, companiesVBox);
         });
 
         newSearchPanel = new HBox() {

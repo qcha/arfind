@@ -1,12 +1,13 @@
 package qcha.arfind.view;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,20 +61,30 @@ class SearchViewModel {
         });
     }
 
-    @Getter
-    @Setter
     @ToString(callSuper = true)
-    @EqualsAndHashCode(exclude = {"isForSearch"}, callSuper = false)
+    @EqualsAndHashCode(exclude = {"selected"}, callSuper = false)
     static final class SearchSource extends Source {
-        private boolean isForSearch;
+        private BooleanProperty selected = new SimpleBooleanProperty();
 
         SearchSource(Source source, boolean forSearch) {
             super(source.getName(), source.getPath());
-            this.isForSearch = forSearch;
+            selected.set(forSearch);
         }
 
         SearchSource(Source source) {
             this(source, false);
+        }
+
+        void setSelected(boolean selected) {
+            this.selected.set(selected);
+        }
+
+        boolean isSelected() {
+            return selected.get();
+        }
+
+        BooleanProperty selectedProperty() {
+            return selected;
         }
     }
 }
