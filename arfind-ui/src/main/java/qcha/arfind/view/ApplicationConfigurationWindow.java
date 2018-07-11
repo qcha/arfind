@@ -1,6 +1,7 @@
 package qcha.arfind.view;
 
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -23,6 +24,7 @@ class ApplicationConfigurationWindow {
     }
 
     void showAndWait() {
+        configurationWindow.initModality(Modality.APPLICATION_MODAL);
         configurationWindow.showAndWait();
     }
 }
