@@ -17,7 +17,7 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 
 public final class MainApplication extends Application {
     private final static Logger logger = LoggerFactory.getLogger(MainApplication.class);
-    private final String TITLE = "Поисковик артикулов";
+    private final String TITLE = "Поиск артикулов";
 
     //this window size occupies 70% of user's display width and 90% of display height
     private final double DEFAULT_WIDTH = 0.7 * DEFAULT_USER_RESOLUTION_WIDTH;
@@ -46,10 +46,9 @@ public final class MainApplication extends Application {
             }
         }));
 
-        ConfigurationWarningWindow configurationWarningWindow = new ConfigurationWarningWindow(primaryStage);
+        // todo When file doesn't exist - implement this behaivor
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            logger.info("Working with config file {}.", CONFIG_FILENAME);
-            configurationWarningWindow.showAndWait();
+            logger.info("Config file {} doesn't exist.", CONFIG_FILENAME);
         }
 
         //init search view
