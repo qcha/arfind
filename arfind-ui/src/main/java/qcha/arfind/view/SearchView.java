@@ -11,6 +11,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.StringConverter;
@@ -27,6 +28,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
+import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
+
 final class SearchView extends BorderPane {
     private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
 
@@ -37,6 +41,7 @@ final class SearchView extends BorderPane {
     private VBox companiesVBox;
     private CheckBox selectAll;
     private SplitPane body;
+    private Button initConfBtn;
 
     // left view for companies
     private ListView<SearchViewModel.SearchSource> lstCompanies;
@@ -58,6 +63,9 @@ final class SearchView extends BorderPane {
         // init new search panel
         initNewSearchPanel();
 
+        // init load config button
+        initLoadConfigButton();
+
         // init body
         body = new SplitPane();
 
@@ -65,14 +73,42 @@ final class SearchView extends BorderPane {
         VBox.setVgrow(lstCompanies, Priority.ALWAYS);
 
         body.getItems().addAll(
-                companiesVBox,
+                initConfBtn,
                 resultView
         );
+
+        if (!viewModel.getSourcesForSearch().isEmpty()) {
+            body.getItems().set(0, companiesVBox);
+        }
 
         // init pane
         setTop(createMenuBar());
         setCenter(body);
         setBottom(searchPanel);
+    }
+
+    private void initLoadConfigButton() {
+        initConfBtn = new Button() {
+            {
+                setText("Загрузить конфигурацию");
+                setTextAlignment(TextAlignment.CENTER);
+                setFont(new Font(24));
+                setPrefHeight(DEFAULT_USER_RESOLUTION_HEIGHT);
+                setPrefWidth(DEFAULT_USER_RESOLUTION_WIDTH);
+            }
+        };
+
+        initConfBtn.setOnMouseClicked(e -> {
+            new ApplicationConfigurationWindow(viewModel.getStage()) {
+                {
+                    showAndWait();
+                }
+            };
+            if (!viewModel.getSourcesForSearch().isEmpty()) {
+                body.getItems().set(0, companiesVBox);
+            }
+        });
+
     }
 
     private void initCompaniesListView() {
@@ -232,9 +268,14 @@ final class SearchView extends BorderPane {
         Menu options = new Menu("Настройки") {
             {
                 MenuItem configuration = new MenuItem("Конфигурация");
-                configuration.setOnAction(event -> new ApplicationConfigurationWindow(viewModel.getStage()) {
-                    {
-                        showAndWait();
+                configuration.setOnAction(event -> {
+                    new ApplicationConfigurationWindow(viewModel.getStage()) {
+                        {
+                            showAndWait();
+                        }
+                    };
+                    if (viewModel.getSourcesForSearch().isEmpty()) {
+                        body.getItems().set(0, initConfBtn);
                     }
                 });
 
