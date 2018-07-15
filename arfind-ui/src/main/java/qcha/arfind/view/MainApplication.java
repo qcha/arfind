@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import qcha.arfind.Sources;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -39,17 +40,11 @@ public final class MainApplication extends Application {
                     Files.deleteIfExists(Paths.get(CONFIG_FILENAME));
                     logger.info("File {} was successfully deleted.", CONFIG_FILENAME);
                 } catch (IOException e) {
-                    //todo replace error message
                     logger.error("Cannot find file {}, cause: {}.", CONFIG_FILENAME, e);
-                    throw new RuntimeException("Cannot find file - " + CONFIG_FILENAME, e);
+                    throw new UncheckedIOException("Cannot find file - " + CONFIG_FILENAME, e);
                 }
             }
         }));
-
-        // todo When file doesn't exist - implement this behaivor
-        if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            logger.info("Config file {} doesn't exist.", CONFIG_FILENAME);
-        }
 
         //init search view
         searchView = new SearchView(new SearchViewModel(primaryStage));

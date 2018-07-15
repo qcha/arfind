@@ -24,27 +24,33 @@ import qcha.arfind.excel.TextCrawler;
 import qcha.arfind.model.SearchResult;
 
 import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
 final class SearchView extends BorderPane {
     private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
 
+    // split pane for sources and result views
+    private SplitPane mainPane;
+
+    // panels for search
     private HBox searchPanel;
     private HBox newSearchPanel;
     private TextField textSearchLine;
     private SearchViewModel viewModel;
-    private VBox companiesVBox;
-    private CheckBox selectAll;
-    private SplitPane body;
-    private Button initConfBtn;
 
-    // left view for companies
+    // left view for sources
+    private VBox leftPane;
+    private CheckBox selectAll;
     private ListView<SearchViewModel.SearchSource> lstCompanies;
+    private Button initConfBtn;
 
     // right view for results
     private WebView resultView;
@@ -52,10 +58,16 @@ final class SearchView extends BorderPane {
     SearchView(SearchViewModel viewModel) {
         this.viewModel = viewModel;
         resultView = new WebView();
-        companiesVBox = new VBox();
+        leftPane = new VBox();
+
+        // init mainPane
+        mainPane = new SplitPane();
 
         // list view with companies names
         initCompaniesListView();
+
+        // init load config button
+        initLoadConfigButton();
 
         // search panel
         initSearchPanel();
@@ -63,28 +75,36 @@ final class SearchView extends BorderPane {
         // init new search panel
         initNewSearchPanel();
 
-        // init load config button
-        initLoadConfigButton();
+        if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
+            logger.info("Config file {} doesn't exist.", CONFIG_FILENAME);
+        } else {
+            logger.info("Use config file {} as config.", CONFIG_FILENAME);
+        }
 
-        // init body
-        body = new SplitPane();
+        initLeftPane();
 
-        companiesVBox.getChildren().addAll(selectAll, lstCompanies);
-        VBox.setVgrow(lstCompanies, Priority.ALWAYS);
-
-        body.getItems().addAll(
-                initConfBtn,
+        mainPane.getItems().addAll(
+                leftPane,
                 resultView
         );
 
-        if (!viewModel.getSourcesForSearch().isEmpty()) {
-            body.getItems().set(0, companiesVBox);
-        }
-
         // init pane
         setTop(createMenuBar());
-        setCenter(body);
+        setCenter(mainPane);
         setBottom(searchPanel);
+    }
+
+    private void initLeftPane() {
+        leftPane.getChildren().clear();
+
+        // if no sources - show only set config button
+        // else - show list of sources and select all checkbox
+        if (viewModel.getSourcesForSearch().isEmpty()) {
+            leftPane.getChildren().add(initConfBtn);
+        } else {
+            leftPane.getChildren().addAll(selectAll, lstCompanies);
+            VBox.setVgrow(lstCompanies, Priority.ALWAYS);
+        }
     }
 
     private void initLoadConfigButton() {
@@ -104,9 +124,8 @@ final class SearchView extends BorderPane {
                     showAndWait();
                 }
             };
-            if (!viewModel.getSourcesForSearch().isEmpty()) {
-                body.getItems().set(0, companiesVBox);
-            }
+
+            initLeftPane();
         });
 
     }
@@ -114,28 +133,29 @@ final class SearchView extends BorderPane {
     private void initCompaniesListView() {
         // list of companies for search
         lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
-        lstCompanies.setCellFactory(CheckBoxListCell.forListView(SearchViewModel.SearchSource::selectedProperty, new StringConverter<SearchViewModel.SearchSource>() {
-            @Override
-            public String toString(SearchViewModel.SearchSource details) {
-                return details.getName();
-            }
+        lstCompanies.setCellFactory(CheckBoxListCell.forListView(
+                SearchViewModel.SearchSource::selectedProperty, new StringConverter<SearchViewModel.SearchSource>() {
+                    @Override
+                    public String toString(SearchViewModel.SearchSource details) {
+                        return details.getName();
+                    }
 
-            @Override
-            public SearchViewModel.SearchSource fromString(String name) {
+                    @Override
+                    public SearchViewModel.SearchSource fromString(String name) {
 
-                Optional<SearchViewModel.SearchSource> searchSource = viewModel.getSourcesForSearch().stream()
-                        .filter(s -> s.getName().equals(name))
-                        .findFirst();
+                        Optional<SearchViewModel.SearchSource> searchSource = viewModel.getSourcesForSearch().stream()
+                                .filter(s -> s.getName().equals(name))
+                                .findFirst();
 
-                //  it should be always present value
-                if (!searchSource.isPresent()) {
-                    logger.error("Can't find search source by name: {}.", name);
-                    return null;
-                }
+                        //  it should be always present value
+                        if (!searchSource.isPresent()) {
+                            logger.error("Can't find search source by name: {}.", name);
+                            return null;
+                        }
 
-                return searchSource.get();
-            }
-        }));
+                        return searchSource.get();
+                    }
+                }));
 
 
         selectAll = new CheckBox() {
@@ -205,7 +225,7 @@ final class SearchView extends BorderPane {
             engine.loadContent(writer.toString());
 
             this.setBottom(newSearchPanel);
-            body.getItems().remove(companiesVBox);
+            mainPane.getItems().remove(leftPane);
         });
 
         searchPanel.getChildren().addAll(
@@ -228,7 +248,7 @@ final class SearchView extends BorderPane {
         prepareToSearchBtn.setOnAction(e -> {
             textSearchLine.clear();
             this.setBottom(searchPanel);
-            body.getItems().add(0, companiesVBox);
+            mainPane.getItems().add(0, leftPane);
         });
 
         newSearchPanel = new HBox() {
@@ -274,9 +294,8 @@ final class SearchView extends BorderPane {
                             showAndWait();
                         }
                     };
-                    if (viewModel.getSourcesForSearch().isEmpty()) {
-                        body.getItems().set(0, initConfBtn);
-                    }
+
+                    initLeftPane();
                 });
 
                 getItems().add(configuration);
