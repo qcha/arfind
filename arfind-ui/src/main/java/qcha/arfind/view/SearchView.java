@@ -15,11 +15,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.util.StringConverter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import qcha.arfind.excel.TextCrawler;
 import qcha.arfind.model.SearchResult;
 
@@ -34,9 +33,8 @@ import static qcha.arfind.utils.Constants.ConfigFileConstants.CONFIG_FILENAME;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
+@Slf4j
 final class SearchView extends BorderPane {
-    private static final Logger logger = LoggerFactory.getLogger(SearchView.class);
-
     // split pane for sources and result views
     private SplitPane mainPane;
 
@@ -76,9 +74,9 @@ final class SearchView extends BorderPane {
         initNewSearchPanel();
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
-            logger.info("Config file {} doesn't exist.", CONFIG_FILENAME);
+            log.info("Config file {} doesn't exist.", CONFIG_FILENAME);
         } else {
-            logger.info("Use config file {} as config.", CONFIG_FILENAME);
+            log.info("Use config file {} as config.", CONFIG_FILENAME);
         }
 
         initLeftPane();
@@ -119,12 +117,8 @@ final class SearchView extends BorderPane {
         };
 
         initConfBtn.setOnMouseClicked(e -> {
-            new ApplicationConfigurationWindow(viewModel.getStage()) {
-                {
-                    showAndWait();
-                }
-            };
-
+            ApplicationConfigurationWindow configWindows = new ApplicationConfigurationWindow(viewModel.getStage());
+            configWindows.showAndWait();
             initLeftPane();
         });
 
@@ -149,7 +143,7 @@ final class SearchView extends BorderPane {
 
                         //  it should be always present value
                         if (!searchSource.isPresent()) {
-                            logger.error("Can't find search source by name: {}.", name);
+                            log.error("Can't find search source by name: {}.", name);
                             return null;
                         }
 
@@ -289,11 +283,8 @@ final class SearchView extends BorderPane {
             {
                 MenuItem configuration = new MenuItem("Конфигурация");
                 configuration.setOnAction(event -> {
-                    new ApplicationConfigurationWindow(viewModel.getStage()) {
-                        {
-                            showAndWait();
-                        }
-                    };
+                    ApplicationConfigurationWindow configWindow = new ApplicationConfigurationWindow(viewModel.getStage());
+                    configWindow.showAndWait();
 
                     initLeftPane();
                 });

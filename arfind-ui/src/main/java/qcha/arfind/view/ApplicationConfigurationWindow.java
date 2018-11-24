@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 /**
  * This class is responsible for working with companies(adding, editing, etc).
  */
-class ApplicationConfigurationWindow {
+final class ApplicationConfigurationWindow {
 
     private final String TITLE = "Настройки конфигурации";
 

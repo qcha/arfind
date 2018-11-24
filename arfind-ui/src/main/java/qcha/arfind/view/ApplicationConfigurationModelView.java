@@ -10,7 +10,7 @@ import qcha.arfind.model.Source;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ApplicationConfigurationModelView {
+final class ApplicationConfigurationModelView {
     @Getter
     private final ObservableList<Source> companies;
     private final Stage stage;
@@ -30,8 +30,7 @@ class ApplicationConfigurationModelView {
     void save() {
         Sources.getOrCreate().clear();
         Sources.getOrCreate().putAll(
-                companies.stream().collect(Collectors.toMap(Source::getName, v -> v))
-        );
+                companies.stream().collect(Collectors.toMap(Source::getName, v -> v)));
 
         stage.close();
     }

@@ -10,8 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import qcha.arfind.model.Source;
 
 import java.io.File;
@@ -22,9 +21,8 @@ import java.util.Objects;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_HEIGHT;
 import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_RESOLUTION_WIDTH;
 
+@Slf4j
 final class EditSearchMetaInfoDialog extends Dialog<Source> {
-    private final static Logger logger = LoggerFactory.getLogger(EditSearchMetaInfoDialog.class);
-
     private final TextField tfName = new TextField();
     private final TextField tfPath = new TextField();
     private boolean isForEdit;
@@ -48,7 +46,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
             File file = fileChooser.showOpenDialog(this.getOwner());
             if (Objects.nonNull(file)) {
                 tfPath.setText(file.getAbsolutePath());
-                logger.info("Working with file: {}.", file.getAbsolutePath());
+                log.info("Working with file: {}.", file.getAbsolutePath());
             }
         });
 
@@ -85,7 +83,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
                 //check for duplicate name
                 if (!validateCompanyName(tfName.getText())) {
                     nameErrorLabel.setVisible(true);
-                    logger.warn("Name: {} was duplicated.", tfName.getText());
+                    log.warn("Name: {} was duplicated.", tfName.getText());
                 } else {
                     nameErrorLabel.setVisible(false);
                 }
@@ -94,7 +92,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
             //invalid path
             if (!validatePath(tfPath.getText())) {
                 fileErrorLabel.setVisible(true);
-                logger.warn("Path: {} is invalid", tfPath.getText());
+                log.warn("Path: {} is invalid", tfPath.getText());
             } else {
                 fileErrorLabel.setVisible(false);
             }

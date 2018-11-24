@@ -9,17 +9,15 @@ import javafx.stage.Stage;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import qcha.arfind.Sources;
 import qcha.arfind.model.Source;
 
 import java.util.stream.Collectors;
 
+@Slf4j
 @Getter
-class SearchViewModel {
-    private static final Logger logger = LoggerFactory.getLogger(SearchViewModel.class);
-
+final class SearchViewModel {
     private final Stage stage;
     private final ObservableList<SearchSource> sourcesForSearch;
 
@@ -39,9 +37,9 @@ class SearchViewModel {
         Sources.getOrCreate().addListener((MapChangeListener<String, Source>) change -> {
             if (change.wasRemoved()) {
                 if (sourcesForSearch.remove(new SearchSource(change.getValueRemoved()))) {
-                    logger.debug("Source: {} was removed", change.getValueRemoved().getName());
+                    log.debug("Source: {} was removed", change.getValueRemoved().getName());
                 } else {
-                    logger.error(
+                    log.error(
                             "Source: {} was removed from cache, but can't remove it from search view.",
                             change.getValueRemoved().getName()
                     );
@@ -49,14 +47,8 @@ class SearchViewModel {
             }
 
             if (change.wasAdded()) {
-                if (sourcesForSearch.add(new SearchSource(change.getValueAdded()))) {
-                    logger.debug("Source: {} was added", change.getValueAdded().getName());
-                } else {
-                    logger.error(
-                            "Source: {} was added from cache, but can't add it from search view.",
-                            change.getValueAdded().getName()
-                    );
-                }
+                sourcesForSearch.add(new SearchSource(change.getValueAdded()));
+                log.debug("Source: {} was added", change.getValueAdded().getName());
             }
         });
     }

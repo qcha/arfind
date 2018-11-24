@@ -12,8 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qcha.arfind.model.Source;
 
-import java.util.Objects;
-
 final class ApplicationConfigurationView extends BorderPane {
     private static final Logger logger = LoggerFactory.getLogger(ApplicationConfigurationView.class);
 
