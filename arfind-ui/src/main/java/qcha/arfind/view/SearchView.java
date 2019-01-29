@@ -2,6 +2,8 @@ package qcha.arfind.view;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -14,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
@@ -127,30 +130,43 @@ final class SearchView extends BorderPane {
     private void initCompaniesListView() {
         // list of companies for search
         lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
-        lstCompanies.setCellFactory(CheckBoxListCell.forListView(
-                SearchViewModel.SearchSource::selectedProperty, new StringConverter<SearchViewModel.SearchSource>() {
-                    @Override
-                    public String toString(SearchViewModel.SearchSource details) {
-                        return details.getName();
+        Callback<ListView<SearchViewModel.SearchSource>, ListCell<SearchViewModel.SearchSource>> wrappedCellFactory = lstCompanies.getCellFactory();
+        lstCompanies.setCellFactory(listView -> {
+            CheckBoxListCell<SearchViewModel.SearchSource> cell = wrappedCellFactory != null ? (CheckBoxListCell<SearchViewModel.SearchSource>) wrappedCellFactory.call(listView) : new CheckBoxListCell<>();
+            cell.setSelectedStateCallback(SearchViewModel.SearchSource::selectedProperty);
+            cell.setConverter(new StringConverter<SearchViewModel.SearchSource>() {
+                @Override
+                public String toString(SearchViewModel.SearchSource details) {
+                    return details.getName();
+                }
+
+                @Override
+                public SearchViewModel.SearchSource fromString(String name) {
+
+                    Optional<SearchViewModel.SearchSource> searchSource = viewModel.getSourcesForSearch().stream()
+                            .filter(s -> s.getName().equals(name))
+                            .findFirst();
+
+                    //  it should be always present value
+                    if (!searchSource.isPresent()) {
+                        log.error("Can't find search source by name: {}.", name);
+                        return null;
                     }
 
-                    @Override
-                    public SearchViewModel.SearchSource fromString(String name) {
+                    return searchSource.get();
+                }
+            });
 
-                        Optional<SearchViewModel.SearchSource> searchSource = viewModel.getSourcesForSearch().stream()
-                                .filter(s -> s.getName().equals(name))
-                                .findFirst();
+            cell.itemProperty().addListener((observable, oldValue, newValue) -> {
+                if (cell.getItem() != null) {
+                    boolean isInvalid = !cell.getItem().isValid();
+                    cell.setDisable(isInvalid);
+                    cell.setStyle(isInvalid ? "-fx-background-color:gainsboro" : null);
+                }
+            });
 
-                        //  it should be always present value
-                        if (!searchSource.isPresent()) {
-                            log.error("Can't find search source by name: {}.", name);
-                            return null;
-                        }
-
-                        return searchSource.get();
-                    }
-                }));
-
+            return cell;
+        });
 
         selectAll = new CheckBox() {
             {
@@ -159,7 +175,11 @@ final class SearchView extends BorderPane {
         };
         selectAll.selectedProperty().addListener(
                 (observable, oldValue, newValue) ->
-                        lstCompanies.getItems().forEach(searchSource -> searchSource.setSelected(newValue))
+                        lstCompanies.getItems().forEach(searchSource -> {
+                            if (searchSource.isValid()) {
+                                searchSource.setSelected(newValue);
+                            }
+                        })
         );
     }
 

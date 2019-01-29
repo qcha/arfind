@@ -3,6 +3,7 @@ package qcha.arfind.view;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -36,6 +37,19 @@ final class ApplicationConfigurationView extends BorderPane {
 
         companyTableView.setFixedCellSize(40);
         companyTableView.setStyle("-fx-font-size: 16px;");
+
+        companyTableView.setRowFactory(e -> new TableRow<Source>() {
+            @Override
+            protected void updateItem(Source source, boolean flag) {
+                super.updateItem(source, flag);
+                this.setStyle(null); // default style
+                if (source != null) {
+                    if (!source.isValid()) {
+                        this.setStyle("-fx-background-color:red");
+                    }
+                }
+            }
+        });
 
         TableColumn<Source, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Source, String> filePathColumn = new TableColumn<>("Путь к файлу");

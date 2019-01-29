@@ -2,8 +2,10 @@ package qcha.arfind;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
+import javafx.scene.control.Alert;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import qcha.arfind.model.Source;
 
 import java.io.File;
@@ -60,14 +62,8 @@ public final class Sources {
 
                 lines.forEach(line -> {
                     String[] fields = line.split(DEFAULT_FIELD_DELIMITER);
-                    try {
-                        Source source = new Source(fields[0], fields[1], Boolean.valueOf(fields[2]));
-                        cache.put(source.getName(), source);
-                        log.debug("Line {} added to file {}.", line, CONFIG_FILENAME);
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        log.error("Error occurs while parsing line: {}, maybe it's old configuration?", line);
-                        log.warn("Ignore line of configuration: {}.", line);
-                    }
+                    Source source = createSource(fields[0], fields[1]);
+                    cache.put(source.getName(), source);
                 });
             } catch (IOException e) {
                 log.error("Cannot read file {}, cause: {}.", CONFIG_FILENAME, e);
@@ -76,5 +72,14 @@ public final class Sources {
         }
 
         return cache;
+    }
+
+    private static Source createSource(String name, String path) {
+        Source source = new Source(name, path, new File(path).exists());
+        if (!source.isValid()) {
+            log.error("File {} does not exist.", name);
+        }
+        log.debug("Line {};{};{} added to file {}.", name, path, source.isValid(), CONFIG_FILENAME);
+        return source;
     }
 }

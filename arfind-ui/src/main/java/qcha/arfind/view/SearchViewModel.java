@@ -59,7 +59,7 @@ final class SearchViewModel {
         private BooleanProperty selected = new SimpleBooleanProperty();
 
         SearchSource(Source source, boolean forSearch) {
-            super(source.getName(), source.getPath());
+            super(source.getName(), source.getPath(), source.isValid());
             selected.set(forSearch);
         }
 
