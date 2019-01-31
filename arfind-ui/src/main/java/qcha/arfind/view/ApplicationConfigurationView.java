@@ -53,17 +53,23 @@ final class ApplicationConfigurationView extends BorderPane {
 
         TableColumn<Source, String> companyColumn = new TableColumn<>("Название фирмы");
         TableColumn<Source, String> filePathColumn = new TableColumn<>("Путь к файлу");
+        TableColumn<Source, String> fileSizeColumn = new TableColumn<>("Размер файла");
+        TableColumn<Source, String> lastModifiedColumn = new TableColumn<>("Последнее изменение");
 
-        //noinspection unchecked
+        // noinspection unchecked
         companyTableView.getColumns().addAll(
                 companyColumn,
-                filePathColumn
+                filePathColumn,
+                fileSizeColumn,
+                lastModifiedColumn
         );
 
         companyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         companyColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         filePathColumn.setCellValueFactory(cellData -> cellData.getValue().pathToSourceProperty());
+        fileSizeColumn.setCellValueFactory(cellData -> cellData.getValue().sizeProperty());
+        lastModifiedColumn.setCellValueFactory(cellData -> cellData.getValue().lastModifiedProperty());
     }
 
     private void initControlPanel() {
