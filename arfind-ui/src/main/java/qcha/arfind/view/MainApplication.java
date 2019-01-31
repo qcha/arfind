@@ -19,7 +19,7 @@ import static qcha.arfind.utils.Constants.UserResolutionConstants.DEFAULT_USER_R
 public final class MainApplication extends Application {
     private final String TITLE = "Поиск артикулов";
 
-    //this window size occupies 70% of user's display width and 90% of display height
+    // this window size occupies 70% of user's display width and 90% of display height
     private final double DEFAULT_WIDTH = 0.4 * DEFAULT_USER_RESOLUTION_WIDTH;
     private final double DEFAULT_HEIGHT = 0.5 * DEFAULT_USER_RESOLUTION_HEIGHT;
 
