@@ -58,19 +58,14 @@ final class SearchView extends BorderPane {
         resultView = new WebView();
         leftPane = new VBox();
 
-        // init mainPane
         mainPane = new SplitPane();
 
-        // list view with companies names
         initCompaniesListView();
 
-        // init load config button
         initLoadConfigButton();
 
-        // search panel
         initSearchPanel();
 
-        // init new search panel
         initNewSearchPanel();
 
         if (!Files.exists(Paths.get(CONFIG_FILENAME))) {
@@ -125,12 +120,14 @@ final class SearchView extends BorderPane {
     }
 
     private void initCompaniesListView() {
-        // list of companies for search
         lstCompanies = new ListView<>(viewModel.getSourcesForSearch());
         Callback<ListView<SearchViewModel.SearchSource>, ListCell<SearchViewModel.SearchSource>> wrappedCellFactory = lstCompanies.getCellFactory();
         lstCompanies.setCellFactory(listView -> {
-            CheckBoxListCell<SearchViewModel.SearchSource> cell = wrappedCellFactory != null ? (CheckBoxListCell<SearchViewModel.SearchSource>) wrappedCellFactory.call(listView) : new CheckBoxListCell<>();
+            CheckBoxListCell<SearchViewModel.SearchSource> cell = wrappedCellFactory != null ?
+                    (CheckBoxListCell<SearchViewModel.SearchSource>) wrappedCellFactory.call(listView) : new CheckBoxListCell<>();
+
             cell.setSelectedStateCallback(SearchViewModel.SearchSource::selectedProperty);
+
             cell.setConverter(new StringConverter<SearchViewModel.SearchSource>() {
                 @Override
                 public String toString(SearchViewModel.SearchSource details) {
@@ -196,7 +193,7 @@ final class SearchView extends BorderPane {
 
         HBox.setHgrow(textSearchLine, Priority.ALWAYS);
 
-        Button btnSearch = new Button("Поиск") {
+        final Button btnSearch = new Button("Поиск") {
             {
                 disableProperty().bind(textSearchLine.textProperty().isEqualTo(""));
 
@@ -209,7 +206,6 @@ final class SearchView extends BorderPane {
         };
 
         btnSearch.setOnAction(e -> {
-            // todo
             final List<SearchResult> anyMatches = TextCrawler.findAnyMatches(
                     textSearchLine.getText(),
                     viewModel.getSourcesForSearch()

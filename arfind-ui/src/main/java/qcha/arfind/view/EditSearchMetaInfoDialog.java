@@ -39,7 +39,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
         btnChoose.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
 
-            //only excel files
+            // only excel files
             FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter(
                     "Excel files (*.xlsx, *.xls)", "*.xlsx", "*.xls");
             fileChooser.getExtensionFilters().add(extensionFilter);
@@ -50,7 +50,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
             }
         });
 
-        VBox vbox = new VBox(
+        final VBox vbox = new VBox(
                 nameLabel,
                 tfName,
                 nameErrorLabel,
@@ -62,7 +62,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
         vbox.setSpacing(10.0d);
         vbox.setPadding(new Insets(40.0d));
 
-        DialogPane dp = getDialogPane();
+        final DialogPane dp = getDialogPane();
 
         setTitle("Редактирование");
         setResultConverter(this::formResult);
@@ -72,7 +72,7 @@ final class EditSearchMetaInfoDialog extends Dialog<Source> {
                 new ButtonType("Отменить", ButtonBar.ButtonData.CANCEL_CLOSE)
         );
 
-        Button btnOk = (Button) getDialogPane().lookupButton(saveBtnType);
+        final Button btnOk = (Button) getDialogPane().lookupButton(saveBtnType);
         btnOk.disableProperty().bind(tfName.textProperty()
                 .isEqualTo("")
                 .or(tfPath.textProperty()
