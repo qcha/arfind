@@ -64,7 +64,7 @@ final class SearchViewModel {
         }
 
         SearchSource(Source source) {
-            this(source, false);
+            this(source, source.isValid());
         }
 
         void setSelected(boolean selected) {

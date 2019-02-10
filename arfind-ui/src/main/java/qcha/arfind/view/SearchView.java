@@ -1,9 +1,6 @@
 package qcha.arfind.view;
 
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -171,16 +168,17 @@ final class SearchView extends BorderPane {
         selectAll = new CheckBox() {
             {
                 setPadding(new Insets(8));
+                selectedProperty().set(true);
+                selectedProperty().addListener(
+                        (observable, oldValue, newValue) ->
+                                lstCompanies.getItems().forEach(searchSource -> {
+                                    if (searchSource.isValid()) {
+                                        searchSource.setSelected(newValue);
+                                    }
+                                })
+                );
             }
         };
-        selectAll.selectedProperty().addListener(
-                (observable, oldValue, newValue) ->
-                        lstCompanies.getItems().forEach(searchSource -> {
-                            if (searchSource.isValid()) {
-                                searchSource.setSelected(newValue);
-                            }
-                        })
-        );
     }
 
     private void initSearchPanel() {
@@ -200,8 +198,7 @@ final class SearchView extends BorderPane {
 
         Button btnSearch = new Button("Поиск") {
             {
-                disableProperty().bind(textSearchLine.textProperty().isEqualTo("").or(
-                        Bindings.size(viewModel.getSourcesForSearch()).isEqualTo(0)));
+                disableProperty().bind(textSearchLine.textProperty().isEqualTo(""));
 
                 setFocusTraversable(false);
                 setDefaultButton(true);
@@ -212,6 +209,7 @@ final class SearchView extends BorderPane {
         };
 
         btnSearch.setOnAction(e -> {
+            // todo
             final List<SearchResult> anyMatches = TextCrawler.findAnyMatches(
                     textSearchLine.getText(),
                     viewModel.getSourcesForSearch()
